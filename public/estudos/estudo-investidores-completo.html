@@ -129,6 +129,48 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--txt);
   <p class="hero-sub">Trades icónicas com datas, preços de entrada, retornos e contexto — mais análise da janela temporal entre filings e o "pump" no mercado, com timelines interativas por investidor.</p>
 </section>
 
+<!-- ==================== INTERACTIVE RIPPLE EFFECT CHARTS ==================== -->
+<section class="chart-section" id="ripple-charts">
+  <div class="inv-header">
+    <span class="inv-rank" style="color:var(--cyan);opacity:.6;">📈</span>
+    <span class="inv-name" style="font-size:1.6rem;">Ripple Effect: Do Filing ao Pump</span>
+  </div>
+  <div class="inv-fund">Cruzamento entre datas de compra, publicação dos filings e reação do preço · Seleciona um investidor</div>
+
+  <div class="chart-tabs" id="chart-tabs"></div>
+  <div class="chart-card">
+    <div class="chart-title-bar" id="chart-title"></div>
+    <div style="padding:1rem .5rem 0;">
+      <svg id="chart-svg" viewBox="0 0 700 280" style="width:100%;height:auto;display:block;"></svg>
+    </div>
+    <div class="chart-legend">
+      <span style="color:#34d399;">■ Zona compra</span>
+      <span style="color:#60a5fa;">■ Filing + Pump</span>
+      <span style="color:#ef4444;">■ Venda/Trim</span>
+      <span style="color:#a78bfa;">■ Snapshot 13F</span>
+      <span style="color:#fb923c;">■ Catalisador</span>
+    </div>
+    <div class="metrics-grid" id="chart-metrics"></div>
+  </div>
+
+  <div style="margin-top:1.5rem;background:rgba(212,168,83,.05);border:1px solid rgba(212,168,83,.15);border-radius:12px;padding:1.2rem;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.6rem;font-weight:600;">
+      📊 Conclusão: Janela Temporal do Ripple Effect
+    </div>
+    <p style="font-size:.82rem;color:var(--txt2);line-height:1.7;font-weight:300;">
+      <strong style="color:var(--txt);">Pelosi</strong> tem o delay mais curto (1-3 dias via STOCK Act) e o pump mais direto. 
+      <strong style="color:var(--txt);">Leopold</strong> gera o maior hype pós-filing mas o delay de 45+ dias significa que o preço já subiu substancialmente. 
+      <strong style="color:var(--txt);">Buffett</strong> provoca um pump moderado e previsível (~4% no dia do filing). 
+      <strong style="color:var(--txt);">Hohn</strong> tem impacto gradual porque a TCI é menos seguida pelo retail. 
+      <strong style="color:var(--txt);">RenTech</strong> e <strong style="color:var(--txt);">Griffin</strong> são essencialmente não-replicáveis — os filings são noise.
+    </p>
+  </div>
+
+  <div style="margin-top:1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);">
+    Preços aproximados para fins ilustrativos · Fontes: SEC 13F, STOCK Act PTR, macrotrends, stockcircle, gurufocus, WhaleWisdom · Maio 2026
+  </div>
+</section>
+
 <!-- ==================== #1 JIM SIMONS ==================== -->
 <section class="investor-section s1">
   <div class="inv-header">
@@ -533,7 +575,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--txt);
   <div class="inv-fund">Situational Awareness LP · AI Infrastructure · Est. Set 2024 · 24 anos</div>
 
   <div class="algo-note" style="border-color:rgba(34,211,238,.15);background:rgba(34,211,238,.04);">
-    <p><strong style="color:var(--cyan);">🧠 O "Novo Buffett" da Gen Z:</strong> Ex-investigador da OpenAI, despedido aos 22 anos. Escreveu um manifesto de 165 páginas ("Situational Awareness: The Decade Ahead") sobre AGI. Lançou um fundo em Set 2024 com $225M de seed (LPs: cofundadores da Stripe, ex-CEO do GitHub). Em 5 trimestres, o portfólio público cresceu de $254.8M (6 holdings) para $13.68B (Q1 2026). A tese: AGI chega até ~2027 e o bottleneck real é infraestrutura física — energia, compute, armazenamento — não chips.</p>
+    <p><strong style="color:var(--cyan);">ðŸ§  O "Novo Buffett" da Gen Z:</strong> Ex-investigador da OpenAI, despedido aos 22 anos. Escreveu um manifesto de 165 páginas ("Situational Awareness: The Decade Ahead") sobre AGI. Lançou um fundo em Set 2024 com $225M de seed (LPs: cofundadores da Stripe, ex-CEO do GitHub). Em 5 trimestres, o portfólio público cresceu de $254.8M (6 holdings) para $13.68B (Q1 2026). A tese: AGI chega até ~2027 e o bottleneck real é infraestrutura física — energia, compute, armazenamento — não chips.</p>
   </div>
 
   <div class="trades-grid">
@@ -620,7 +662,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--txt);
   <div class="inv-fund">Quando os filings são publicados vs. quando o mercado reage</div>
 
   <div class="algo-note" style="border-color:rgba(212,168,83,.25);background:rgba(212,168,83,.06);">
-    <p><strong>🔑 Conceito-chave:</strong> Existe um delay estrutural entre quando um investidor COMPRA e quando o mercado SABE que ele comprou. Este delay cria janelas de oportunidade (e de risco). Cada tipo de investidor tem uma dinâmica diferente.</p>
+    <p><strong>ðŸ”‘ Conceito-chave:</strong> Existe um delay estrutural entre quando um investidor COMPRA e quando o mercado SABE que ele comprou. Este delay cria janelas de oportunidade (e de risco). Cada tipo de investidor tem uma dinâmica diferente.</p>
   </div>
 
   <div class="trades-grid">
@@ -756,47 +798,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--txt);
 
 </section>
 
-<!-- ==================== INTERACTIVE RIPPLE EFFECT CHARTS ==================== -->
-<section class="chart-section" id="ripple-charts">
-  <div class="inv-header">
-    <span class="inv-rank" style="color:var(--cyan);opacity:.6;">📈</span>
-    <span class="inv-name" style="font-size:1.6rem;">Ripple Effect: Do Filing ao Pump</span>
-  </div>
-  <div class="inv-fund">Cruzamento entre datas de compra, publicação dos filings e reação do preço · Seleciona um investidor</div>
 
-  <div class="chart-tabs" id="chart-tabs"></div>
-  <div class="chart-card">
-    <div class="chart-title-bar" id="chart-title"></div>
-    <div style="padding:1rem .5rem 0;">
-      <svg id="chart-svg" viewBox="0 0 700 280" style="width:100%;height:auto;display:block;"></svg>
-    </div>
-    <div class="chart-legend">
-      <span style="color:#34d399;">■ Zona compra</span>
-      <span style="color:#60a5fa;">■ Filing + Pump</span>
-      <span style="color:#ef4444;">■ Venda/Trim</span>
-      <span style="color:#a78bfa;">■ Snapshot 13F</span>
-      <span style="color:#fb923c;">■ Catalisador</span>
-    </div>
-    <div class="metrics-grid" id="chart-metrics"></div>
-  </div>
-
-  <div style="margin-top:1.5rem;background:rgba(212,168,83,.05);border:1px solid rgba(212,168,83,.15);border-radius:12px;padding:1.2rem;">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.6rem;font-weight:600;">
-      📊 Conclusão: Janela Temporal do Ripple Effect
-    </div>
-    <p style="font-size:.82rem;color:var(--txt2);line-height:1.7;font-weight:300;">
-      <strong style="color:var(--txt);">Pelosi</strong> tem o delay mais curto (1-3 dias via STOCK Act) e o pump mais direto. 
-      <strong style="color:var(--txt);">Leopold</strong> gera o maior hype pós-filing mas o delay de 45+ dias significa que o preço já subiu substancialmente. 
-      <strong style="color:var(--txt);">Buffett</strong> provoca um pump moderado e previsível (~4% no dia do filing). 
-      <strong style="color:var(--txt);">Hohn</strong> tem impacto gradual porque a TCI é menos seguida pelo retail. 
-      <strong style="color:var(--txt);">RenTech</strong> e <strong style="color:var(--txt);">Griffin</strong> são essencialmente não-replicáveis — os filings são noise.
-    </p>
-  </div>
-
-  <div style="margin-top:1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);">
-    Preços aproximados para fins ilustrativos · Fontes: SEC 13F, STOCK Act PTR, macrotrends, stockcircle, gurufocus, WhaleWisdom · Maio 2026
-  </div>
-</section>
 
 <!-- DISCLAIMER -->
 <div class="disclaimer">
@@ -816,7 +818,7 @@ const investors = [
     id:"leopold",name:"Leopold Aschenbrenner",fund:"Situational Awareness LP",color:"#22d3ee",
     stock:"Bloom Energy (BE)",ticker:"BE",
     thesis:"AI = consumo massivo de eletricidade. Bloom fornece fuel cells on-site para data centers.",
-    buyPeriod:"Q4 2024 – Q4 2025",avgEntry:"~$22 (Q4'24) → ~$105 (Q4'25)",
+    buyPeriod:"Q4 2024 — Q4 2025",avgEntry:"~$22 (Q4'24) → ~$105 (Q4'25)",
     filingDate:"11 Fev 2026 (1º filing)",filingDelay:"~42 dias após fim Q4",
     returnSinceEntry:"+1,200%+ (desde ~$22 entrada)",pumpPostFiling:"~15-20% em 1 semana",
     priceData:[
@@ -827,7 +829,7 @@ const investors = [
       {date:"Jun'25",price:42,label:null},{date:"Jul'25",price:55,label:null},
       {date:"Ago'25",price:62,label:null},{date:"Set'25",price:78,label:null},
       {date:"Out'25",price:95,label:null},{date:"Nov'25",price:142,label:"📊 Pico pré-filing"},
-      {date:"Dez'25",price:109,label:"🔵 Fim Q4 (snapshot)"},
+      {date:"Dez'25",price:109,label:"ðŸ”µ Fim Q4 (snapshot)"},
       {date:"Jan'26",price:130,label:null},
       {date:"Fev'26",price:155,label:"📋 13F 11/Fev!"},
       {date:"Mar'26",price:185,label:"🚀 Pump"},
@@ -840,12 +842,12 @@ const investors = [
     id:"buffett",name:"Warren Buffett",fund:"Berkshire Hathaway",color:"#60a5fa",
     stock:"Apple (AAPL)",ticker:"AAPL",
     thesis:"Apple não é tech — é uma marca de consumo com moat e cash flows enormes.",
-    buyPeriod:"Q1 2016 – Q1 2018",avgEntry:"$39.62 (adj. split-adjusted)",
+    buyPeriod:"Q1 2016 — Q1 2018",avgEntry:"$39.62 (adj. split-adjusted)",
     filingDate:"16 Mai 2016 (1º filing)",filingDelay:"~46 dias após fim Q1",
     returnSinceEntry:"+663% (cost basis $39.62 → $302)",pumpPostFiling:"+4% no dia do filing",
     priceData:[
       {date:"Jan'16",price:97,label:null},{date:"Fev'16",price:96,label:"🟢 BRK compra 9.8M ações"},
-      {date:"Mar'16",price:109,label:"🔵 Fim Q1 (snapshot)"},{date:"Abr'16",price:94,label:null},
+      {date:"Mar'16",price:109,label:"ðŸ”µ Fim Q1 (snapshot)"},{date:"Abr'16",price:94,label:null},
       {date:"Mai'16",price:99,label:"📋 13F 16/Mai"},{date:"Jun'16",price:103,label:"🚀 +4% pump"},
       {date:"Jul'16",price:104,label:null},{date:"Ago'16",price:106,label:"🟢 BRK compra mais"},
       {date:"Set'16",price:113,label:null},{date:"Out'16",price:114,label:null},
@@ -874,7 +876,7 @@ const investors = [
       {date:"Mai'25",price:75,label:null},{date:"Jun'25",price:80,label:null},
       {date:"Jul'25",price:85,label:null},{date:"Ago'25",price:88,label:null},
       {date:"Set'25",price:92,label:null},{date:"Out'25",price:99,label:"📈 $99.28 (+185%)"},
-      {date:"Jan'26",price:85,label:"🔄 Exerceu 50 calls"}
+      {date:"Jan'26",price:85,label:"ðŸ”„ Exerceu 50 calls"}
     ],
     zones:[{start:1,end:1,type:"buy",label:"Compra calls"},{start:3,end:4,type:"filing",label:"PTR + Pump"},{start:6,end:6,type:"catalyst",label:"Catalisador"}]
   },
@@ -882,12 +884,12 @@ const investors = [
     id:"hohn",name:"Chris Hohn",fund:"TCI Fund Management",color:"#fb923c",
     stock:"GE Aerospace (GE)",ticker:"GE",
     thesis:"Monopólio em motores de aviação (~50% market share). Comprado como 'damaged goods'.",
-    buyPeriod:"Q1 2023 – Q3 2023",avgEntry:"~$66–$144 (range acumulação)",
+    buyPeriod:"Q1 2023 — Q3 2023",avgEntry:"~$66—$144 (range acumulação)",
     filingDate:"~Mai 2023 (1º filing com GE)",filingDelay:"~45 dias",
     returnSinceEntry:"~3.1-4.8× em 3 anos",pumpPostFiling:"Gradual — TCI menos mediático",
     priceData:[
       {date:"Dez'22",price:66,label:null},{date:"Jan'23",price:72,label:"🟢 Início acumulação"},
-      {date:"Mar'23",price:88,label:"🔵 Fim Q1 (snapshot)"},{date:"Mai'23",price:105,label:"📋 13F: GE revelada"},
+      {date:"Mar'23",price:88,label:"ðŸ”µ Fim Q1 (snapshot)"},{date:"Mai'23",price:105,label:"📋 13F: GE revelada"},
       {date:"Jun'23",price:110,label:"🚀 Pump moderado"},{date:"Set'23",price:115,label:"🟢 Continua a comprar"},
       {date:"Dez'23",price:128,label:null},{date:"Mar'24",price:165,label:null},
       {date:"Jun'24",price:162,label:null},{date:"Set'24",price:188,label:null},
@@ -902,7 +904,7 @@ const investors = [
     id:"simons",name:"RenTech (Simons†)",fund:"Renaissance Technologies",color:"#d4a853",
     stock:"Palantir (PLTR)",ticker:"PLTR",
     thesis:"Algoritmo identificou padrão — acumulada durante bear market tech 2022. Cortou 61% em 2025.",
-    buyPeriod:"2022–2023 (estimado)",avgEntry:"~$6–$15 (est.)",
+    buyPeriod:"2022—2023 (estimado)",avgEntry:"~$6—$15 (est.)",
     filingDate:"Trimestral (múltiplos)",filingDelay:"45 dias (standard)",
     returnSinceEntry:"~500-800% (est., antes do trim)",pumpPostFiling:"Mínimo — 3,185 posições diluem",
     priceData:[
@@ -1026,3 +1028,4 @@ renderChart();
 
 </body>
 </html>
+

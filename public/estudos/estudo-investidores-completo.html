@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top 6 Investidores — Melhores Compras + Análise Filing→Pump + Ripple Effect</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0b0f;
+  --bg2: #12131a;
+  --card: #161722;
+  --card-h: #1c1d2e;
+  --gold: #d4a853;
+  --green: #34d399;
+  --red: #ef4444;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --orange: #fb923c;
+  --cyan: #22d3ee;
+  --txt: #f0eee6;
+  --txt2: #9ca3af;
+  --muted: #6b7280;
+  --border: #1f2037;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--txt); line-height:1.6; }
+.container { max-width:1300px; margin:0 auto; padding:0 2rem; }
+
+/* HERO */
+.hero { padding:4rem 0 2rem; }
+.hero-label { font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.25em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; display:flex; align-items:center; gap:.75rem; }
+.hero-label::before { content:''; width:32px; height:1px; background:var(--gold); }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,4.5vw,3.8rem); font-weight:900; line-height:1.1; margin-bottom:1rem; background:linear-gradient(135deg,var(--txt) 40%,var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero-sub { font-size:1rem; color:var(--txt2); max-width:700px; font-weight:300; }
+
+/* INVESTOR SECTION */
+.investor-section { margin:3rem 0; padding:2.5rem 0; border-top:1px solid var(--border); }
+.inv-header { display:flex; align-items:baseline; gap:1rem; margin-bottom:.5rem; flex-wrap:wrap; }
+.inv-rank { font-family:'Playfair Display',serif; font-size:2.5rem; font-weight:900; opacity:.2; }
+.inv-name { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; }
+.inv-fund { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--muted); letter-spacing:.05em; margin-bottom:1.5rem; }
+
+.trades-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px,1fr)); gap:1.25rem; }
+
+.trade-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.5rem; position:relative; overflow:hidden; transition:all .3s; }
+.trade-card:hover { background:var(--card-h); transform:translateY(-2px); border-color:#2a2b45; }
+.trade-card::after { content:''; position:absolute; top:0; right:0; width:80px; height:80px; border-radius:0 0 0 80px; opacity:.04; }
+
+.tc-ticker { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:600; margin-bottom:.15rem; }
+.tc-name { font-size:.8rem; color:var(--txt2); margin-bottom:1rem; font-weight:300; }
+
+.tc-row { display:flex; justify-content:space-between; align-items:center; padding:.4rem 0; border-bottom:1px solid rgba(255,255,255,.03); }
+.tc-row:last-child { border-bottom:none; }
+.tc-label { font-size:.65rem; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+.tc-val { font-family:'JetBrains Mono',monospace; font-size:.85rem; font-weight:500; }
+
+.tc-return { margin-top:1rem; padding:.75rem; background:rgba(255,255,255,.02); border-radius:8px; text-align:center; }
+.tc-return-label { font-size:.6rem; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+.tc-return-val { font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:600; margin-top:.2rem; }
+
+.tc-note { margin-top:.75rem; font-size:.75rem; color:var(--txt2); font-weight:300; line-height:1.6; font-style:italic; }
+
+/* COLOR ACCENTS */
+.s1 .tc-ticker, .s1 .tc-return-val { color:var(--gold); }
+.s1 .trade-card::after { background:var(--gold); }
+.s2 .tc-ticker, .s2 .tc-return-val { color:var(--green); }
+.s2 .trade-card::after { background:var(--green); }
+.s3 .tc-ticker, .s3 .tc-return-val { color:var(--blue); }
+.s3 .trade-card::after { background:var(--blue); }
+.s4 .tc-ticker, .s4 .tc-return-val { color:var(--purple); }
+.s4 .trade-card::after { background:var(--purple); }
+.s5 .tc-ticker, .s5 .tc-return-val { color:var(--orange); }
+.s5 .trade-card::after { background:var(--orange); }
+
+/* SPECIAL NOTE */
+.algo-note {
+  background:rgba(212,168,83,.06);
+  border:1px solid rgba(212,168,83,.15);
+  border-radius:12px;
+  padding:1.5rem;
+  margin-bottom:1.5rem;
+}
+.algo-note p { font-size:.85rem; color:var(--txt2); line-height:1.7; font-weight:300; }
+.algo-note strong { color:var(--gold); }
+
+/* DISCLAIMER */
+.disclaimer {
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1.25rem;
+  margin:3rem 0 2rem;
+}
+.disclaimer p { font-size:.72rem; color:var(--muted); line-height:1.6; }
+
+.footer { padding:2rem 0; border-top:1px solid var(--border); text-align:center; }
+.footer p { font-size:.7rem; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+
+/* INTERACTIVE CHART SECTION */
+.chart-section { margin:3rem 0; padding:2.5rem 0; border-top:2px solid var(--cyan); }
+.chart-tabs { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.chart-tab { padding:.5rem .8rem; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--txt2); cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:.7rem; letter-spacing:.03em; transition:all .2s; }
+.chart-tab:hover { border-color:var(--txt2); }
+.chart-tab.active { font-weight:600; }
+.chart-card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.chart-title-bar { padding:1.2rem 1.5rem .8rem; border-bottom:1px solid var(--border); }
+.chart-legend { padding:.5rem 1.5rem; display:flex; gap:1rem; flex-wrap:wrap; }
+.chart-legend span { font-size:.65rem; font-family:'JetBrains Mono',monospace; }
+.metrics-grid { padding:1rem 1.5rem 1.5rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:.7rem; }
+.metric-box { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:8px; padding:.7rem; }
+.metric-label { font-family:'JetBrains Mono',monospace; font-size:.55rem; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:.3rem; }
+.metric-val { font-family:'JetBrains Mono',monospace; font-size:.78rem; font-weight:500; line-height:1.3; }
+
+@media(max-width:768px) {
+  .trades-grid { grid-template-columns:1fr; }
+  .container { padding:0 1rem; }
+  .inv-header { gap:.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<section class="hero">
+  <div class="hero-label">Estudo Completo · Maio 2026</div>
+  <h1>Top 6 Investidores:<br>Melhores Compras &<br>Filing→Pump Analysis</h1>
+  <p class="hero-sub">Trades icónicas com datas, preços de entrada, retornos e contexto — mais análise da janela temporal entre filings e o "pump" no mercado, com timelines interativas por investidor.</p>
+</section>
+
+<!-- ==================== #1 JIM SIMONS ==================== -->
+<section class="investor-section s1">
+  <div class="inv-header">
+    <span class="inv-rank">#1</span>
+    <span class="inv-name">Jim Simons</span>
+  </div>
+  <div class="inv-fund">Renaissance Technologies · Medallion Fund · Falecido a 10 Mai 2024 (86 anos)</div>
+
+  <div class="algo-note">
+    <p><strong>⚡ Nota importante:</strong> Jim Simons faleceu a 10 de maio de 2024, aos 86 anos, mas a Renaissance Technologies continua a operar sob a mesma estrutura algorítmica. O Medallion Fund opera com milhares de posições simultâneas, holding periods de segundos a dias, e estratégias puramente algorítmicas. Não existem "trades icónicos" individuais no sentido tradicional — a genialidade está no sistema como um todo. As posições abaixo referem-se ao portfólio público da Renaissance (13F filings), que inclui outros fundos além do Medallion. No Q4 2025, o 13F reportou $64.46B em AUM distribuído por 3,185 securities.</p>
+  </div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card">
+      <div class="tc-ticker">NOVO NORDISK (NVO)</div>
+      <div class="tc-name">Top holding histórica · Pharma / GLP-1</div>
+      <div class="tc-row"><span class="tc-label">Posição reportada</span><span class="tc-val">~2M ações (2012)</span></div>
+      <div class="tc-row"><span class="tc-label">Preço ~2012</span><span class="tc-val">~$17 (adj.)</span></div>
+      <div class="tc-row"><span class="tc-label">Top holding 2024</span><span class="tc-val">$1.3B (2.2%)</span></div>
+      <div class="tc-row"><span class="tc-label">Pico NVO</span><span class="tc-val">~$148 (2024)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno estimado pico</div>
+        <div class="tc-return-val">~770%</div>
+      </div>
+      <p class="tc-note">Posição mantida durante mais de uma década — raro para a Renaissance. Beneficiou da revolução Ozempic/Wegovy.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">PALANTIR (PLTR)</div>
+      <div class="tc-name">Top holding Q4 2025 · Data Analytics / AI</div>
+      <div class="tc-row"><span class="tc-label">Valor Q4 2025</span><span class="tc-val">$1.56B (2.43%)</span></div>
+      <div class="tc-row"><span class="tc-label">Ações Q4 2025</span><span class="tc-val">8.79M (cortou 61% em 2025)</span></div>
+      <div class="tc-row"><span class="tc-label">Posição construída</span><span class="tc-val">2022-2023</span></div>
+      <div class="tc-row"><span class="tc-label">Preço est. entrada</span><span class="tc-val">~$6-15</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno estimado</div>
+        <div class="tc-return-val">~500-800%</div>
+      </div>
+      <p class="tc-note">Maior posição do portfólio público em Q4 2025 (2.43%), apesar de terem cortado 61% da posição durante 2025. Acumulada durante o bear market tech de 2022.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">NVIDIA (NVDA)</div>
+      <div class="tc-name">Core tech holding · Semicondutores / AI</div>
+      <div class="tc-row"><span class="tc-label">Posição 13F 2003</span><span class="tc-val">521K ações</span></div>
+      <div class="tc-row"><span class="tc-label">Ajustes constantes</span><span class="tc-val">Trim/add cada Q</span></div>
+      <div class="tc-row"><span class="tc-label">Detida desde</span><span class="tc-val">~2003 (on/off)</span></div>
+      <div class="tc-row"><span class="tc-label">Nota Q4 2025</span><span class="tc-val">Posição reduzida</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Posição rotativa</div>
+        <div class="tc-return-val">Variável</div>
+      </div>
+      <p class="tc-note">RenTech detém NVDA intermitentemente desde 2003. Posição ajustada algoritmicamente cada trimestre — classificada como holding rotativa, sem convicção direcional de longo prazo.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">VERISIGN (VRSN)</div>
+      <div class="tc-name">Posição persistente · Internet Infrastructure</div>
+      <div class="tc-row"><span class="tc-label">Top 5 holding Q4 2025</span><span class="tc-val">Sim</span></div>
+      <div class="tc-row"><span class="tc-label">Detida consistentemente</span><span class="tc-val">Múltiplos anos</span></div>
+      <div class="tc-row"><span class="tc-label">Monopólio .com/.net</span><span class="tc-val">Sim</span></div>
+      <div class="tc-row"><span class="tc-label">Tipo</span><span class="tc-val">Monopoly asset</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Posição core</div>
+        <div class="tc-return-val">Top 5</div>
+      </div>
+      <p class="tc-note">Monopólio natural sobre domínios .com e .net. Holding rara de longo prazo no portfólio da RenTech — listada consistentemente no top 5 do 13F.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== #2 KEN GRIFFIN ==================== -->
+<section class="investor-section s2">
+  <div class="inv-header">
+    <span class="inv-rank">#2</span>
+    <span class="inv-name">Ken Griffin</span>
+  </div>
+  <div class="inv-fund">Citadel LLC · Wellington Fund · Multi-Strategy</div>
+
+  <div class="algo-note">
+    <p><strong>⚡ Nota:</strong> A Citadel opera centenas de estratégias simultâneas (equities, fixed income, commodities, quant). Os ganhos vêm do sistema, não de trades individuais. Fundada em 1990 por Griffin aos 22 anos, com $4.6M de capital inicial. Desde então, acumulou $90.4B+ em ganhos totais líquidos.</p>
+  </div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card">
+      <div class="tc-ticker">2022 — O ANO RECORDE</div>
+      <div class="tc-name">Multi-strategy · Maior retorno anual de um gestor na história</div>
+      <div class="tc-row"><span class="tc-label">Wellington Fund</span><span class="tc-val">+38.10%</span></div>
+      <div class="tc-row"><span class="tc-label">Fixed Income Fund</span><span class="tc-val">+32.58%</span></div>
+      <div class="tc-row"><span class="tc-label">Tactical Trading</span><span class="tc-val">+26.49%</span></div>
+      <div class="tc-row"><span class="tc-label">Ganho total 2022</span><span class="tc-val">$16B</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">S&P 500 em 2022</div>
+        <div class="tc-return-val">-19.44%</div>
+      </div>
+      <p class="tc-note">Enquanto o S&P 500 caiu ~19.4%, a Citadel gerou $16B — superando os $15B de Paulson contra os subprimes em 2007, segundo dados da LCH Investments.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">2021-2025 — MEGA RUN</div>
+      <div class="tc-name">Wellington + Kensington · 5 anos dominantes</div>
+      <div class="tc-row"><span class="tc-label">Ganhos 2021-Set 2025</span><span class="tc-val">$56.8B brutos</span></div>
+      <div class="tc-row"><span class="tc-label">Líquido p/ investidores</span><span class="tc-val">~$30B</span></div>
+      <div class="tc-row"><span class="tc-label">Fees cobrados</span><span class="tc-val">$7.5B</span></div>
+      <div class="tc-row"><span class="tc-label">Pass-through expenses</span><span class="tc-val">$17B (~90% compensação)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Distribuições voluntárias (desde 2018)</div>
+        <div class="tc-return-val">$18B+</div>
+      </div>
+      <p class="tc-note">Revelado num prospecto de emissão de $1B em obrigações. Todas as estratégias geraram retornos positivos — equities, natural gas, credit, convertibles. 61% dos ativos são de investidores institucionais, 18% de principals/empregados.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">SPDR S&P 500 ETF (SPY)</div>
+      <div class="tc-name">Maior holding individual (excl. opções)</div>
+      <div class="tc-row"><span class="tc-label">Valor Dec 2023</span><span class="tc-val">$2.63B</span></div>
+      <div class="tc-row"><span class="tc-label">Tipo</span><span class="tc-val">Core position + hedge</span></div>
+      <div class="tc-row"><span class="tc-label">Complemento</span><span class="tc-val">Massive put/call overlay</span></div>
+      <div class="tc-row"><span class="tc-label">Nº total holdings</span><span class="tc-val">Milhares</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Função</div>
+        <div class="tc-return-val">Hedge + Beta</div>
+      </div>
+      <p class="tc-note">A Citadel usa SPY como base para overlays de opções complexas. A maioria do portfólio 13F são posições hedgeadas com put-call spreads.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">2008 — QUASE MORTE + RENASCIMENTO</div>
+      <div class="tc-name">A crise que quase destruiu a Citadel</div>
+      <div class="tc-row"><span class="tc-label">Perdas 2008</span><span class="tc-val">-55%</span></div>
+      <div class="tc-row"><span class="tc-label">AUM caiu de</span><span class="tc-val">$20B → $9B</span></div>
+      <div class="tc-row"><span class="tc-label">Recuperação</span><span class="tc-val">Completa em ~3 anos</span></div>
+      <div class="tc-row"><span class="tc-label">AUM atual</span><span class="tc-val">~$65B+</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Lição</div>
+        <div class="tc-return-val">Resiliência</div>
+      </div>
+      <p class="tc-note">Griffin recusou fechar o fundo durante a crise. Reconstruiu do zero, redesenhou o risk management, e tornou-se o hedge fund mais lucrativo de sempre por ganhos acumulados líquidos.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== #3 WARREN BUFFETT ==================== -->
+<section class="investor-section s3">
+  <div class="inv-header">
+    <span class="inv-rank">#3</span>
+    <span class="inv-name">Warren Buffett</span>
+  </div>
+  <div class="inv-fund">Berkshire Hathaway · Value Investing</div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card">
+      <div class="tc-ticker">APPLE (AAPL)</div>
+      <div class="tc-name">A maior compra de Buffett de sempre</div>
+      <div class="tc-row"><span class="tc-label">Primeira compra</span><span class="tc-val">Q1 2016</span></div>
+      <div class="tc-row"><span class="tc-label">Preço médio (adj.)</span><span class="tc-val">$39.62</span></div>
+      <div class="tc-row"><span class="tc-label">Total comprado</span><span class="tc-val">~1.04B ações (14 compras)</span></div>
+      <div class="tc-row"><span class="tc-label">Cost basis total</span><span class="tc-val">~$35.9B</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Ganho est. (Mai 2026, AAPL ~$302)</div>
+        <div class="tc-return-val">+663% s/cost basis</div>
+      </div>
+      <p class="tc-note">Iniciada por um dos gestores (Combs ou Weschler), não por Buffett. Mas foi ele que escalou massivamente entre 2016-2018. Em Q1 2026 detém 227.9M ações (~$57.8B, 22% do portfólio, 1.55% da AAPL). Fez 14 compras (avg. $39.62) e 12 vendas (avg. $180.98). O ganho de 663% refere-se ao cost basis líquido de ~$9B (compras - vendas); sobre o custo total de ~$35.9B, o retorno é ~424%.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">COCA-COLA (KO)</div>
+      <div class="tc-name">A compra mais icónica de Buffett</div>
+      <div class="tc-row"><span class="tc-label">Primeira compra</span><span class="tc-val">1988</span></div>
+      <div class="tc-row"><span class="tc-label">Cost basis</span><span class="tc-val">$1.3B</span></div>
+      <div class="tc-row"><span class="tc-label">Ações detidas</span><span class="tc-val">400M (desde 1989)</span></div>
+      <div class="tc-row"><span class="tc-label">Valor atual</span><span class="tc-val">~$28B+</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno (+ dividendos)</div>
+        <div class="tc-return-val">~2,300%+</div>
+      </div>
+      <p class="tc-note">Nunca vendeu uma única ação em 37 anos. Dividendos anuais: $816M em 2025 — mais de 60% do investimento original por ano só em dividendos.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">AMERICAN EXPRESS (AXP)</div>
+      <div class="tc-name">A compra que mudou a filosofia de Buffett</div>
+      <div class="tc-row"><span class="tc-label">Primeira compra</span><span class="tc-val">1964 (Escândalo Salad Oil)</span></div>
+      <div class="tc-row"><span class="tc-label">% do partnership</span><span class="tc-val">40% do capital</span></div>
+      <div class="tc-row"><span class="tc-label">Cost basis re-compra</span><span class="tc-val">$1.36B (anos 90)</span></div>
+      <div class="tc-row"><span class="tc-label">Stake atual</span><span class="tc-val">~21% da AXP</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Holding period</div>
+        <div class="tc-return-val">60+ anos</div>
+      </div>
+      <p class="tc-note">Comprou durante o pânico do escândalo do "salad oil". Foi quando Buffett passou de "cigar butt investing" para "wonderful companies at fair prices".</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">SEE'S CANDIES</div>
+      <div class="tc-name">A compra que ensinou o valor das marcas</div>
+      <div class="tc-row"><span class="tc-label">Ano de compra</span><span class="tc-val">1972</span></div>
+      <div class="tc-row"><span class="tc-label">Preço pago</span><span class="tc-val">$25M</span></div>
+      <div class="tc-row"><span class="tc-label">Múltiplo</span><span class="tc-val">~4× book value</span></div>
+      <div class="tc-row"><span class="tc-label">Lucros acumulados</span><span class="tc-val">>$2B</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno total</div>
+        <div class="tc-return-val">8,000%+</div>
+      </div>
+      <p class="tc-note">Influência de Charlie Munger. Ensinou Buffett que pagar um premium por negócios excelentes vale mais do que comprar empresas medíocres baratas.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">BNSF RAILWAY</div>
+      <div class="tc-name">A maior aquisição da história da Berkshire</div>
+      <div class="tc-row"><span class="tc-label">Ano</span><span class="tc-val">2009 (anúncio) / 2010 (fecho)</span></div>
+      <div class="tc-row"><span class="tc-label">Preço por ação</span><span class="tc-val">$100</span></div>
+      <div class="tc-row"><span class="tc-label">Valor total</span><span class="tc-val">$44B (incl. dívida)</span></div>
+      <div class="tc-row"><span class="tc-label">Método</span><span class="tc-val">Cash + ações BRK</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Status</div>
+        <div class="tc-return-val">Cash Machine</div>
+      </div>
+      <p class="tc-note">Criticado na altura como "caro demais". Hoje gera biliões em lucros anuais. Buffett chamou-lhe uma aposta na economia americana a longo prazo.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== #4 NANCY PELOSI ==================== -->
+<section class="investor-section s4">
+  <div class="inv-header">
+    <span class="inv-rank">#4</span>
+    <span class="inv-name">Nancy Pelosi</span>
+  </div>
+  <div class="inv-fund">Portfolio Pessoal (Paul Pelosi) · Call Options / Tech Focus · Net worth est. ~$273M</div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card">
+      <div class="tc-ticker">NVIDIA (NVDA) — Saga Completa</div>
+      <div class="tc-name">O trade mais controverso do Congresso</div>
+      <div class="tc-row"><span class="tc-label">Compra 23 Jul 2021</span><span class="tc-val">5K ações @ $195.58 + 250 calls strike $100</span></div>
+      <div class="tc-row"><span class="tc-label">Exercício 17 Jun 2022</span><span class="tc-val">200 calls (exp Jun'22) → 20K ações @ $100</span></div>
+      <div class="tc-row"><span class="tc-label">Venda forçada Jul 2022</span><span class="tc-val">25K ações @ $165.05 (loss $341K)</span></div>
+      <div class="tc-row"><span class="tc-label">50 calls restantes</span><span class="tc-val">Exp 16 Set 2022, strike $100 (loss $361K)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Contexto</div>
+        <div class="tc-return-val">CHIPS Act</div>
+      </div>
+      <p class="tc-note">Exerceu opções antes do voto no CHIPS and Science Act ($52B para semicondutores, ~$280B total incl. R&D). Vendeu sob pressão pública a perda. Se tivesse mantido as 25K ações, valeriam milhões+. Re-entrou em NVDA em Nov 2023 e depois em 2024.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">NVIDIA (NVDA) — Regresso</div>
+      <div class="tc-name">Re-entrada agressiva em 2023-2026</div>
+      <div class="tc-row"><span class="tc-label">Nov 2023</span><span class="tc-val">50 calls, strike $120, exp Dez 2024</span></div>
+      <div class="tc-row"><span class="tc-label">Exercício 20 Dez 2024</span><span class="tc-val">500 calls → 50K ações @ $12 (split 10:1)</span></div>
+      <div class="tc-row"><span class="tc-label">14 Jan 2025</span><span class="tc-val">50 calls, strike $80, exp 16 Jan 2026</span></div>
+      <div class="tc-row"><span class="tc-label">Exercício 16 Jan 2026</span><span class="tc-val">50 calls → 5K ações @ $80</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Padrão</div>
+        <div class="tc-return-val">Exercer → Rolar</div>
+      </div>
+      <p class="tc-note">O strike de $12 nas opções exercidas em Dez 2024 é o $120 pré-split ajustado pelo 10:1 de Jun 2024. Em Jun-Jul 2024 comprou mais 20K ações. Em Dez 2024 vendeu 10K ações. Em Dez 2025, vendeu 20K ações (24 Dez) e comprou 20 calls novas strike $100 exp Jan 2027 (30 Dez). Em Jan 2026 exerceu 50 calls @$80 (5K ações) + comprou mais 20 calls strike $80 exp Jan 2027. Padrão: exercer → vender parcialmente → rolar para novas calls.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">TEMPUS AI (TEM)</div>
+      <div class="tc-name">O breakout trade de 2025</div>
+      <div class="tc-row"><span class="tc-label">Compra</span><span class="tc-val">14 Jan 2025</span></div>
+      <div class="tc-row"><span class="tc-label">Tipo</span><span class="tc-val">50 calls, strike $20, exp 16 Jan 2026</span></div>
+      <div class="tc-row"><span class="tc-label">Valor opções</span><span class="tc-val">$50K-$100K</span></div>
+      <div class="tc-row"><span class="tc-label">PTR assinado</span><span class="tc-val">17 Jan 2025 (3 dias!)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">TEM pico Out 2025</div>
+        <div class="tc-return-val">$99.28 (+185%)</div>
+      </div>
+      <p class="tc-note">AI aplicada a medicina de precisão. Exerceu as 50 calls a 16 Jan 2026, adquirindo 5,000 ações @ $20. 8 dias após a compra, a Tempus lançou o app "Olivia". A disclosure foi um catalisador bullish — TEM subiu 121% entre compra e exercício (Fonte: U.S. News). Existem ETFs que replicam os trades (NANC = Democratic, KRUZ = Republican).</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">ALPHABET (GOOGL) + AMAZON (AMZN)</div>
+      <div class="tc-name">Mega tech calls — padrão coordenado</div>
+      <div class="tc-row"><span class="tc-label">Compra calls</span><span class="tc-val">14 Jan 2025</span></div>
+      <div class="tc-row"><span class="tc-label">Strike GOOGL/AMZN</span><span class="tc-val">$150 cada, exp 16 Jan 2026</span></div>
+      <div class="tc-row"><span class="tc-label">Exercício 16 Jan 2026</span><span class="tc-val">5K ações de cada @ $150</span></div>
+      <div class="tc-row"><span class="tc-label">Novas calls Dez 2025</span><span class="tc-val">AMZN: 20 calls strike $120, exp Jan 2027</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno portfolio 2024</div>
+        <div class="tc-return-val">+71%</div>
+      </div>
+      <p class="tc-note">Padrão consistente: compra calls LEAPS com 1 ano de validade em mega-caps tech no mesmo dia (14 Jan 2025). Exerce a 16 Jan 2026 e imediatamente rola para novas calls. Em 30 Dez 2025: comprou 20 calls AMZN ($120 strike), 20 calls GOOGL ($150 strike), 20 calls NVDA ($100 strike), todos exp Jan 2027. GOOGL +74% desde compra das calls. Em 2024 o portfólio Pelosi ganhou 71% vs 25% do S&P 500. Record cumulativo: +16,930% desde 1987.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">BROADCOM (AVGO)</div>
+      <div class="tc-name">AI networking play</div>
+      <div class="tc-row"><span class="tc-label">Compra calls</span><span class="tc-val">24 Jun 2024</span></div>
+      <div class="tc-row"><span class="tc-label">Tipo</span><span class="tc-val">Calls, strike $800 (pré-split), exp Jun 2025</span></div>
+      <div class="tc-row"><span class="tc-label">Valor</span><span class="tc-val">$1M-$5M</span></div>
+      <div class="tc-row"><span class="tc-label">Status</span><span class="tc-val">Core holding ativa</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Sector play</div>
+        <div class="tc-return-val">AI Infra</div>
+      </div>
+      <p class="tc-note">Comprada antes da explosão de demand para chips de networking AI. Também em Dez 2024 vendeu 31,600 ações Apple. Em Dez 2025 vendeu mais 45K ações Apple (24 Dez) + contribuiu 28,200 AAPL para fundo filantrópico (30 Dez) + comprou 20 calls AAPL strike $100 exp Jan 2027.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== #5 CHRIS HOHN ==================== -->
+<section class="investor-section s5">
+  <div class="inv-header">
+    <span class="inv-rank">#5</span>
+    <span class="inv-name">Chris Hohn</span>
+  </div>
+  <div class="inv-fund">TCI Fund Management · Activist / High Conviction · $18.9B net gains em 2025 (recorde histórico)</div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card">
+      <div class="tc-ticker">GE AEROSPACE (GE)</div>
+      <div class="tc-name">Maior posição · 29.85% do portfólio (Q1 2026)</div>
+      <div class="tc-row"><span class="tc-label">Início acumulação</span><span class="tc-val">Q1 2023</span></div>
+      <div class="tc-row"><span class="tc-label">Preço est. entrada</span><span class="tc-val">~$66-$144</span></div>
+      <div class="tc-row"><span class="tc-label">GE +80% em 2025</span><span class="tc-val">Valor ~$14.2B (late 2025)</span></div>
+      <div class="tc-row"><span class="tc-label">Valor Q1 2026</span><span class="tc-val">$13.5B (29.85%)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno estimado</div>
+        <div class="tc-return-val">~3.1-4.8×</div>
+      </div>
+      <p class="tc-note">Comprada quando GE era vista como "damaged goods" pós-reestruturação. Hohn viu o monopólio em motores de aviação (~50% market share). GE subiu ~80% só em 2025, impulsionada pela recuperação da aviação global e defense spending.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">VISA (V)</div>
+      <div class="tc-name">2ª maior posição · 20.39% do portfólio (Q1 2026)</div>
+      <div class="tc-row"><span class="tc-label">Holding de longo prazo</span><span class="tc-val">Múltiplos anos</span></div>
+      <div class="tc-row"><span class="tc-label">Aumento Q3 2025</span><span class="tc-val">+47%</span></div>
+      <div class="tc-row"><span class="tc-label">Valor Q1 2026</span><span class="tc-val">$9.2B (20.39%)</span></div>
+      <div class="tc-row"><span class="tc-label">Tese</span><span class="tc-val">Cash → digital</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Convicção</div>
+        <div class="tc-return-val">Máxima</div>
+      </div>
+      <p class="tc-note">Hohn vê Visa como monopólio natural na transição global de cash para digital. Aumentou 47% a posição no Q3 2025 — maior adição do trimestre.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">MOODY'S (MCO) + S&P GLOBAL (SPGI)</div>
+      <div class="tc-name">O duopólio de ratings · ~27% do portfólio combinado</div>
+      <div class="tc-row"><span class="tc-label">MCO — Q1 2026</span><span class="tc-val">$6.25B (13.84%)</span></div>
+      <div class="tc-row"><span class="tc-label">SPGI — Q1 2026</span><span class="tc-val">$5.97B (13.22%)</span></div>
+      <div class="tc-row"><span class="tc-label">Holding period</span><span class="tc-val">~8 anos (avg. Hohn)</span></div>
+      <div class="tc-row"><span class="tc-label">Tipo moat</span><span class="tc-val">Regulatório + rede</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Combinado</div>
+        <div class="tc-return-val">~$12.2B</div>
+      </div>
+      <p class="tc-note">Hohn detém AMBAS as empresas do duopólio global de ratings. Nenhum banco pode emitir dívida sem um rating de uma das duas. Barriers to entry quase infinitas.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">CANADIAN PACIFIC KANSAS CITY (CP)</div>
+      <div class="tc-name">5ª maior posição · 8.10% do portfólio (Q1 2026)</div>
+      <div class="tc-row"><span class="tc-label">CN Rail — campanha 2021</span><span class="tc-val">CEO substituído</span></div>
+      <div class="tc-row"><span class="tc-label">CN trim Q4 2025</span><span class="tc-val">-48% (profit taking)</span></div>
+      <div class="tc-row"><span class="tc-label">CP — Q1 2026</span><span class="tc-val">8.10% do portfólio</span></div>
+      <div class="tc-row"><span class="tc-label">Tipo</span><span class="tc-val">Monopólio natural (rail)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Ativismo</div>
+        <div class="tc-return-val">CEO Ousted (CN)</div>
+      </div>
+      <p class="tc-note">Hohn pressionou o board da CN Rail até substituírem o CEO. Depois deteve a posição por anos. Canadian Pacific Kansas City (CP) é agora a 5ª posição (8.10%). Portfólio total: 10 holdings, $45.2B (Q1 2026). Top 5 = 85.4%.</p>
+    </div>
+
+    <div class="trade-card">
+      <div class="tc-ticker">ABN AMRO</div>
+      <div class="tc-name">A campanha que o tornou famoso · 2007</div>
+      <div class="tc-row"><span class="tc-label">Stake TCI</span><span class="tc-val">~1% da empresa</span></div>
+      <div class="tc-row"><span class="tc-label">Lucro estimado</span><span class="tc-val">~$1B</span></div>
+      <div class="tc-row"><span class="tc-label">Resultado</span><span class="tc-val">Forçou venda do banco</span></div>
+      <div class="tc-row"><span class="tc-label">Comprador</span><span class="tc-val">RBS consortium</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno na campanha</div>
+        <div class="tc-return-val">~$1B</div>
+      </div>
+      <p class="tc-note">Com apenas 1% do banco holandês, Hohn forçou uma venda que gerou ~$1B de lucro. Tornou-se o ativista mais temido da Europa. (O RBS que comprou quase faliu depois — consequência não intencional.)</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== #6 LEOPOLD ASCHENBRENNER ==================== -->
+<section class="investor-section" style="border-top-color:var(--cyan);">
+  <div class="inv-header">
+    <span class="inv-rank" style="color:var(--cyan);">#6</span>
+    <span class="inv-name">Leopold Aschenbrenner</span>
+  </div>
+  <div class="inv-fund">Situational Awareness LP · AI Infrastructure · Est. Set 2024 · 24 anos</div>
+
+  <div class="algo-note" style="border-color:rgba(34,211,238,.15);background:rgba(34,211,238,.04);">
+    <p><strong style="color:var(--cyan);">🧠 O "Novo Buffett" da Gen Z:</strong> Ex-investigador da OpenAI, despedido aos 22 anos. Escreveu um manifesto de 165 páginas ("Situational Awareness: The Decade Ahead") sobre AGI. Lançou um fundo em Set 2024 com $225M de seed (LPs: cofundadores da Stripe, ex-CEO do GitHub). Em 5 trimestres, o portfólio público cresceu de $254.8M (6 holdings) para $13.68B (Q1 2026). A tese: AGI chega até ~2027 e o bottleneck real é infraestrutura física — energia, compute, armazenamento — não chips.</p>
+  </div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card" style="border-left:3px solid var(--cyan);">
+      <div class="tc-ticker" style="color:var(--cyan);">BLOOM ENERGY (BE)</div>
+      <div class="tc-name">Maior posição · Fuel cells para data centers</div>
+      <div class="tc-row"><span class="tc-label">Entrada estimada</span><span class="tc-val">Q4 2024 (~$22-25)</span></div>
+      <div class="tc-row"><span class="tc-label">Posição Q1 2026</span><span class="tc-val">6.5M ações ($879M)</span></div>
+      <div class="tc-row"><span class="tc-label">+ Call options</span><span class="tc-val">409K ações ($55M)</span></div>
+      <div class="tc-row"><span class="tc-label">All-time high BE</span><span class="tc-val">$323 (24 Mai 2026)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno desde entrada est.</div>
+        <div class="tc-return-val" style="color:var(--cyan);">~1,200%+</div>
+      </div>
+      <p class="tc-note">Comprou antes de Wall Street perceber que AI = consumo massivo de eletricidade. Bloom fornece energia on-site a data centers, bypassing a grid. Q1 2026 revenue: $751M (+130% YoY). BE atingiu $323 intraday a 24 Mai 2026 (52-week low: $17.85).</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--cyan);">
+      <div class="tc-ticker" style="color:var(--cyan);">SANDISK (SNDK)</div>
+      <div class="tc-name">Storage/NAND para AI · 2ª maior posição</div>
+      <div class="tc-row"><span class="tc-label">Posição Q1 2026</span><span class="tc-val">1.14M ações ($724M)</span></div>
+      <div class="tc-row"><span class="tc-label">+ Call options</span><span class="tc-val">612K ações ($389M)</span></div>
+      <div class="tc-row"><span class="tc-label">Exposição total</span><span class="tc-val">~$1.1B combinado</span></div>
+      <div class="tc-row"><span class="tc-label">Tese</span><span class="tc-val">AI = storage massivo</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Retorno estimado</div>
+        <div class="tc-return-val" style="color:var(--cyan);">+816%</div>
+      </div>
+      <p class="tc-note">Aposta de infraestrutura pura: treinar modelos AI requer volumes colossais de armazenamento. Abriu calls novas no Q1 2026 além das ações existentes — aumento de convicção.</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--cyan);">
+      <div class="tc-ticker" style="color:var(--cyan);">COREWEAVE (CRWV)</div>
+      <div class="tc-name">GPU cloud para AI · 3ª maior posição</div>
+      <div class="tc-row"><span class="tc-label">Ações Q1 2026</span><span class="tc-val">7.18M ($556M)</span></div>
+      <div class="tc-row"><span class="tc-label">Calls (reduzidas)</span><span class="tc-val">1.81M ($141M)</span></div>
+      <div class="tc-row"><span class="tc-label">Combinado</span><span class="tc-val">~$697M</span></div>
+      <div class="tc-row"><span class="tc-label">Mudança</span><span class="tc-val">Calls → Equity</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Desalavancou</div>
+        <div class="tc-return-val" style="color:var(--cyan);">Calls→Stock</div>
+      </div>
+      <p class="tc-note">Converteu opções em ações — reduziu alavancagem mantendo convicção. CoreWeave opera GPUs de topo para compute AI.</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--cyan);">
+      <div class="tc-ticker" style="color:var(--cyan);">CRYPTO MINERS → AI DATA CENTERS</div>
+      <div class="tc-name">Basket: CLSK, RIOT, IREN, APLD, BITDEER</div>
+      <div class="tc-row"><span class="tc-label">Tese</span><span class="tc-val">Miners pivot to AI</span></div>
+      <div class="tc-row"><span class="tc-label">Vantagem miners</span><span class="tc-val">Terra + energia + GPUs</span></div>
+      <div class="tc-row"><span class="tc-label">Core Scientific</span><span class="tc-val">26M ações + 13D activist stake</span></div>
+      <div class="tc-row"><span class="tc-label">Q1 2026</span><span class="tc-val">Aumentou posições</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Categoria</div>
+        <div class="tc-return-val" style="color:var(--cyan);">Infra Pivot</div>
+      </div>
+      <p class="tc-note">Aposta contrária: Bitcoin miners têm os ativos físicos que AI precisa (terra, eletricidade, cooling, GPUs). Abriu 13D stake em Core Scientific — sinal de intenção ativista. Novas posições: T1 Energy, SharonAI Holdings, Hive Digital.</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--cyan);">
+      <div class="tc-ticker" style="color:var(--cyan);">MEGA SHORT: $8.46B EM PUTS</div>
+      <div class="tc-name">Puts notionais contra chips e semi</div>
+      <div class="tc-row"><span class="tc-label">SMH puts</span><span class="tc-val">$2.04B notional</span></div>
+      <div class="tc-row"><span class="tc-label">NVDA puts</span><span class="tc-val">$1.57B notional</span></div>
+      <div class="tc-row"><span class="tc-label">ORCL puts</span><span class="tc-val">$1.07B notional</span></div>
+      <div class="tc-row"><span class="tc-label">AVGO + AMD puts</span><span class="tc-val">$1.01B + $969M</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Puts totais notionais</div>
+        <div class="tc-return-val" style="color:var(--cyan);">$8.46B</div>
+      </div>
+      <p class="tc-note">⚠️ NOTIONAL ≠ CAPITAL INVESTIDO. O valor notional de puts é o valor total do subjacente coberto, não o prémio pago. A posição mais controversa: longo infraestrutura física, short os chipmakers. Também abriu puts contra ASML, Intel, Micron, TSM, Corning. Mas abriu calls seletivos em MU e TSM — apostas de volatilidade, não apenas short puro. Muitas chip stocks subiram desde o fim do Q1, impacto em net fund performance é desconhecido.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== FILING → PUMP ANALYSIS ==================== -->
+<section class="investor-section" style="border-top:2px solid var(--gold);">
+  <div class="inv-header">
+    <span class="inv-rank" style="color:var(--gold);opacity:.6;">📊</span>
+    <span class="inv-name" style="font-size:1.6rem;">Análise: Filing → Pump — A Janela Temporal</span>
+  </div>
+  <div class="inv-fund">Quando os filings são publicados vs. quando o mercado reage</div>
+
+  <div class="algo-note" style="border-color:rgba(212,168,83,.25);background:rgba(212,168,83,.06);">
+    <p><strong>🔑 Conceito-chave:</strong> Existe um delay estrutural entre quando um investidor COMPRA e quando o mercado SABE que ele comprou. Este delay cria janelas de oportunidade (e de risco). Cada tipo de investidor tem uma dinâmica diferente.</p>
+  </div>
+
+  <div class="trades-grid">
+
+    <div class="trade-card" style="border-left:3px solid var(--gold);">
+      <div class="tc-ticker" style="color:var(--gold);">13F FILING (Hedge Funds)</div>
+      <div class="tc-name">Simons, Griffin, Hohn, Leopold</div>
+      <div class="tc-row"><span class="tc-label">Frequência</span><span class="tc-val">Trimestral</span></div>
+      <div class="tc-row"><span class="tc-label">Deadline</span><span class="tc-val">45 dias após fim Q</span></div>
+      <div class="tc-row"><span class="tc-label">Delay real</span><span class="tc-val">~45-90 dias</span></div>
+      <div class="tc-row"><span class="tc-label">Pump window</span><span class="tc-val">1-5 dias pós-filing</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Requisito</div>
+        <div class="tc-return-val" style="color:var(--gold);">>$100M AUM</div>
+      </div>
+      <p class="tc-note"><strong>Padrão:</strong> Compra em Q4 2024 → Filing publicado ~Fev 2025 → Mercado reage → Stock já subiu significativamente. Quando vês o filing, o investidor já está sentado nos ganhos há 45-90 dias. O "pump" pós-disclosure é tipicamente 2-8% em 1-3 dias para posições novas de gestores famosos.</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--purple);">
+      <div class="tc-ticker" style="color:var(--purple);">STOCK ACT (Pelosi)</div>
+      <div class="tc-name">Congressistas — disclosures mais rápidas</div>
+      <div class="tc-row"><span class="tc-label">Deadline legal</span><span class="tc-val">45 dias após trade</span></div>
+      <div class="tc-row"><span class="tc-label">Delay típico Pelosi</span><span class="tc-val">2-6 semanas</span></div>
+      <div class="tc-row"><span class="tc-label">TEM Jan 2025</span><span class="tc-val">3 dias (14→17 Jan)</span></div>
+      <div class="tc-row"><span class="tc-label">Pump pós-disclosure</span><span class="tc-val">Significativo</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Exemplo TEM</div>
+        <div class="tc-return-val" style="color:var(--purple);">+200% desde trade</div>
+      </div>
+      <p class="tc-note"><strong>Padrão Pelosi:</strong> Compra 14 Jan 2025 → PTR assinado 17 Jan 2025 → Imprensa + trackers amplificam → Retail copytrading → Stock pump. O "Pelosi Effect" é tão forte que existem ETFs (NANC = Democratic Trading ETF, KRUZ = Republican) e trackers dedicados. O pump pós-disclosure é consistentemente 5-15% em dias.</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--blue);">
+      <div class="tc-ticker" style="color:var(--blue);">BERKSHIRE 13F (Buffett)</div>
+      <div class="tc-name">O "Buffett Effect" — o pump mais estudado</div>
+      <div class="tc-row"><span class="tc-label">Filing</span><span class="tc-val">Trimestral (45d delay)</span></div>
+      <div class="tc-row"><span class="tc-label">Pump médio pós-filing</span><span class="tc-val">~2-5% em 1 semana</span></div>
+      <div class="tc-row"><span class="tc-label">Caso AAPL Q1 2016</span><span class="tc-val">Filing 16 Mai → +4%</span></div>
+      <div class="tc-row"><span class="tc-label">Annual Letter</span><span class="tc-val">Amplifica o efeito</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Efeito documentado</div>
+        <div class="tc-return-val" style="color:var(--blue);">Académico</div>
+      </div>
+      <p class="tc-note"><strong>Padrão Buffett:</strong> O "Buffett Effect" é um fenómeno académico estudado. Quando a Berkshire revela uma nova posição, há tipicamente um pump de 2-5% nos dias seguintes. MAS: Buffett acumula lentamente durante semanas/meses antes do filing, então o preço já reflete parcialmente as suas compras. Pode pedir confidencialidade à SEC para acumular sem disclosure.</p>
+    </div>
+
+    <div class="trade-card" style="border-left:3px solid var(--cyan);">
+      <div class="tc-ticker" style="color:var(--cyan);">LEOPOLD — O EFEITO AMPLIFICADO</div>
+      <div class="tc-name">Novo fenómeno: hype Gen Z + redes sociais</div>
+      <div class="tc-row"><span class="tc-label">1º Filing (11 Fev 2026)</span><span class="tc-val">$5.52B revelado</span></div>
+      <div class="tc-row"><span class="tc-label">Reação mercado</span><span class="tc-val">BE, CLSK pump</span></div>
+      <div class="tc-row"><span class="tc-label">2º Filing (18 Mai 2026)</span><span class="tc-val">$13.68B + $8.46B puts</span></div>
+      <div class="tc-row"><span class="tc-label">Submetido</span><span class="tc-val">15 Mai (sexta) — público 18 Mai (segunda)</span></div>
+      <div class="tc-return">
+        <div class="tc-return-label">Novo padrão</div>
+        <div class="tc-return-val" style="color:var(--cyan);">13F = Evento</div>
+      </div>
+      <p class="tc-note"><strong>Padrão Leopold:</strong> Os seus 13F filings tornaram-se eventos de mercado por si só. Quando o filing de 18 Mai 2026 revelou $8.46B em puts contra chips, o sector tremeu. O delay de 45+ dias significa que ele já pode ter fechado posições quando o público reage. O filing foi submetido na sexta contra o deadline, mas a SEC só publicou na segunda — criando um fim de semana de antecipação que amplificou a atenção mediática.</p>
+    </div>
+
+  </div>
+
+  <!-- TIMELINE SUMMARY TABLE -->
+  <div style="overflow-x:auto;margin:2rem 0;border:1px solid var(--border);border-radius:12px;background:var(--card);">
+    <table style="width:100%;border-collapse:collapse;min-width:800px;">
+      <thead>
+        <tr>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1rem;text-align:left;border-bottom:1px solid var(--border);">Investidor</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1rem;text-align:left;border-bottom:1px solid var(--border);">Tipo Filing</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1rem;text-align:left;border-bottom:1px solid var(--border);">Delay Compra→Público</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1rem;text-align:left;border-bottom:1px solid var(--border);">Pump Pós-Filing</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1rem;text-align:left;border-bottom:1px solid var(--border);">Melhor Exemplo</th>
+          <th style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:1rem;text-align:left;border-bottom:1px solid var(--border);">Utilidade p/ Copytrade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.8rem 1rem;font-weight:600;color:var(--gold);">RenTech (Simons†)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">13F trimestral</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">45-90 dias</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">Mínimo (3,185 posições)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">PLTR: já +500% quando público sabe</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;color:var(--red);">⛔ Inútil — High-frequency</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.8rem 1rem;font-weight:600;color:var(--green);">Griffin (Citadel)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">13F trimestral</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">45-90 dias</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">Irrelevante (hedges complexos)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">SPY + opções = não replicável</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;color:var(--red);">⛔ Inútil — Multi-strat opaco</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.8rem 1rem;font-weight:600;color:var(--blue);">Buffett (BRK)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">13F + Annual Letter</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">45-90 dias (às vezes pede conf.)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">2-5% em 1-5 dias</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">AAPL Q1 2016: +4% dia do filing</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;color:var(--gold);">⚠️ Moderado — Hold longo</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.8rem 1rem;font-weight:600;color:var(--purple);">Pelosi</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">STOCK Act PTR</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">1-45 dias</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">5-15% em 1-3 dias</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">TEM: +200% desde trade</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;color:var(--green);">✅ Alto — ETFs NANC/KRUZ</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:.8rem 1rem;font-weight:600;color:var(--orange);">Hohn (TCI)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">13F trimestral</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">45-90 dias</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">3-8% (concentrado = mais impacto)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">GE: acumulou a ~$66, público viu a $105+</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;color:var(--gold);">⚠️ Moderado — 10 posições claras</td>
+        </tr>
+        <tr>
+          <td style="padding:.8rem 1rem;font-weight:600;color:var(--cyan);">Leopold (SA LP)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">13F trimestral</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">45-90 dias (atrasou 1º filing)</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">Alto — cada filing é notícia</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;">BE: entrada ~$22, filing revelou a ~$105</td>
+          <td style="padding:.8rem 1rem;font-size:.85rem;color:var(--green);">✅ Alto — Tese clara, concentrado</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="algo-note" style="border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.04);">
+    <p><strong style="color:var(--red);">⚠️ Conclusão da análise Filing→Pump:</strong></p>
+    <p style="margin-top:.5rem;">O padrão é claro: <strong style="color:var(--txt);">quanto mais concentrado o portfólio e mais mediático o investidor, maior o pump pós-filing.</strong> Leopold e Pelosi geram os maiores efeitos porque (1) têm poucas posições identificáveis, (2) os media amplificam cada disclosure, e (3) o retail copytrading é imediato via trackers. Mas atenção: quando vês o filing, o investidor já está 45-90 dias à frente. O preço que pagas ao copiar NUNCA é o preço dele. Para a RenTech e Citadel, os filings são essencialmente inúteis para copytrade — são sistemas complexos com milhares de posições e opções hedgeadas. Para Buffett e Hohn, os filings indicam convicção de longo prazo mas o entry point já passou. Para Leopold e Pelosi, a janela de cópia é mais estreita mas o pump pós-disclosure é real e documentado.</p>
+  </div>
+
+</section>
+
+<!-- ==================== INTERACTIVE RIPPLE EFFECT CHARTS ==================== -->
+<section class="chart-section" id="ripple-charts">
+  <div class="inv-header">
+    <span class="inv-rank" style="color:var(--cyan);opacity:.6;">📈</span>
+    <span class="inv-name" style="font-size:1.6rem;">Ripple Effect: Do Filing ao Pump</span>
+  </div>
+  <div class="inv-fund">Cruzamento entre datas de compra, publicação dos filings e reação do preço · Seleciona um investidor</div>
+
+  <div class="chart-tabs" id="chart-tabs"></div>
+  <div class="chart-card">
+    <div class="chart-title-bar" id="chart-title"></div>
+    <div style="padding:1rem .5rem 0;">
+      <svg id="chart-svg" viewBox="0 0 700 280" style="width:100%;height:auto;display:block;"></svg>
+    </div>
+    <div class="chart-legend">
+      <span style="color:#34d399;">■ Zona compra</span>
+      <span style="color:#60a5fa;">■ Filing + Pump</span>
+      <span style="color:#ef4444;">■ Venda/Trim</span>
+      <span style="color:#a78bfa;">■ Snapshot 13F</span>
+      <span style="color:#fb923c;">■ Catalisador</span>
+    </div>
+    <div class="metrics-grid" id="chart-metrics"></div>
+  </div>
+
+  <div style="margin-top:1.5rem;background:rgba(212,168,83,.05);border:1px solid rgba(212,168,83,.15);border-radius:12px;padding:1.2rem;">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.6rem;font-weight:600;">
+      📊 Conclusão: Janela Temporal do Ripple Effect
+    </div>
+    <p style="font-size:.82rem;color:var(--txt2);line-height:1.7;font-weight:300;">
+      <strong style="color:var(--txt);">Pelosi</strong> tem o delay mais curto (1-3 dias via STOCK Act) e o pump mais direto. 
+      <strong style="color:var(--txt);">Leopold</strong> gera o maior hype pós-filing mas o delay de 45+ dias significa que o preço já subiu substancialmente. 
+      <strong style="color:var(--txt);">Buffett</strong> provoca um pump moderado e previsível (~4% no dia do filing). 
+      <strong style="color:var(--txt);">Hohn</strong> tem impacto gradual porque a TCI é menos seguida pelo retail. 
+      <strong style="color:var(--txt);">RenTech</strong> e <strong style="color:var(--txt);">Griffin</strong> são essencialmente não-replicáveis — os filings são noise.
+    </p>
+  </div>
+
+  <div style="margin-top:1rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);">
+    Preços aproximados para fins ilustrativos · Fontes: SEC 13F, STOCK Act PTR, macrotrends, stockcircle, gurufocus, WhaleWisdom · Maio 2026
+  </div>
+</section>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+  <p><strong>⚠️ Disclaimer:</strong> Dados compilados de fontes públicas (SEC 13F filings, CNBC, Benzinga, Seeking Alpha, Visual Capitalist, LCH Investments, Quiver Quantitative, WhaleWisdom, congressional STOCK Act disclosures, Gainify, ValuSider). Preços de entrada são estimativas baseadas em datas de acumulação reportadas — os preços exatos de execução não são públicos para a maioria dos gestores. 13F filings não incluem posições não-US (ex: Safran, Aena da TCI). Retornos passados não garantem resultados futuros. Este documento é educativo e não constitui aconselhamento financeiro. Os trades de Nancy Pelosi referem-se a disclosures públicas sob o STOCK Act; todos os ativos são reportados como pertencendo ao cônjuge, Paul Pelosi. O notional value de opções (puts/calls) NÃO reflete o capital investido, apenas o valor do subjacente coberto — o prémio pago é tipicamente uma fração do notional. Jim Simons faleceu a 10 de maio de 2024; a Renaissance Technologies continua a operar. Dados de preço atualizados a 25 de maio de 2026.</p>
+</div>
+
+<footer class="footer">
+  <p>Compilado com assistência de Claude · Estudo Completo (Pt. 1 + 2 + 3) · Atualizado 25 Maio 2026</p>
+</footer>
+
+</div>
+
+<script>
+// Interactive Ripple Effect Chart Data
+const investors = [
+  {
+    id:"leopold",name:"Leopold Aschenbrenner",fund:"Situational Awareness LP",color:"#22d3ee",
+    stock:"Bloom Energy (BE)",ticker:"BE",
+    thesis:"AI = consumo massivo de eletricidade. Bloom fornece fuel cells on-site para data centers.",
+    buyPeriod:"Q4 2024 – Q4 2025",avgEntry:"~$22 (Q4'24) → ~$105 (Q4'25)",
+    filingDate:"11 Fev 2026 (1º filing)",filingDelay:"~42 dias após fim Q4",
+    returnSinceEntry:"+1,200%+ (desde ~$22 entrada)",pumpPostFiling:"~15-20% em 1 semana",
+    priceData:[
+      {date:"Out'24",price:18,label:null},{date:"Nov'24",price:22,label:"🟢 Entrada est."},
+      {date:"Dez'24",price:25,label:null},{date:"Jan'25",price:23,label:null},
+      {date:"Fev'25",price:16,label:null},{date:"Mar'25",price:20,label:null},
+      {date:"Abr'25",price:28,label:null},{date:"Mai'25",price:35,label:null},
+      {date:"Jun'25",price:42,label:null},{date:"Jul'25",price:55,label:null},
+      {date:"Ago'25",price:62,label:null},{date:"Set'25",price:78,label:null},
+      {date:"Out'25",price:95,label:null},{date:"Nov'25",price:142,label:"📊 Pico pré-filing"},
+      {date:"Dez'25",price:109,label:"🔵 Fim Q4 (snapshot)"},
+      {date:"Jan'26",price:130,label:null},
+      {date:"Fev'26",price:155,label:"📋 13F 11/Fev!"},
+      {date:"Mar'26",price:185,label:"🚀 Pump"},
+      {date:"Abr'26",price:250,label:null},
+      {date:"Mai'26",price:308,label:"📈 ATH ~$323"}
+    ],
+    zones:[{start:1,end:3,type:"buy",label:"Zona compra est."},{start:14,end:14,type:"snapshot",label:"13F snapshot"},{start:16,end:17,type:"filing",label:"Filing + Pump"}]
+  },
+  {
+    id:"buffett",name:"Warren Buffett",fund:"Berkshire Hathaway",color:"#60a5fa",
+    stock:"Apple (AAPL)",ticker:"AAPL",
+    thesis:"Apple não é tech — é uma marca de consumo com moat e cash flows enormes.",
+    buyPeriod:"Q1 2016 – Q1 2018",avgEntry:"$39.62 (adj. split-adjusted)",
+    filingDate:"16 Mai 2016 (1º filing)",filingDelay:"~46 dias após fim Q1",
+    returnSinceEntry:"+663% (cost basis $39.62 → $302)",pumpPostFiling:"+4% no dia do filing",
+    priceData:[
+      {date:"Jan'16",price:97,label:null},{date:"Fev'16",price:96,label:"🟢 BRK compra 9.8M ações"},
+      {date:"Mar'16",price:109,label:"🔵 Fim Q1 (snapshot)"},{date:"Abr'16",price:94,label:null},
+      {date:"Mai'16",price:99,label:"📋 13F 16/Mai"},{date:"Jun'16",price:103,label:"🚀 +4% pump"},
+      {date:"Jul'16",price:104,label:null},{date:"Ago'16",price:106,label:"🟢 BRK compra mais"},
+      {date:"Set'16",price:113,label:null},{date:"Out'16",price:114,label:null},
+      {date:"Nov'16",price:111,label:null},{date:"Dez'16",price:116,label:"🟢 Quase 4× posição"},
+      {date:"Mar'17",price:144,label:"📋 13F: 57M ações!"},{date:"Jun'17",price:145,label:null},
+      {date:"Set'17",price:154,label:null},{date:"Dez'17",price:169,label:null},
+      {date:"Mar'18",price:168,label:"🟢 Pico acumulação"},
+      {date:"Dez'18",price:157,label:"~1B ações"},
+      {date:"Dez'19",price:294,label:null},
+      {date:"Mai'26",price:302,label:"📈 $302 hoje"}
+    ],
+    zones:[{start:1,end:2,type:"buy",label:"1ª compra"},{start:4,end:5,type:"filing",label:"Filing + pump"},{start:7,end:11,type:"buy",label:"Acumulação massiva"}]
+  },
+  {
+    id:"pelosi",name:"Nancy Pelosi",fund:"Portfolio Pessoal (Paul Pelosi)",color:"#a78bfa",
+    stock:"Tempus AI (TEM)",ticker:"TEM",
+    thesis:"AI aplicada a medicina de precisão — oncologia e cardiologia.",
+    buyPeriod:"14 Jan 2025",avgEntry:"Strike $20 (50 call options)",
+    filingDate:"17 Jan 2025 (PTR assinado)",filingDelay:"3 dias (!)",
+    returnSinceEntry:"+200%+ desde trade ($35→$100+)",pumpPostFiling:"Forte — stock duplicou após disclosure",
+    priceData:[
+      {date:"Dez'24",price:32,label:null},{date:"14Jan",price:35,label:"🟢 Compra 50 calls @$20"},
+      {date:"16Jan",price:35,label:null},{date:"17Jan",price:38,label:"📋 PTR Assinado (3d!)"},
+      {date:"20Jan",price:42,label:"🚀 Pump pós-disclosure"},{date:"Fev'25",price:55,label:null},
+      {date:"Mar'25",price:62,label:"📰 Deal AstraZeneca"},{date:"Abr'25",price:70,label:null},
+      {date:"Mai'25",price:75,label:null},{date:"Jun'25",price:80,label:null},
+      {date:"Jul'25",price:85,label:null},{date:"Ago'25",price:88,label:null},
+      {date:"Set'25",price:92,label:null},{date:"Out'25",price:99,label:"📈 $99.28 (+185%)"},
+      {date:"Jan'26",price:85,label:"🔄 Exerceu 50 calls"}
+    ],
+    zones:[{start:1,end:1,type:"buy",label:"Compra calls"},{start:3,end:4,type:"filing",label:"PTR + Pump"},{start:6,end:6,type:"catalyst",label:"Catalisador"}]
+  },
+  {
+    id:"hohn",name:"Chris Hohn",fund:"TCI Fund Management",color:"#fb923c",
+    stock:"GE Aerospace (GE)",ticker:"GE",
+    thesis:"Monopólio em motores de aviação (~50% market share). Comprado como 'damaged goods'.",
+    buyPeriod:"Q1 2023 – Q3 2023",avgEntry:"~$66–$144 (range acumulação)",
+    filingDate:"~Mai 2023 (1º filing com GE)",filingDelay:"~45 dias",
+    returnSinceEntry:"~3.1-4.8× em 3 anos",pumpPostFiling:"Gradual — TCI menos mediático",
+    priceData:[
+      {date:"Dez'22",price:66,label:null},{date:"Jan'23",price:72,label:"🟢 Início acumulação"},
+      {date:"Mar'23",price:88,label:"🔵 Fim Q1 (snapshot)"},{date:"Mai'23",price:105,label:"📋 13F: GE revelada"},
+      {date:"Jun'23",price:110,label:"🚀 Pump moderado"},{date:"Set'23",price:115,label:"🟢 Continua a comprar"},
+      {date:"Dez'23",price:128,label:null},{date:"Mar'24",price:165,label:null},
+      {date:"Jun'24",price:162,label:null},{date:"Set'24",price:188,label:null},
+      {date:"Dez'24",price:170,label:null},{date:"Mar'25",price:200,label:null},
+      {date:"Jun'25",price:245,label:null},{date:"Set'25",price:280,label:null},
+      {date:"Dez'25",price:308,label:"📈 +80% em 2025"},
+      {date:"Mar'26",price:295,label:"29.85% portfólio"}
+    ],
+    zones:[{start:1,end:2,type:"buy",label:"Acumulação Q1'23"},{start:3,end:4,type:"filing",label:"1º Filing + reação"},{start:5,end:5,type:"buy",label:"Compra adicional"}]
+  },
+  {
+    id:"simons",name:"RenTech (Simons†)",fund:"Renaissance Technologies",color:"#d4a853",
+    stock:"Palantir (PLTR)",ticker:"PLTR",
+    thesis:"Algoritmo identificou padrão — acumulada durante bear market tech 2022. Cortou 61% em 2025.",
+    buyPeriod:"2022–2023 (estimado)",avgEntry:"~$6–$15 (est.)",
+    filingDate:"Trimestral (múltiplos)",filingDelay:"45 dias (standard)",
+    returnSinceEntry:"~500-800% (est., antes do trim)",pumpPostFiling:"Mínimo — 3,185 posições diluem",
+    priceData:[
+      {date:"Jan'22",price:14,label:null},{date:"Jun'22",price:9,label:"🟢 Acumulação est."},
+      {date:"Dez'22",price:6,label:"🟢 Bear market low"},{date:"Jun'23",price:15,label:null},
+      {date:"Ago'23",price:16,label:"📋 13F: PLTR top"},{date:"Dez'23",price:17,label:null},
+      {date:"Mar'24",price:23,label:null},{date:"Jun'24",price:25,label:null},
+      {date:"Set'24",price:38,label:null},{date:"Dez'24",price:68,label:null},
+      {date:"Fev'25",price:110,label:"📈 Pico 52w"},{date:"Jun'25",price:78,label:"📊 Cortou 61%"},
+      {date:"Dez'25",price:75,label:"8.79M ações (2.43%)"}
+    ],
+    zones:[{start:1,end:2,type:"buy",label:"Acumulação bear mkt"},{start:4,end:4,type:"filing",label:"Filing (sem pump)"},{start:11,end:11,type:"sell",label:"Trim -61%"}]
+  },
+  {
+    id:"griffin",name:"Ken Griffin",fund:"Citadel (Wellington Fund)",color:"#34d399",
+    stock:"Citadel 2022 (Multi-Strat)",ticker:"CITADEL",
+    thesis:"Multi-strategy: equities + commodities + fixed income + quant. Não replicável.",
+    buyPeriod:"Todo o ano 2022",avgEntry:"N/A — sistema, não trades",
+    filingDate:"13F trimestral",filingDelay:"45 dias (irrelevante)",
+    returnSinceEntry:"+38.10% (Wellington 2022)",pumpPostFiling:"Zero — portfólio opaco",
+    priceData:[
+      {date:"Jan'22",price:100,label:"Início 2022"},{date:"Mar'22",price:105,label:null},
+      {date:"Mai'22",price:108,label:null},{date:"Jul'22",price:115,label:null},
+      {date:"Set'22",price:120,label:null},{date:"Nov'22",price:130,label:null},
+      {date:"Dez'22",price:138,label:"📈 Wellington +38.10%"},
+      {date:"---",price:80,label:"S&P 500: -19.44%"}
+    ],
+    zones:[]
+  }
+];
+
+let activeIdx = 0;
+
+function renderTabs() {
+  const el = document.getElementById('chart-tabs');
+  el.innerHTML = investors.map((inv, i) => {
+    const isActive = i === activeIdx;
+    return `<button class="chart-tab${isActive?' active':''}" style="border-color:${isActive?inv.color:'var(--border)'};background:${isActive?inv.color+'15':'var(--card)'};color:${isActive?inv.color:'var(--txt2)'};font-weight:${isActive?600:400};" onclick="setActive(${i})">${inv.name.split(' ')[0]}${inv.id==='simons'?'†':''}</button>`;
+  }).join('');
+}
+
+function renderChart() {
+  const inv = investors[activeIdx];
+  const data = inv.priceData;
+  const maxP = Math.max(...data.map(d=>d.price));
+  const minP = Math.min(...data.map(d=>d.price));
+  const range = maxP - minP || 1;
+  const W=700,H=280,pL=40,pR=20,pT=30,pB=60;
+  const w=W-pL-pR, h=H-pT-pB;
+  const pts = data.map((d,i) => ({x:pL+(i/(data.length-1))*w, y:pT+h-((d.price-minP)/range)*h, ...d}));
+  const line = pts.map((p,i)=>`${i===0?'M':'L'}${p.x},${p.y}`).join(' ');
+  const area = line+` L${pts[pts.length-1].x},${pT+h} L${pts[0].x},${pT+h} Z`;
+
+  let svg = `<defs><linearGradient id="g-${inv.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${inv.color}" stop-opacity=".25"/><stop offset="100%" stop-color="${inv.color}" stop-opacity=".02"/></linearGradient></defs>`;
+
+  // Grid
+  [.25,.5,.75].forEach(pct => {
+    const yy=pT+h*(1-pct), val=Math.round(minP+range*pct);
+    svg+=`<line x1="${pL}" y1="${yy}" x2="${pL+w}" y2="${yy}" stroke="rgba(255,255,255,.06)" stroke-dasharray="4,4"/><text x="${pL-6}" y="${yy+4}" fill="#6b7280" font-size="9" text-anchor="end" font-family="monospace">$${val}</text>`;
+  });
+
+  // Zones
+  const zoneColors={buy:"rgba(52,211,153,.08)",filing:"rgba(96,165,250,.12)",sell:"rgba(239,68,68,.08)",snapshot:"rgba(167,139,250,.08)",catalyst:"rgba(251,146,60,.08)"};
+  const zoneBorders={buy:"rgba(52,211,153,.3)",filing:"rgba(96,165,250,.4)",sell:"rgba(239,68,68,.3)",snapshot:"rgba(167,139,250,.3)",catalyst:"rgba(251,146,60,.3)"};
+  (inv.zones||[]).forEach(z => {
+    if(!pts[z.start]||!pts[z.end]) return;
+    const x1=pts[z.start].x-8, x2=pts[z.end].x+8;
+    svg+=`<rect x="${x1}" y="${pT-5}" width="${x2-x1}" height="${h+10}" fill="${zoneColors[z.type]}" rx="4"/>`;
+    svg+=`<line x1="${x1}" y1="${pT-5}" x2="${x1}" y2="${pT+h+5}" stroke="${zoneBorders[z.type]}" stroke-width="1" stroke-dasharray="3,3"/>`;
+    svg+=`<line x1="${x2}" y1="${pT-5}" x2="${x2}" y2="${pT+h+5}" stroke="${zoneBorders[z.type]}" stroke-width="1" stroke-dasharray="3,3"/>`;
+    svg+=`<text x="${(x1+x2)/2}" y="${pT-10}" fill="${zoneBorders[z.type]}" font-size="8" text-anchor="middle" font-family="monospace" font-weight="600">${z.label}</text>`;
+  });
+
+  // Area + Line
+  svg+=`<path d="${area}" fill="url(#g-${inv.id})"/><path d="${line}" fill="none" stroke="${inv.color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+
+  // Points
+  const step = Math.max(1,Math.floor(data.length/8));
+  pts.forEach((p,i)=>{
+    svg+=`<circle cx="${p.x}" cy="${p.y}" r="${p.label?4:2.5}" fill="${p.label?inv.color:'rgba(255,255,255,.3)'}" stroke="${p.label?'#0a0b0f':'none'}" stroke-width="1.5"/>`;
+    if(p.label) svg+=`<text x="${p.x}" y="${p.y-10}" fill="${inv.color}" font-size="8" text-anchor="middle" font-family="monospace" font-weight="500">${p.label}</text>`;
+    if(i%step===0||i===data.length-1) svg+=`<text x="${p.x}" y="${pT+h+18}" fill="#6b7280" font-size="8" text-anchor="middle" font-family="monospace" transform="rotate(-30,${p.x},${pT+h+18})">${p.date}</text>`;
+  });
+
+  // Price labels
+  svg+=`<text x="${pts[0].x-2}" y="${pts[0].y-8}" fill="#9ca3af" font-size="9" text-anchor="end" font-family="monospace">$${data[0].price}</text>`;
+  svg+=`<text x="${pts[pts.length-1].x+2}" y="${pts[pts.length-1].y-8}" fill="${inv.color}" font-size="10" text-anchor="start" font-family="monospace" font-weight="700">$${data[data.length-1].price}</text>`;
+
+  document.getElementById('chart-svg').innerHTML = svg;
+
+  // Title
+  document.getElementById('chart-title').innerHTML = `
+    <div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap;">
+      <span style="font-size:1.3rem;font-weight:700;">${inv.name}</span>
+      <span style="font-family:monospace;font-size:.7rem;color:#6b7280;">${inv.fund}</span>
+    </div>
+    <div style="margin-top:.3rem;display:flex;align-items:center;gap:.5rem;">
+      <span style="font-family:monospace;font-size:1rem;font-weight:600;color:${inv.color};">${inv.stock}</span>
+    </div>
+    <p style="font-size:.78rem;color:#9ca3af;margin-top:.5rem;font-weight:300;line-height:1.6;font-style:italic;">"${inv.thesis}"</p>`;
+
+  // Metrics
+  const metrics = [
+    {label:"Período compra",val:inv.buyPeriod},
+    {label:"Preço entrada",val:inv.avgEntry},
+    {label:"Data filing",val:inv.filingDate},
+    {label:"Delay compra→público",val:inv.filingDelay},
+    {label:"Retorno total",val:inv.returnSinceEntry},
+    {label:"Pump pós-filing",val:inv.pumpPostFiling}
+  ];
+  document.getElementById('chart-metrics').innerHTML = metrics.map((m,i) =>
+    `<div class="metric-box"><div class="metric-label">${m.label}</div><div class="metric-val" style="color:${i>=4?inv.color:'var(--txt)'};">${m.val}</div></div>`
+  ).join('');
+}
+
+function setActive(i) { activeIdx=i; renderTabs(); renderChart(); }
+
+renderTabs();
+renderChart();
+</script>
+
+</body>
+</html>

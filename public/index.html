@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -6,54 +6,211 @@
     <title>Carecadas Estudos</title>
     <style>
       :root {
-        --bg: #f5f7fb;
-        --card: #ffffff;
-        --text: #182230;
-        --muted: #5b6b82;
-        --accent: #0a7ea4;
+        --bg: #0f1117;
+        --surface: #181a20;
+        --card: #1e2029;
+        --card-hover: #252733;
+        --border: rgba(255,255,255,0.06);
+        --text: #e8eaed;
+        --muted: #8b95a5;
+        --accent: #4ade80;
+        --accent-dim: rgba(74,222,128,0.12);
       }
-      * { box-sizing: border-box; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
       body {
-        margin: 0;
-        font-family: Segoe UI, Arial, sans-serif;
-        background: linear-gradient(180deg, #eef3fa 0%, var(--bg) 100%);
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 60px 20px 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: -120px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(74,222,128,0.08) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .chibi {
+        width: 180px;
+        height: auto;
+        filter: drop-shadow(0 8px 32px rgba(74,222,128,0.18));
+        animation: float 4s ease-in-out infinite;
+        position: relative;
+        z-index: 1;
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 24px 0 8px;
+        letter-spacing: -0.5px;
+      }
+      .hero h1 span {
+        background: linear-gradient(135deg, var(--accent), #22d3ee);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero .subtitle {
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 420px;
+        line-height: 1.6;
+      }
+
+      .content {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 20px 60px;
+      }
+
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 16px;
+      }
+      .section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .study-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .study-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        transition: all 0.25s ease;
+        text-decoration: none;
         color: var(--text);
       }
-      main {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 40px 20px;
+      .study-card:hover {
+        background: var(--card-hover);
+        border-color: rgba(74,222,128,0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       }
-      h1 { margin: 0 0 8px; }
-      p { margin: 0 0 24px; color: var(--muted); }
-      .list {
-        display: grid;
-        gap: 16px;
+
+      .study-card .info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
       }
-      .card {
-        background: var(--card);
-        border-radius: 14px;
-        padding: 18px;
-        box-shadow: 0 8px 24px rgba(19, 36, 59, 0.08);
+      .study-card .icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: var(--accent-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.2rem;
       }
-      a {
+      .study-card .title {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .study-card .arrow {
+        color: var(--muted);
+        font-size: 1.2rem;
+        transition: transform 0.2s;
+        flex-shrink: 0;
+      }
+      .study-card:hover .arrow {
         color: var(--accent);
-        text-decoration: none;
+        transform: translateX(4px);
+      }
+
+      .footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 32px 20px 40px;
+        border-top: 1px solid var(--border);
+      }
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.85rem;
         font-weight: 600;
       }
-      a:hover { text-decoration: underline; }
+      .footer-brand img {
+        width: 28px;
+        height: 28px;
+      }
+
+      @media (max-width: 480px) {
+        .hero { padding: 40px 16px 28px; }
+        .chibi { width: 140px; }
+        .hero h1 { font-size: 1.7rem; }
+        .study-card { padding: 16px 18px; }
+      }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Meus Estudos</h1>
-      <p>Publicações pessoais. Página em construção contínua.</p>
+    <header class="hero">
+      <img src="/chibi.png" alt="Carecadas" class="chibi" />
+      <h1>Estudos do <span>Carecão</span></h1>
+      <p class="subtitle">Resumos, análises e notas pessoais sobre investimentos e finanças.</p>
+    </header>
 
-      <section class="list">
-        <article class="card">
-          <a href="/estudos/top5-investidores-melhores-compras.html">Top 5 investidores e melhores compras</a>
-        </article>
-      </section>
+    <main class="content">
+      <div class="section-label">Publicações</div>
+      <div class="study-list">
+        <a href="/estudos/estudo-investidores-completo.html" class="study-card">
+          <div class="info">
+            <div class="icon">📊</div>
+            <div class="title">Estudo investidores completo</div>
+          </div>
+          <div class="arrow">→</div>
+        </a>
+      </div>
     </main>
+
+    <footer class="footer">
+      <div class="footer-brand">
+        <img src="/logo-serriquinho.png" alt="Ser Riquinho" />
+        by Equipa Ser Riquinho
+      </div>
+    </footer>
   </body>
 </html>

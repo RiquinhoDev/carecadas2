@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BTC · Análise de Ciclos — Carecadas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0b0e;
+    --bg2:#101218;
+    --panel:#14161d;
+    --panel2:#1a1d26;
+    --line:#262a36;
+    --ink:#e9e7e0;
+    --mut:#8b909e;
+    --mut2:#5d626f;
+    --btc:#f7931a;
+    --btc-soft:#3a2a10;
+    --bull:#2dd49a;
+    --base:#f4c542;
+    --bear:#ef4d56;
+    --glow:rgba(247,147,26,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(247,147,26,.07), transparent 60%),
+      radial-gradient(900px 500px at 0% 100%, rgba(45,212,154,.05), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:0 0 80px;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  .num{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+  /* ---------- HEADER ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    padding:34px 0 26px;
+    margin-bottom:38px;
+    position:relative;
+    overflow:hidden;
+  }
+  .brand{display:flex;align-items:center;gap:11px;margin-bottom:24px}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--btc);box-shadow:0 0 14px var(--btc)}
+  .brand span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--mut)}
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:900;
+    font-size:clamp(34px,5.4vw,60px);
+    line-height:1.02;
+    letter-spacing:-.02em;
+    margin-bottom:6px;
+  }
+  h1 em{font-style:italic;color:var(--btc)}
+  .sub{color:var(--mut);font-size:15px;max-width:640px;margin-top:10px}
+  .head-row{display:flex;align-items:center;gap:34px;justify-content:space-between}
+  .head-text{flex:1;min-width:0}
+  .mascot-frame{
+    flex-shrink:0;position:relative;width:210px;max-width:36vw;
+    border-radius:22px;padding:0;
+    background:linear-gradient(150deg,rgba(247,147,26,.55),rgba(247,147,26,0) 55%);
+    box-shadow:0 22px 60px rgba(247,147,26,.22),0 0 0 1px rgba(247,147,26,.18);
+    transform:rotate(-3deg);transition:transform .35s ease,box-shadow .35s ease;
+  }
+  .mascot-frame::after{
+    content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .mascot-frame:hover{transform:rotate(0deg) translateY(-4px);box-shadow:0 30px 70px rgba(247,147,26,.32),0 0 0 1px rgba(247,147,26,.3)}
+  .mascot{display:block;width:100%;height:auto;border-radius:21px}
+  @media(max-width:680px){
+    .head-row{flex-direction:column-reverse;align-items:flex-start;gap:18px}
+    .mascot-frame{width:150px;transform:rotate(-2deg)}
+  }
+
+  .ticker{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;margin-top:30px;
+  }
+  .tk{background:var(--panel);padding:16px 18px}
+  .tk .lab{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut2);margin-bottom:8px;font-family:'IBM Plex Mono',monospace}
+  .tk .val{font-family:'IBM Plex Mono',monospace;font-size:23px;font-weight:600;letter-spacing:-.02em}
+  .tk .meta{font-size:11.5px;color:var(--mut);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+  .down{color:var(--bear)} .up{color:var(--bull)}
+
+  /* ---------- SECTIONS ---------- */
+  section{margin-top:54px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+  .sec-num{font-family:'IBM Plex Mono',monospace;color:var(--btc);font-size:13px;font-weight:600}
+  .sec-head h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(22px,3vw,30px);letter-spacing:-.01em}
+  .sec-desc{color:var(--mut);font-size:14.5px;max-width:760px;margin:-8px 0 26px}
+
+  /* ---------- CHART ---------- */
+  .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 22px 14px}
+  .chart-legend{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:8px;font-size:12px;color:var(--mut);font-family:'IBM Plex Mono',monospace}
+  .lg{display:flex;align-items:center;gap:7px}
+  .lg i{width:18px;height:3px;border-radius:2px;display:inline-block}
+  .lg.dash i{background:transparent;border-top:2px dashed currentColor;height:0}
+  svg{width:100%;height:auto;display:block}
+  .axis-lab{font-family:'IBM Plex Mono',monospace;font-size:10px;fill:var(--mut2)}
+  .pt-lab{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:500}
+
+  /* ---------- HISTORY TABLE ---------- */
+  .tbl{width:100%;border-collapse:collapse;font-size:14px}
+  .tbl th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut2);font-weight:500;padding:0 14px 12px;border-bottom:1px solid var(--line)}
+  .tbl td{padding:14px;border-bottom:1px solid var(--line)}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl .num{font-size:13.5px}
+  .tbl tr:hover td{background:var(--panel2)}
+  .chip{display:inline-block;padding:2px 9px;border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:500}
+  .chip.dd{background:rgba(239,77,86,.13);color:var(--bear)}
+  .chip.mx{background:rgba(45,212,154,.12);color:var(--bull)}
+  .tbl-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px 8px 4px;overflow-x:auto}
+
+  /* ---------- SCENARIO CARDS ---------- */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+  .card:hover{transform:translateY(-3px)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+  .card.bull{border-color:rgba(45,212,154,.25)} .card.bull::before{background:var(--bull)} .card.bull:hover{border-color:var(--bull)}
+  .card.base{border-color:rgba(244,197,66,.25)} .card.base::before{background:var(--base)} .card.base:hover{border-color:var(--base)}
+  .card.bear{border-color:rgba(239,77,86,.25)} .card.bear::before{background:var(--bear)} .card.bear:hover{border-color:var(--bear)}
+  .card .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
+  .card.bull .tag{color:var(--bull)} .card.base .tag{color:var(--base)} .card.bear .tag{color:var(--bear)}
+  .card h3{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin-bottom:4px;letter-spacing:-.01em}
+  .card .prob{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--mut);margin-bottom:16px}
+  .big{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:30px;letter-spacing:-.02em;line-height:1}
+  .big.bull{color:var(--bull)} .big.base{color:var(--base)} .big.bear{color:var(--bear)}
+  .big-sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--mut);margin-top:5px;margin-bottom:18px}
+  .card p{font-size:13.5px;color:var(--mut);line-height:1.55}
+  .card .when{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--mut2)}
+  .card .when b{color:var(--ink);font-weight:500}
+
+  /* ---------- CATALYSTS ---------- */
+  .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .cat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
+  .cat-head{display:flex;align-items:center;gap:11px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+  .cat-head .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:17px}
+  .cat.down .ic{background:rgba(239,77,86,.14);color:var(--bear)}
+  .cat.up .ic{background:rgba(45,212,154,.14);color:var(--bull)}
+  .cat-head h3{font-family:'Fraunces',serif;font-weight:600;font-size:19px}
+  .cat-head .csub{font-size:11.5px;color:var(--mut);font-family:'IBM Plex Mono',monospace}
+  .cat ul{list-style:none}
+  .cat li{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+  .cat li:last-child{border-bottom:none}
+  .cat li .m{font-family:'IBM Plex Mono',monospace;font-size:11px;flex-shrink:0;width:18px;padding-top:1px}
+  .cat.down li .m{color:var(--bear)} .cat.up li .m{color:var(--bull)}
+  .cat li b{color:var(--ink);font-weight:600}
+  .cat li span{color:var(--mut)}
+
+  /* ---------- INSTITUTIONAL ---------- */
+  .inst-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+  .inst{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+  .inst:hover{transform:translateY(-3px);border-color:rgba(239,77,86,.4)}
+  .inst::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--bear)}
+  .inst .who{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bear);margin-bottom:8px}
+  .inst h3{font-family:'Fraunces',serif;font-weight:600;font-size:21px;margin-bottom:14px;letter-spacing:-.01em}
+  .inst .stat{display:flex;align-items:baseline;gap:8px;margin:14px 0;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .inst .stat .num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:26px;color:var(--bear)}
+  .inst .stat .cap{font-size:12px;color:var(--mut);font-family:'IBM Plex Mono',monospace}
+  .inst p{font-size:13.5px;color:var(--mut);line-height:1.58}
+  .inst p b{color:var(--ink);font-weight:600}
+  .impact{background:linear-gradient(150deg,var(--btc-soft),var(--panel));border:1px solid rgba(247,147,26,.28);border-radius:16px;padding:24px 26px}
+  .impact h4{font-family:'Fraunces',serif;font-weight:600;font-size:18px;margin-bottom:10px;color:var(--btc)}
+  .impact p{font-size:14px;color:var(--mut);line-height:1.62}
+  .impact p b{color:var(--ink);font-weight:600}
+  .impact p+p{margin-top:10px}
+  @media(max-width:680px){.inst-grid{grid-template-columns:1fr}}
+
+  /* ---------- DISCLAIMER ---------- */
+  .disc{margin-top:46px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px 22px;font-size:12.5px;color:var(--mut);line-height:1.6}
+  .disc b{color:var(--ink)}
+  footer{margin-top:34px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mut2);letter-spacing:.06em}
+
+  @media(max-width:860px){
+    .ticker{grid-template-columns:1fr 1fr}
+    .cards{grid-template-columns:1fr}
+    .cat-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="head-row">
+      <div class="head-text">
+        <div class="brand"><span class="dot"></span><span>Carecadas · Bitcoin Cycle Lab</span></div>
+        <h1>O <em>fundo</em> deste ciclo<br>e o <em>topo</em> do próximo</h1>
+        <p class="sub">Mapa de cenários para o BTC ancorado no comportamento histórico dos quatro ciclos de halving. Onde pode estar o bottom de 2026 e quanto pode valer o pico pós-halving de 2028 — com os catalisadores que empurram para cada lado.</p>
+      </div>
+      <div class="mascot-frame"><img src="btc-mascot.png" alt="Mascote Carecadas a surfar o Bitcoin" class="mascot"></div>
+    </div>
+
+    <div class="ticker">
+      <div class="tk">
+        <div class="lab">BTC / USD · hoje</div>
+        <div class="val">$69.350</div>
+        <div class="meta down">▼ 2 Jun 2026</div>
+      </div>
+      <div class="tk">
+        <div class="lab">ATH deste ciclo</div>
+        <div class="val">$126.198</div>
+        <div class="meta">6 Out 2025</div>
+      </div>
+      <div class="tk">
+        <div class="lab">Drawdown desde ATH</div>
+        <div class="val down">−45,1%</div>
+        <div class="meta">correção em curso</div>
+      </div>
+      <div class="tk">
+        <div class="lab">Próximo halving</div>
+        <div class="val">Abr 2028</div>
+        <div class="meta">3,125 → 1,5625 BTC</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== 1. GRÁFICO ===== -->
+  <section id="chart">
+    <div class="sec-head"><span class="sec-num">01</span><h2>O mapa dos ciclos</h2></div>
+    <p class="sec-desc">Escala logarítmica. A linha sólida mostra os topos e fundos reais dos últimos ciclos; as linhas tracejadas projetam os três cenários — cada um com um fundo em 2026/27 e um topo após o halving de 2028.</p>
+    <div class="chart-card">
+      <div class="chart-legend">
+        <div class="lg" style="color:var(--btc)"><i style="background:var(--btc)"></i> Histórico real</div>
+        <div class="lg dash" style="color:var(--bull)"><i></i> Cenário 1 · Ciclo Maturado</div>
+        <div class="lg dash" style="color:var(--base)"><i></i> Cenário 2 · Clássico Atenuado</div>
+        <div class="lg dash" style="color:var(--bear)"><i></i> Cenário 3 · Reset Profundo</div>
+      </div>
+      <svg id="cycleChart" viewBox="0 0 1080 480" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </section>
+
+  <!-- ===== 2. HISTÓRICO ===== -->
+  <section id="hist">
+    <div class="sec-head"><span class="sec-num">02</span><h2>O que dizem os ciclos anteriores</h2></div>
+    <p class="sec-desc">Cada ciclo teve um drawdown menor que o anterior (−86% → −84% → −78%) e um múltiplo fundo→topo também decrescente. A era dos ETF spot (desde Jan 2024) comprimiu a volatilidade — a base de partida dos três cenários.</p>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr><th>Ciclo</th><th>Topo</th><th>Fundo seguinte</th><th>Drawdown</th><th>Múltiplo fundo→topo seg.</th><th>Top→fundo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2013 → 2015</td>
+            <td class="num">$1.150 <span style="color:var(--mut2)">Dez/13</span></td>
+            <td class="num">$170 <span style="color:var(--mut2)">Jan/15</span></td>
+            <td><span class="chip dd">−86%</span></td>
+            <td><span class="chip mx">~116×</span></td>
+            <td class="num" style="color:var(--mut)">~410 d</td>
+          </tr>
+          <tr>
+            <td>2017 → 2018</td>
+            <td class="num">$19.800 <span style="color:var(--mut2)">Dez/17</span></td>
+            <td class="num">$3.200 <span style="color:var(--mut2)">Dez/18</span></td>
+            <td><span class="chip dd">−84%</span></td>
+            <td><span class="chip mx">~21,5×</span></td>
+            <td class="num" style="color:var(--mut)">~365 d</td>
+          </tr>
+          <tr>
+            <td>2021 → 2022</td>
+            <td class="num">$69.000 <span style="color:var(--mut2)">Nov/21</span></td>
+            <td class="num">$15.476 <span style="color:var(--mut2)">Nov/22</span></td>
+            <td><span class="chip dd">−78%</span></td>
+            <td><span class="chip mx">~8,2×</span></td>
+            <td class="num" style="color:var(--mut)">~376 d</td>
+          </tr>
+          <tr>
+            <td style="color:var(--btc)">2025 → 2026?</td>
+            <td class="num">$126.198 <span style="color:var(--mut2)">Out/25</span></td>
+            <td class="num" style="color:var(--mut)">a definir →</td>
+            <td><span class="chip dd" style="background:var(--btc-soft);color:var(--btc)">−45% até agora</span></td>
+            <td class="num" style="color:var(--mut)">—</td>
+            <td class="num" style="color:var(--mut)">média ~383 d</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sec-desc" style="margin-top:18px;font-size:13px">
+      <b style="color:var(--ink)">Régua temporal histórica:</b> topo → fundo dura em média ~383 dias. A partir do topo de 6 Out 2025, isso aponta a janela de fundo para <span class="mono" style="color:var(--btc)">~Out 2026</span>. Halving → topo dura em média ~480 dias, colocando o próximo pico em <span class="mono" style="color:var(--btc)">meados de 2029</span>.
+    </p>
+  </section>
+
+  <!-- ===== 3. CENÁRIOS DE FUNDO ===== -->
+  <section id="bottom">
+    <div class="sec-head"><span class="sec-num">03</span><h2>3 cenários para o fundo (2026 – início 2027)</h2></div>
+    <p class="sec-desc">A partir do ATH de $126.198. O fio condutor é o drawdown decrescente a cada ciclo — a questão é quanto a estrutura ETF/institucional o amortece desta vez.</p>
+    <div class="cards">
+      <div class="card bull">
+        <div class="tag">Cenário 1 · Bull suave</div>
+        <h3>Ciclo Maturado</h3>
+        <div class="prob">Probabilidade subjetiva ~35%</div>
+        <div class="big bull">$52k – $58k</div>
+        <div class="big-sub">−54% a −59% do ATH</div>
+        <p>A tese "slow bull" da Grayscale/Bitwise: os ETF e o tesouro corporativo criam um chão estrutural, o drawdown encolhe outra vez. O fundo já pode estar próximo dos níveis atuais. Volatilidade comprimida, sem cripto-inverno clássico.</p>
+        <div class="when"><b>Janela:</b> Q3–Q4 2026 · recuperação gradual</div>
+      </div>
+      <div class="card base">
+        <div class="tag">Cenário 2 · Base</div>
+        <h3>Clássico Atenuado</h3>
+        <div class="prob">Probabilidade subjetiva ~40%</div>
+        <div class="big base">$38k – $46k</div>
+        <div class="big-sub">−64% a −70% do ATH</div>
+        <p>O ciclo de 4 anos ainda funciona, mas mais suave que os anteriores. Segue a tendência de drawdowns decrescentes e a média histórica de ~383 dias topo→fundo. É o cenário mais alinhado com o "manual" do halving.</p>
+        <div class="when"><b>Janela:</b> Out 2026 – Jan 2027</div>
+      </div>
+      <div class="card bear">
+        <div class="tag">Cenário 3 · Capitulação</div>
+        <h3>Reset Macro Profundo</h3>
+        <div class="prob">Probabilidade subjetiva ~25%</div>
+        <div class="big bear">$28k – $34k</div>
+        <div class="big-sub">−73% a −78% do ATH</div>
+        <p>Um choque macro real — recessão, crise de liquidez, escalada geopolítica (tensão EUA-Irão / Estreito de Ormuz) — força um washout ao estilo dos ciclos antigos. Saídas sustentadas de ETF e cascatas de liquidação prolongam a dor.</p>
+        <div class="when"><b>Janela:</b> pode arrastar até H1 2027</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. CENÁRIOS DE TOPO ===== -->
+  <section id="top">
+    <div class="sec-head"><span class="sec-num">04</span><h2>3 cenários para o topo do próximo ciclo (~2029)</h2></div>
+    <p class="sec-desc">Pós-halving de Abril 2028. Os múltiplos fundo→topo têm vindo a comprimir (116× → 21× → 8×), por isso os alvos assumem retornos decrescentes mas ainda novos máximos históricos.</p>
+    <div class="cards">
+      <div class="card bull">
+        <div class="tag">A partir do C1</div>
+        <h3>Pico Conservador</h3>
+        <div class="prob">~1,5–1,8× o ATH anterior</div>
+        <div class="big bull">$180k – $220k</div>
+        <div class="big-sub">≈ 3,5× sobre fundo de ~$55k</div>
+        <p>BTC como ativo macro maduro — tipo ouro digital. Os ETF absorvem mais que a nova oferta, mas a euforia retalhista é contida. Subida em escada, não parabólica.</p>
+        <div class="when"><b>Janela de topo:</b> meados de 2029</div>
+      </div>
+      <div class="card base">
+        <div class="tag">A partir do C2</div>
+        <h3>Pico Base</h3>
+        <div class="prob">~1,9–2,2× o ATH anterior</div>
+        <div class="big base">$230k – $280k</div>
+        <div class="big-sub">≈ 5–6× sobre fundo de ~$42k</div>
+        <p>Adoção institucional + soberana continua (empresas >1M BTC, governos ~647k BTC). Alinhado com o consenso de bancos para o pico do ciclo. Choque de oferta do halving + liquidez global a expandir.</p>
+        <div class="when"><b>Janela de topo:</b> 2029</div>
+      </div>
+      <div class="card bear">
+        <div class="tag">A partir do C3</div>
+        <h3>Recuperação em Força</h3>
+        <div class="prob">fundo profundo → mais margem</div>
+        <div class="big bear">$280k – $360k</div>
+        <div class="big-sub">≈ 9–11× sobre fundo de ~$30k</div>
+        <p>O reset profundo limpa a alavancagem e abre espaço a um movimento maior. Combinado com uma onda de liquidez (cortes de juros, M2 global), reservas estratégicas estatais e narrativa de "hiperbitcoinização", produz o pico mais alto — e mais volátil.</p>
+        <div class="when"><b>Janela de topo:</b> fim 2029 – 2030</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. CATALISADORES ===== -->
+  <section id="cat">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Catalisadores</h2></div>
+    <p class="sec-desc">O que empurra o preço para o fundo agora — e o que pode acender o topo do próximo ciclo.</p>
+    <div class="cat-grid">
+      <div class="cat down">
+        <div class="cat-head">
+          <div class="ic">▼</div>
+          <div><h3>Para o fundo (downside)</h3><div class="csub">o que aprofunda a correção</div></div>
+        </div>
+        <ul>
+          <li><span class="m">01</span><span><b>Saídas de ETF spot.</b> Fim de Maio 2026 registou ~$700M de saídas líquidas; houve um dia de −$1,42B. Procura institucional a arrefecer.</span></li>
+          <li><span class="m">02</span><span><b>Fed agressivo / inflação persistente.</b> Juros altos por mais tempo empurram capital para cash, obrigações e ouro em vez de cripto.</span></li>
+          <li><span class="m">03</span><span><b>Dólar forte (DXY).</b> Torna o BTC menos atrativo para compradores globais.</span></li>
+          <li><span class="m">04</span><span><b>Risco geopolítico.</b> Tensão EUA-Irão e ameaça ao Estreito de Ormuz a pressionar ativos de risco.</span></li>
+          <li><span class="m">05</span><span><b>Cascatas de liquidação.</b> O wipeout de ~$19B em 10 Out 2025 mostrou como a alavancagem amplifica quedas.</span></li>
+          <li><span class="m">06</span><span><b>Distribuição de holders de longo prazo</b> e procura spot+derivados a contrair (~−232k BTC/mês, CryptoQuant).</span></li>
+        </ul>
+      </div>
+      <div class="cat up">
+        <div class="cat-head">
+          <div class="ic">▲</div>
+          <div><h3>Para o topo do próximo ciclo (upside)</h3><div class="csub">o que acende a próxima perna</div></div>
+        </div>
+        <ul>
+          <li><span class="m">01</span><span><b>Halving de Abril 2028.</b> Recompensa cai de 3,125 → 1,5625 BTC. Choque de oferta com efeito desfasado de 12–18 meses.</span></li>
+          <li><span class="m">02</span><span><b>Ciclo de cortes de juros + liquidez.</b> O QT terminou em Dez 2025; M2 global a expandir reacende o apetite por risco.</span></li>
+          <li><span class="m">03</span><span><b>Entradas de ETF a acelerar.</b> Bitwise prevê que os ETF comprem mais BTC do que toda a nova oferta — procura > oferta.</span></li>
+          <li><span class="m">04</span><span><b>Adoção soberana e tesouro corporativo.</b> Reservas estratégicas estatais e empresas a acumular (já >1M BTC).</span></li>
+          <li><span class="m">05</span><span><b>Clareza regulatória.</b> Avanço do CLARITY Act e legislação de stablecoins reduz incerteza institucional.</span></li>
+          <li><span class="m">06</span><span><b>Dólar fraco + FOMO retalhista</b> na fase de euforia a fechar o ciclo.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="inst">
+    <div class="sec-head"><span class="sec-num">06</span><h2>O elefante na sala: a distribuição institucional</h2></div>
+    <p class="sec-desc">Os dois maiores símbolos da tese institucional do BTC — a BlackRock e o Michael Saylor — passaram, em Maio/Junho 2026, de compradores incansáveis a vendedores líquidos. Não é ruído: é a procura marginal que sustentou este ciclo a inverter o sinal.</p>
+    <div class="inst-grid">
+      <div class="inst">
+        <div class="who">BlackRock · IBIT</div>
+        <h3>O maior ETF a sangrar</h3>
+        <div class="stat"><span class="num">−$2,04B</span><span class="cap">saídas do IBIT na série de 9 dias (fim Mai 2026)</span></div>
+        <p>Maio foi o <b>pior mês de fluxos de 2026</b>: ~$2,43B líquidos a sair dos ETF spot dos EUA, depois de Abril ter sido o melhor (+$1,97B). O IBIT teve o seu <b>pior dia de sempre</b> — −$527,8M a 28 Mai — e absorveu um bloco de <b>$1,29B em dark pool</b>, uma das maiores impressões institucionais alguma vez registadas. A procura via ETF, que era o motor estrutural deste ciclo, arrefeceu de vez.</p>
+      </div>
+      <div class="inst">
+        <div class="who">Strategy (MSTR) · Saylor</div>
+        <h3>A primeira venda desde 2022</h3>
+        <div class="stat"><span class="num">1.ª venda</span><span class="cap">desde Dez 2022 · 32 BTC @ ~$77.135</span></div>
+        <p>A 1 Jun 2026, a Strategy revelou num 8-K ter vendido <b>32 BTC entre 26–31 Mai</b> (~$2,5M) para financiar dividendos das preferenciais STRC (que pagam <b>11,25%</b> ao ano). É só <b>0,0038%</b> do tesouro — simbólico no tamanho, sísmico no sinal: o <b>mNAV comprimiu para ~1,2×</b> (mínimos históricos), tirando à empresa o prémio que financiava as compras. Saylor enquadra-a como "otimização de estrutura de capital", mas quebra a narrativa do <i>holder</i> que nunca vende.</p>
+      </div>
+    </div>
+    <div class="impact">
+      <h4>Que impacto pode ter</h4>
+      <p><b>Curto prazo — pressão real no fundo.</b> ETF e tesouros corporativos foram a procura marginal deste ciclo. Quando o maior ETF tem saídas e o maior <i>holder</i> corporativo passa a vendedor, retira-se o comprador que amortecia as quedas — alinha com o Cenário 2/3 e ajuda a explicar o BTC abaixo de $73k. O risco maior é <b>reflexivo</b>: mNAV comprimido → menos capacidade de Strategy emitir e comprar → menos suporte → preço mais fraco → mNAV ainda mais comprimido.</p>
+      <p><b>Mas é preciso contexto.</b> A venda da Strategy é <b>0,0038%</b> do tesouro — gestão de tesouraria para servir dividendos, não capitulação da tese. As saídas de ETF são, em parte, <b>rotação macro</b> (escalada EUA-Irão, rotação para ações de IA, dólar forte) e não rejeição estrutural do ativo. Em ciclos anteriores, fases de distribuição institucional precederam o fundo, não o topo.</p>
+      <p><b>O sinal a vigiar.</b> Se as saídas de ETF abrandarem e o mNAV da Strategy recuperar acima de ~1,5×, é distribuição saudável dentro de uma correção. Se as saídas acelerarem e a Strategy for forçada a <b>vendas maiores</b> para servir os 11,25% das preferenciais, aí o risco de cauda do Cenário 3 ganha peso. Por agora: amarelo, não vermelho.</p>
+    </div>
+  </section>
+
+  <div class="disc">
+    <b>Nota.</b> Este painel é uma ferramenta de estudo educacional, não aconselhamento de investimento — não sou consultor financeiro licenciado. Os cenários são exercícios de probabilidade baseados em padrões históricos (que podem não se repetir, sobretudo na era pós-ETF, em que vários bancos defendem que o ciclo de 4 anos foi "quebrado") e em dados de mercado de 2–3 Jun 2026. Múltiplos, percentagens e probabilidades são estimativas próprias para enquadramento, não previsões. O BTC pode ficar abaixo de qualquer cenário ou acima de qualquer alvo. Faz a tua própria análise e gere o risco.
+  </div>
+
+  <footer>Carecadas · BTC Cycle Lab · gerado 3 Jun 2026 · dados: CoinDesk, Fortune, Caleb&Brown, Fidelity, CoinGecko · vendas institucionais: SEC 8-K (Strategy), crypto.news, 99bitcoins</footer>
+
+</div>
+
+<script>
+(function(){
+  const svg = document.getElementById('cycleChart');
+  const W=1080, H=480;
+  const ml=58, mr=22, mt=24, mb=44;          // margens
+  const x0=ml, x1=W-mr, y0=mt, y1=H-mb;
+
+  // escala temporal
+  const T0=2017.0, T1=2030.5;
+  // escala log preço
+  const Pmin=100, Pmax=450000;
+  const lP=v=>Math.log10(v);
+  const lPmin=lP(Pmin), lPmax=lP(Pmax);
+
+  const X=t=>x0+(t-T0)/(T1-T0)*(x1-x0);
+  const Y=p=>y1-(lP(p)-lPmin)/(lPmax-lPmin)*(y1-y0);
+
+  const NS='http://www.w3.org/2000/svg';
+  const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+  // ---- gridlines de preço ----
+  [1000,5000,20000,70000,150000,400000].forEach(p=>{
+    const y=Y(p);
+    svg.appendChild(el('line',{x1:x0,y1:y,x2:x1,y2:y,stroke:'#1c2029','stroke-width':1}));
+    const lab=el('text',{x:x0-9,y:y+3,'text-anchor':'end',class:'axis-lab'});
+    lab.textContent='$'+(p>=1000?(p/1000)+'k':p);
+    svg.appendChild(lab);
+  });
+  // ---- gridlines de ano ----
+  for(let yr=2017;yr<=2030;yr++){
+    const x=X(yr);
+    svg.appendChild(el('line',{x1:x,y1:y0,x2:x,y2:y1,stroke:'#15181f','stroke-width':1}));
+    if(yr%2===1||yr===2030){
+      const lab=el('text',{x:x,y:y1+20,'text-anchor':'middle',class:'axis-lab'});
+      lab.textContent="'"+String(yr).slice(2);
+      svg.appendChild(lab);
+    }
+  }
+
+  // marcadores de halving
+  [{t:2024.30,l:'Halving'},{t:2028.30,l:'Halving'}].forEach(h=>{
+    const x=X(h.t);
+    svg.appendChild(el('line',{x1:x,y1:y0,x2:x,y2:y1,stroke:'var(--btc)','stroke-width':1,'stroke-dasharray':'2 5','opacity':.5}));
+    const lab=el('text',{x:x,y:y0+12,'text-anchor':'middle',class:'pt-lab',fill:'var(--btc)','opacity':.8});
+    lab.textContent='⛏ '+h.l;
+    svg.appendChild(lab);
+  });
+
+  // ---- linha histórica ----
+  const hist=[
+    {t:2017.0,p:1000},{t:2017.96,p:19800,lab:'$19,8k',side:'up'},
+    {t:2018.96,p:3200,lab:'$3,2k',side:'down'},
+    {t:2021.87,p:69000,lab:'$69k',side:'up'},
+    {t:2022.89,p:15476,lab:'$15,5k',side:'down'},
+    {t:2025.76,p:126198,lab:'$126k',side:'up'},
+    {t:2026.42,p:69000}
+  ];
+  let d='';
+  hist.forEach((pt,i)=>{ d+=(i?'L':'M')+X(pt.t).toFixed(1)+' '+Y(pt.p).toFixed(1)+' '; });
+  svg.appendChild(el('path',{d,fill:'none',stroke:'var(--btc)','stroke-width':2.4,'stroke-linejoin':'round'}));
+
+  // pontos + labels históricos
+  hist.forEach(pt=>{
+    if(!pt.lab) return;
+    svg.appendChild(el('circle',{cx:X(pt.t),cy:Y(pt.p),r:4,fill:'var(--btc)',stroke:'var(--bg)','stroke-width':2}));
+    const dy=pt.side==='up'?-10:18;
+    const lab=el('text',{x:X(pt.t),y:Y(pt.p)+dy,'text-anchor':'middle',class:'pt-lab',fill:'var(--ink)'});
+    lab.textContent=pt.lab;
+    svg.appendChild(lab);
+  });
+  // ponto "hoje"
+  const nowX=X(2026.42),nowY=Y(69000);
+  svg.appendChild(el('circle',{cx:nowX,cy:nowY,r:5,fill:'var(--ink)',stroke:'var(--btc)','stroke-width':2}));
+  const nl=el('text',{x:nowX+8,y:nowY-8,class:'pt-lab',fill:'var(--mut)'});
+  nl.textContent='hoje $69k';
+  svg.appendChild(nl);
+
+  // ---- cenários ----
+  const scen=[
+    {c:'var(--bull)',bt:{t:2026.7,p:55000},tp:{t:2029.3,p:200000},btL:'$55k',tpL:'$200k'},
+    {c:'var(--base)',bt:{t:2026.95,p:42000},tp:{t:2029.6,p:255000},btL:'$42k',tpL:'$255k'},
+    {c:'var(--bear)',bt:{t:2027.25,p:30000},tp:{t:2029.95,p:330000},btL:'$30k',tpL:'$330k'}
+  ];
+  scen.forEach(s=>{
+    const path=`M${nowX} ${nowY} L${X(s.bt.t)} ${Y(s.bt.p)} L${X(s.tp.t)} ${Y(s.tp.p)}`;
+    svg.appendChild(el('path',{d:path,fill:'none',stroke:s.c,'stroke-width':1.8,'stroke-dasharray':'5 5','opacity':.9,'stroke-linejoin':'round'}));
+    // fundo
+    svg.appendChild(el('circle',{cx:X(s.bt.t),cy:Y(s.bt.p),r:3.5,fill:s.c}));
+    const bl=el('text',{x:X(s.bt.t),y:Y(s.bt.p)+18,'text-anchor':'middle',class:'pt-lab',fill:s.c});
+    bl.textContent=s.btL;
+    svg.appendChild(bl);
+    // topo
+    svg.appendChild(el('circle',{cx:X(s.tp.t),cy:Y(s.tp.p),r:3.5,fill:s.c}));
+    const tl=el('text',{x:X(s.tp.t),y:Y(s.tp.p)-9,'text-anchor':'middle',class:'pt-lab',fill:s.c});
+    tl.textContent=s.tpL;
+    svg.appendChild(tl);
+  });
+})();
+</script>
+</body>
+</html>

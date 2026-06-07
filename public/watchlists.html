@@ -130,6 +130,27 @@
       .wl-card .title { font-weight: 600; font-size: 0.95rem; }
       .wl-card .desc { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
 
+      a.wl-card {
+        text-decoration: none;
+        color: var(--text);
+        justify-content: space-between;
+        transition: all 0.25s ease;
+      }
+      a.wl-card:hover {
+        background: var(--card-hover);
+        border-color: rgba(74,222,128,0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      }
+      a.wl-card .arrow {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 1.2rem;
+        transition: transform 0.2s, color 0.2s;
+      }
+      a.wl-card:hover .arrow { color: var(--accent); transform: translateX(4px); }
+      .wl-card .lead { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
       .back {
         display: inline-flex;
         align-items: center;
@@ -157,6 +178,20 @@
     </header>
 
     <main class="content">
+      <div class="section-label">Theme Baskets</div>
+      <div class="wl-list" style="margin-bottom: 28px;">
+        <a href="/estudos/quantum_computing_nichos.html" class="wl-card">
+          <div class="lead">
+            <div class="icon">⚛️</div>
+            <div>
+              <div class="title">Quantum Computing · Mapa de Nichos</div>
+              <div class="desc">12 nichos · hardware, stack e picks &amp; shovels.</div>
+            </div>
+          </div>
+          <div class="arrow">→</div>
+        </a>
+      </div>
+
       <div class="section-label">Em construção</div>
       <div class="wl-list">
         <div class="wl-card">

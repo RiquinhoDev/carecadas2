@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSMC · Mapa de Depend&ecirc;ncias &amp; Diagrama — Carecao</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap');
+  :root{
+    --bg:#080a0f;--card:#0f141d;--card-2:#0b0f16;--line:#1c2533;--line-soft:#161d28;
+    --txt:#e8eef6;--txt-dim:#8fa1b8;--txt-faint:#5a6b80;
+    --cyan:#3fd0e8;--blue:#5b8cff;--teal:#2dd4bf;--amber:#f0b13a;--rose:#ff6b6b;--violet:#a78bfa;
+    --mega:#8fa3b0;--mid:#f5a623;--small:#ff6b6b;
+    --glow:rgba(63,208,232,.13);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);
+    background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(63,208,232,.12), transparent 60%),
+      linear-gradient(var(--line-soft) 1px, transparent 1px),linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:auto, 42px 42px, 42px 42px;color:var(--txt);font-family:'Space Mono',monospace;
+    -webkit-font-smoothing:antialiased;padding:48px 24px 80px;min-height:100vh}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{border:1px solid var(--line);background:linear-gradient(180deg, rgba(15,20,29,.9), rgba(11,15,22,.9));
+    border-radius:14px;padding:28px 30px;position:relative;overflow:hidden;margin-bottom:14px}
+  header::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 20%, var(--glow), transparent 45%);pointer-events:none}
+  .head-inner{display:flex;align-items:center;gap:30px;position:relative;z-index:1}
+  .head-text{flex:1;min-width:0}
+  .hero{flex:0 0 auto;position:relative;width:200px;height:235px;animation:floaty 6s ease-in-out infinite}
+  .hero::before{content:"";position:absolute;inset:-22px;border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, rgba(63,208,232,.36), rgba(91,140,255,.16) 45%, transparent 70%);
+    filter:blur(6px);z-index:0;animation:pulse 4s ease-in-out infinite}
+  .hero::after{content:"";position:absolute;inset:-10px;border-radius:18px;border:1px solid rgba(63,208,232,.30);
+    box-shadow:inset 0 0 30px rgba(63,208,232,.10);pointer-events:none}
+  .hero .art{position:relative;z-index:1;width:100%;height:100%;border-radius:14px;border:1px solid var(--line);
+    background:linear-gradient(160deg,#0f141d,#080a0f);box-shadow:0 18px 50px rgba(0,0,0,.5), 0 0 40px rgba(63,208,232,.18);
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .hero .badge{position:absolute;z-index:2;font-weight:700;font-size:10px;color:var(--cyan);padding:3px 8px;border-radius:20px;
+    background:rgba(8,10,15,.85);border:1px solid rgba(63,208,232,.45);box-shadow:0 0 14px rgba(63,208,232,.5)}
+  .hero .b1{top:-6px;left:-14px;animation:floaty 5s ease-in-out infinite}
+  .hero .b0{bottom:8px;right:-16px;color:var(--violet);border-color:rgba(167,139,250,.5);box-shadow:0 0 14px rgba(167,139,250,.45);animation:floaty 4.5s ease-in-out .8s infinite}
+  @keyframes floaty{50%{transform:translateY(-10px)}}
+  @keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
+  @keyframes trace{to{stroke-dashoffset:-28}}
+  .brand{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--cyan);font-weight:700}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,5vw,50px);line-height:1.02;letter-spacing:-.02em;margin:16px 0 10px}
+  h1 .q{color:var(--cyan)}
+  .sub{color:var(--txt-dim);font-size:13px;max-width:64ch;line-height:1.6}
+  .meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:18px;font-size:11px;color:var(--txt-faint);letter-spacing:.08em;text-transform:uppercase}
+  .meta b{color:var(--txt-dim);font-weight:700}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;border:1px solid var(--line);border-radius:10px;
+    padding:12px 18px;margin-bottom:22px;font-size:11.5px;color:var(--txt-dim);background:var(--card-2)}
+  .legend .grp{display:flex;align-items:center;gap:7px}
+  .legend .sep{width:1px;height:16px;background:var(--line)}
+  .ldot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .tk{display:inline-block;font-weight:700;color:#080a0f;background:var(--cyan);padding:1px 7px;border-radius:5px;font-size:11px}
+  .tk.soft{background:transparent;color:var(--txt-dim);border:1px dashed var(--line)}
+  .tk.bn{background:var(--rose);color:#080a0f}
+  .tk.mo{background:var(--cyan);color:#080a0f}
+  .sec{display:flex;align-items:center;gap:14px;margin:26px 2px 12px;font-family:'Syne',sans-serif;font-weight:700;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-dim)}
+  .sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sec .ic{font-size:15px}
+  .niche{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg, var(--card), var(--card-2));
+    margin-bottom:12px;overflow:hidden;opacity:0;transform:translateY(14px);animation:rise .55s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .niche-grid{display:grid;grid-template-columns:252px 1fr;align-items:stretch}
+  .nleft{padding:18px 20px;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;justify-content:center;gap:7px;position:relative}
+  .nleft::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--accent,var(--cyan));box-shadow:0 0 14px var(--accent,var(--cyan))}
+  .nidx{font-size:10px;color:var(--txt-faint);letter-spacing:.2em}
+  .nname{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;line-height:1.12;color:var(--txt)}
+  .ntag{font-size:10.5px;color:var(--txt-dim);line-height:1.4}
+  .flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .flag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#080a0f;background:var(--rose);padding:2px 7px;border-radius:4px}
+  .flag.mono{background:var(--cyan)}
+  .caps{display:flex;align-items:center;gap:4px;margin-top:5px}
+  .caps .lbl{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-faint);margin-right:2px}
+  .caps .d{width:7px;height:7px;border-radius:50%}
+  .nright{padding:18px 20px;display:flex;flex-direction:column;gap:13px;justify-content:center}
+  .row-label{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{display:inline-flex;align-items:center;font-size:12px;padding:4px 9px;border-radius:6px;
+    background:rgba(63,208,232,.09);border:1px solid rgba(63,208,232,.26);color:var(--cyan);font-weight:700;
+    transition:transform .15s ease, background .15s ease}
+  .chip:hover{transform:translateY(-2px);background:rgba(63,208,232,.17)}
+  .chip.lead{background:rgba(63,208,232,.18);border-color:rgba(63,208,232,.55)}
+  .chip.priv{background:transparent;border:1px dashed var(--line);color:var(--txt-dim);font-weight:400}
+  .chip.priv:hover{transform:translateY(-2px);background:var(--line-soft)}
+  .chip .x{color:var(--txt-faint);font-weight:400;margin-left:5px}
+  .t{width:7px;height:7px;border-radius:50%;margin-right:6px;flex:0 0 auto}
+  .tm{background:var(--mega);box-shadow:0 0 6px rgba(143,163,176,.4)}
+  .td{background:var(--mid);box-shadow:0 0 6px rgba(245,166,35,.5)}
+  .ts{background:var(--small);box-shadow:0 0 6px rgba(255,107,107,.5)}
+  .none{color:var(--txt-faint);font-size:12px;font-style:italic}
+  footer{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:11px;color:var(--txt-faint);line-height:1.7}
+  footer .warn{color:var(--amber);font-weight:700;letter-spacing:.06em}
+  footer b{color:var(--txt-dim)}
+  @media(max-width:720px){
+    .head-inner{flex-direction:column-reverse;align-items:flex-start;gap:22px}
+    .hero{width:160px;height:188px;align-self:center}
+    .niche-grid{grid-template-columns:1fr}
+    .nleft{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .nleft::before{top:auto;bottom:0;left:14px;right:14px;width:auto;height:3px}
+    body{padding:28px 14px 60px}
+  }
+  /* ---- diagrama de rela&ccedil;&otilde;es (scoped, vindo do tsmc_diagrama) ---- */
+  .diag-wrap{max-width:100%;margin:6px 2px 0}
+  .diag-sub{color:var(--txt-dim);font-size:12.5px;max-width:80ch;line-height:1.6;margin:0 0 14px}
+  .diag-frame{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg, rgba(15,20,29,.7), rgba(11,15,22,.7));padding:10px;overflow:hidden}
+  .diag-frame svg{width:100%;height:auto;display:block}
+  .diag-legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;border:1px solid var(--line);border-radius:10px;
+    padding:11px 16px;margin-top:14px;font-size:11.5px;color:var(--txt-dim);background:rgba(11,15,22,.6)}
+  .diag-legend .grp{display:flex;align-items:center;gap:7px}
+  .diag-legend .sep{width:1px;height:15px;background:var(--line)}
+  .diag-foot{margin-top:14px;font-size:10.5px;color:var(--txt-faint);line-height:1.7}
+  .diag-foot .warn{color:#f0b13a;font-weight:700}
+  .diag-foot b{color:var(--txt-dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="head-inner">
+      <div class="head-text">
+        <div class="brand"><span class="dot"></span> Carecao · Theme Baskets</div>
+        <h1>Mapa de Depend&ecirc;ncias · <span class="q">TSMC</span></h1>
+        <p class="sub">Os hyperscalers dependem da TSMC — mas a TSMC depende de uma cadeia de quase-monop&oacute;lios <b style="color:var(--mid)">mid</b> e <b style="color:var(--small)">small-cap</b> que s&atilde;o, eles pr&oacute;prios, o gargalo. Crescem por <i>proxy</i> do capex da TSMC ($40B+/ano) e, ao contr&aacute;rio dela, muitas ainda n&atilde;o est&atilde;o totalmente descontadas. O gargalo de 2026 &eacute; o <b style="color:var(--cyan)">advanced packaging (CoWoS)</b>.</p>
+        <div class="meta">
+          <span><b>14</b> el&iacute;los</span>
+          <span><b>CoWoS</b> fully booked 52-78 sem.</span>
+          <span><b>Jun 2026</b></span>
+          <span>Caps = snapshot aprox.</span>
+        </div>
+      </div>
+      <div class="hero">
+        <span class="badge b1">CoWoS</span>
+        <span class="badge b0">EUV · 13.5nm</span>
+        <div class="art">
+          <svg viewBox="0 0 200 235" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="62" fill="none" stroke="#3fd0e8" stroke-width="1" opacity=".25"/>
+            <g stroke="#3fd0e8" stroke-width=".8" opacity=".18">
+              <path d="M50 70 H150 M50 100 H150 M50 130 H150 M70 48 V152 M100 44 V156 M130 48 V152"/>
+            </g>
+            <rect x="74" y="74" width="52" height="52" rx="4" fill="#0b0f16" stroke="#3fd0e8" stroke-width="1.6"/>
+            <rect x="86" y="86" width="28" height="28" rx="2" fill="#3fd0e8" opacity=".22" stroke="#3fd0e8" stroke-width="1"/>
+            <g stroke="#5b8cff" stroke-width="1.4" opacity=".85" stroke-dasharray="3 4" style="animation:trace 1.8s linear infinite">
+              <path d="M74 88 H40 M74 100 H38 M74 112 H40"/>
+              <path d="M126 88 H160 M126 100 H162 M126 112 H160"/>
+              <path d="M88 74 V46 M100 74 V44 M112 74 V46"/>
+              <path d="M88 126 V154 M100 126 V156 M112 126 V154"/>
+            </g>
+            <g fill="#a78bfa">
+              <circle cx="40" cy="88" r="2.4"/><circle cx="38" cy="100" r="2.4"/><circle cx="40" cy="112" r="2.4"/>
+              <circle cx="160" cy="88" r="2.4"/><circle cx="162" cy="100" r="2.4"/><circle cx="160" cy="112" r="2.4"/>
+            </g>
+            <text x="100" y="104" text-anchor="middle" font-family="Space Mono" font-size="11" font-weight="700" fill="#3fd0e8">TSMC</text>
+            <text x="100" y="200" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#5a6b80" letter-spacing="2">THE HUB</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="grp"><span class="ldot" style="background:var(--mega)"></span> mega <span style="color:var(--txt-faint)">&gt;$50B · descontada</span></span>
+    <span class="grp"><span class="ldot" style="background:var(--mid)"></span> mid <span style="color:var(--txt-faint)">$3-50B · sweet-spot</span></span>
+    <span class="grp"><span class="ldot" style="background:var(--small)"></span> small <span style="color:var(--txt-faint)">&lt;$3B · alta assimetria</span></span>
+    <span class="sep"></span>
+    <span class="grp"><span class="tk mo">monop&oacute;lio</span></span>
+    <span class="grp"><span class="tk bn">gargalo</span></span>
+    <span class="grp"><span class="tk soft">privada</span></span>
+  </div>
+
+  <!-- ===================== DIAGRAMA DE RELA&Ccedil;&Otilde;ES ===================== -->
+  <div class="sec"><span class="ic">🗺️</span> Diagrama de rela&ccedil;&otilde;es — a TSMC e a sua cadeia</div>
+
+  <div class="diag-wrap">
+    <p class="diag-sub">A TSMC &eacute; o hub: a procura entra por cima (hyperscalers &rarr; design de ASIC), os fornecedores-gargalo alimentam-na pelos lados, e o estrangulamento de 2026 &mdash; o advanced packaging (CoWoS) &mdash; est&aacute; destacado em baixo. A cor da caixa = camada; o ponto = dimens&atilde;o (mega/mid/small).</p>
+
+    <div class="diag-frame">
+    <svg viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg" font-family="'Space Mono', monospace">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L7,3 L0,6 Z" fill="#56708a"/>
+        </marker>
+        <marker id="arO" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L7,3 L0,6 Z" fill="#ff8c42"/>
+        </marker>
+        <marker id="arC" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L7,3 L0,6 Z" fill="#3fd0e8"/>
+        </marker>
+        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowO" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ===== SUPPLY ARROWS (drawn first, behind boxes) ===== -->
+      <g fill="none" stroke="#56708a" stroke-width="1.6" opacity=".55" marker-end="url(#ar)">
+        <path d="M286 248 C 380 300, 430 350, 486 388"/>            <!-- Litho -->
+        <path d="M268 388 C 360 405, 410 412, 486 420"/>            <!-- Materiais -->
+        <path d="M286 520 C 380 500, 430 480, 486 458"/>            <!-- WFE -->
+        <path d="M914 248 C 820 300, 770 350, 714 388"/>            <!-- Frontier -->
+        <path d="M932 388 C 840 405, 790 412, 714 420"/>            <!-- Teste -->
+        <path d="M914 520 C 820 500, 770 480, 714 458"/>            <!-- Substratos -->
+        <path d="M286 690 C 380 600, 430 540, 500 502"/>            <!-- Taiwan -->
+      </g>
+      <!-- packaging arrow (highlight) -->
+      <g fill="none" stroke="#ff8c42" stroke-width="2" opacity=".8" marker-end="url(#arO)">
+        <path d="M600 624 L600 506"/>
+      </g>
+
+      <!-- ===== DEMAND LOOP (top) ===== -->
+      <g fill="none" stroke="#2dd4bf" stroke-width="2" opacity=".85" marker-end="url(#arC)">
+        <path d="M338 86 L406 86"/>                                 <!-- Hyperscalers -> Design -->
+        <path d="M540 118 C 560 180, 575 250, 588 348"/>            <!-- Design -> TSMC -->
+      </g>
+      <g fill="none" stroke="#3fd0e8" stroke-width="2" opacity=".85" marker-end="url(#arC)">
+        <path d="M660 350 C 700 250, 760 150, 812 118"/>            <!-- TSMC -> AI chips -->
+      </g>
+      <g fill="none" stroke="#3fd0e8" stroke-width="1.6" opacity=".5" stroke-dasharray="5 5" marker-end="url(#arC)">
+        <path d="M812 60 C 600 16, 420 28, 320 56"/>                <!-- AI chips -> hyperscalers (loop) -->
+      </g>
+      <text x="566" y="200" fill="#5a6b80" font-size="10" transform="rotate(78 566 200)" opacity=".8">procura</text>
+
+      <!-- ===== TSMC HUB ===== -->
+      <g filter="url(#glow)">
+        <rect x="486" y="348" width="228" height="158" rx="14" fill="#0c1422" stroke="#3fd0e8" stroke-width="2"/>
+      </g>
+      <rect x="486" y="348" width="228" height="158" rx="14" fill="none" stroke="#3fd0e8" stroke-width="1"/>
+      <text x="600" y="386" text-anchor="middle" fill="#3fd0e8" font-family="Syne, sans-serif" font-size="30" font-weight="800">TSMC</text>
+      <text x="600" y="406" text-anchor="middle" fill="#5a6b80" font-size="9.5" letter-spacing="2">O HUB INDISPENS&Aacute;VEL</text>
+      <g font-size="11" fill="#8fa1b8" text-anchor="middle">
+        <rect x="506" y="430" width="58" height="24" rx="5" fill="#0f1826" stroke="#1c2533"/><text x="535" y="446">Fab</text>
+        <text x="576" y="446" fill="#3fd0e8">&rarr;</text>
+        <rect x="588" y="430" width="74" height="24" rx="5" fill="#1a1206" stroke="#ff8c42"/><text x="625" y="446" fill="#ff8c42">CoWoS</text>
+        <text x="672" y="446" fill="#3fd0e8">&rarr;</text>
+        <rect x="684" y="430" width="0" height="24"/>
+      </g>
+      <text x="600" y="478" text-anchor="middle" font-size="11" fill="#8fa1b8">Fab &rarr; <tspan fill="#ff8c42">CoWoS</tspan> &rarr; Teste</text>
+      <text x="600" y="496" text-anchor="middle" font-size="9" fill="#5a6b80">~$40B+ capex/ano &middot; ~67% foundry global</text>
+
+      <!-- ===== TOP BOXES: Hyperscalers / Design / AI Chips ===== -->
+      <!-- Hyperscalers -->
+      <rect x="132" y="56" width="206" height="60" rx="10" fill="#0d1117" stroke="#2dd4bf" stroke-width="1.3"/>
+      <text x="235" y="80" text-anchor="middle" fill="#2dd4bf" font-size="10.5" font-weight="700" letter-spacing="1">PROCURA · HYPERSCALERS</text>
+      <text x="235" y="100" text-anchor="middle" fill="#c9d6e5" font-size="12">NVDA &middot; AVGO &middot; GOOGL &middot; META &middot; MSFT</text>
+      <!-- Design -->
+      <rect x="406" y="56" width="208" height="60" rx="10" fill="#0d1117" stroke="#2dd4bf" stroke-width="1.6"/>
+      <text x="510" y="80" text-anchor="middle" fill="#2dd4bf" font-size="10.5" font-weight="700" letter-spacing="1">DESIGN ASIC</text>
+      <text x="510" y="100" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> GUC <tspan fill="#3fd0e8">&#9670;</tspan> <tspan fill="#f5a623">&#9679;</tspan> Alchip <tspan fill="#ff6b6b">&#9679;</tspan> Faraday</text>
+      <!-- AI chips -->
+      <rect x="760" y="56" width="240" height="60" rx="10" fill="#0d1117" stroke="#3fd0e8" stroke-width="1.3"/>
+      <text x="880" y="80" text-anchor="middle" fill="#3fd0e8" font-size="10.5" font-weight="700" letter-spacing="1">PRODUTO · CHIPS DE IA</text>
+      <text x="880" y="100" text-anchor="middle" fill="#c9d6e5" font-size="12">GPUs &middot; ASICs &middot; HBM packages</text>
+
+      <!-- ===== LEFT SUPPLIERS (front-end) ===== -->
+      <!-- Litho -->
+      <rect x="64" y="186" width="222" height="80" rx="10" fill="#0d1117" stroke="#3fd0e8" stroke-width="1.3"/>
+      <text x="175" y="208" text-anchor="middle" fill="#3fd0e8" font-size="10" font-weight="700" letter-spacing="1">LITOGRAFIA &amp; M&Aacute;SCARAS</text>
+      <text x="175" y="228" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#8fa3b0">&#9679;</tspan> ASML <tspan fill="#3fd0e8">&#9670;</tspan> <tspan fill="#f5a623">&#9679;</tspan> Lasertec <tspan fill="#3fd0e8">&#9670;</tspan></text>
+      <text x="175" y="248" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> Hoya <tspan fill="#ff6b6b">&#9679;</tspan> Photronics</text>
+      <!-- Materiais -->
+      <rect x="46" y="326" width="222" height="80" rx="10" fill="#0d1117" stroke="#3fd0e8" stroke-width="1.3"/>
+      <text x="157" y="348" text-anchor="middle" fill="#3fd0e8" font-size="10" font-weight="700" letter-spacing="1">MATERIAIS &amp; WAFERS</text>
+      <text x="157" y="368" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#8fa3b0">&#9679;</tspan> Shin-Etsu <tspan fill="#f5a623">&#9679;</tspan> SUMCO</text>
+      <text x="157" y="388" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> GlobalWafers <tspan fill="#f5a623">&#9679;</tspan> TOK</text>
+      <!-- WFE -->
+      <rect x="64" y="480" width="222" height="80" rx="10" fill="#0d1117" stroke="#3fd0e8" stroke-width="1.3"/>
+      <text x="175" y="502" text-anchor="middle" fill="#3fd0e8" font-size="10" font-weight="700" letter-spacing="1">WFE · DEPOSI&Ccedil;&Atilde;O/ETCH/LIMPEZA</text>
+      <text x="175" y="522" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#8fa3b0">&#9679;</tspan> AMAT <tspan fill="#8fa3b0">&#9679;</tspan> LRCX <tspan fill="#8fa3b0">&#9679;</tspan> KLAC</text>
+      <text x="175" y="542" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> ACMR <tspan fill="#ff6b6b">&#9679;</tspan> UCTT <tspan fill="#ff6b6b">&#9679;</tspan> Ichor</text>
+
+      <!-- ===== RIGHT SUPPLIERS ===== -->
+      <!-- Frontier -->
+      <rect x="914" y="186" width="222" height="80" rx="10" fill="#0d1117" stroke="#a78bfa" stroke-width="1.3"/>
+      <text x="1025" y="208" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="700" letter-spacing="1">FRONTEIRA · CPO / InP</text>
+      <text x="1025" y="228" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> Lumentum <tspan fill="#f5a623">&#9679;</tspan> Coherent</text>
+      <text x="1025" y="248" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#ff6b6b">&#9679;</tspan> AXT <tspan fill="#ff6b6b">&#9679;</tspan> POET <tspan fill="#ff6b6b">&#9679;</tspan> IQE</text>
+      <!-- Teste -->
+      <rect x="932" y="326" width="222" height="80" rx="10" fill="#0d1117" stroke="#5b8cff" stroke-width="1.3"/>
+      <text x="1043" y="348" text-anchor="middle" fill="#5b8cff" font-size="10" font-weight="700" letter-spacing="1">TESTE &amp; BURN-IN</text>
+      <text x="1043" y="368" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#8fa3b0">&#9679;</tspan> Advantest <tspan fill="#f5a623">&#9679;</tspan> Teradyne</text>
+      <text x="1043" y="388" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> FormFactor <tspan fill="#ff6b6b">&#9679;</tspan> Aehr</text>
+      <!-- Substratos -->
+      <rect x="914" y="480" width="222" height="80" rx="10" fill="#0d1117" stroke="#ff8c42" stroke-width="1.3"/>
+      <text x="1025" y="502" text-anchor="middle" fill="#ff8c42" font-size="10" font-weight="700" letter-spacing="1">SUBSTRATOS ABF</text>
+      <text x="1025" y="522" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> Ajinomoto <tspan fill="#3fd0e8">&#9670;</tspan> <tspan fill="#f5a623">&#9679;</tspan> Ibiden</text>
+      <text x="1025" y="542" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#f5a623">&#9679;</tspan> Unimicron <tspan fill="#ff6b6b">&#9679;</tspan> Kinsus</text>
+
+      <!-- ===== TAIWAN local (bottom-left) ===== -->
+      <rect x="64" y="650" width="222" height="80" rx="10" fill="#0d1117" stroke="#34d399" stroke-width="1.3"/>
+      <text x="175" y="672" text-anchor="middle" fill="#34d399" font-size="10" font-weight="700" letter-spacing="1">ECOSSISTEMA LOCAL TW</text>
+      <text x="175" y="692" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#ff6b6b">&#9679;</tspan> Gudeng <tspan fill="#3fd0e8">&#9670;</tspan> <tspan fill="#f5a623">&#9679;</tspan> Chroma</text>
+      <text x="175" y="712" text-anchor="middle" font-size="12" fill="#c9d6e5"><tspan fill="#ff6b6b">&#9679;</tspan> CHPT <tspan fill="#ff6b6b">&#9679;</tspan> All Ring Tech</text>
+
+      <!-- ===== ADVANCED PACKAGING (bottom-center, the bottleneck) ===== -->
+      <g filter="url(#glowO)">
+        <rect x="416" y="624" width="368" height="118" rx="13" fill="#160f06" stroke="#ff8c42" stroke-width="2"/>
+      </g>
+      <rect x="700" y="612" width="84" height="22" rx="11" fill="#ff8c42"/>
+      <text x="742" y="627" text-anchor="middle" fill="#160f06" font-size="10" font-weight="700" letter-spacing="1">GARGALO 2026</text>
+      <text x="600" y="652" text-anchor="middle" fill="#ff8c42" font-size="12" font-weight="700" letter-spacing="1">ADVANCED PACKAGING · CoWoS</text>
+      <text x="600" y="676" text-anchor="middle" font-size="12.5" fill="#e8eef6"><tspan fill="#f5a623">&#9679;</tspan> BESI <tspan fill="#f5a623">&#9679;</tspan> ASMPT <tspan fill="#f5a623">&#9679;</tspan> Onto <tspan fill="#f5a623">&#9679;</tspan> Camtek</text>
+      <text x="600" y="700" text-anchor="middle" font-size="11" fill="#8fa1b8">inspe&ccedil;&atilde;o &middot; bonders &middot; metrologia</text>
+      <text x="600" y="724" text-anchor="middle" font-size="12" fill="#c9d6e5">OSAT overflow &nbsp;<tspan fill="#f5a623">&#9679;</tspan> ASE <tspan fill="#f5a623">&#9679;</tspan> Amkor</text>
+
+      <!-- side labels -->
+      <text x="40" y="160" fill="#5a6b80" font-size="10" letter-spacing="2">FORNECEDORES &darr;</text>
+      <text x="1160" y="160" fill="#5a6b80" font-size="10" letter-spacing="2" text-anchor="end">FORNECEDORES &darr;</text>
+    </svg>
+    </div>
+
+    <div class="diag-legend">
+      <span class="grp"><span class="ldot" style="background:#8fa3b0"></span> mega <span style="color:#5a6b80">&gt;$50B</span></span>
+      <span class="grp"><span class="ldot" style="background:#f5a623"></span> mid <span style="color:#5a6b80">$3-50B</span></span>
+      <span class="grp"><span class="ldot" style="background:#ff6b6b"></span> small <span style="color:#5a6b80">&lt;$3B</span></span>
+      <span class="sep"></span>
+      <span class="grp"><span style="color:#3fd0e8">&#9670;</span> quase-monop&oacute;lio</span>
+      <span class="sep"></span>
+      <span class="grp"><span style="color:#3fd0e8">&#9632;</span> front-end</span>
+      <span class="grp"><span style="color:#ff8c42">&#9632;</span> packaging</span>
+      <span class="grp"><span style="color:#5b8cff">&#9632;</span> teste</span>
+      <span class="grp"><span style="color:#a78bfa">&#9632;</span> fronteira</span>
+      <span class="grp"><span style="color:#2dd4bf">&#9632;</span> design/procura</span>
+    </div>
+
+    <div class="diag-foot">
+      <p><span class="warn">⚠ N&Atilde;O &Eacute; CONSELHO DE INVESTIMENTO.</span> Conte&uacute;do educativo. As setas mostram fluxo: a procura entra por cima (hyperscalers &rarr; design &rarr; TSMC &rarr; chips de IA &rarr; de volta &agrave; procura), os fornecedores-gargalo alimentam a TSMC pelos lados e por baixo. O <b style="color:#ff8c42">advanced packaging</b> est&aacute; destacado por ser o estrangulamento f&iacute;sico de 2026. Caps = snapshot aprox. Jun 2026.</p>
+    </div>
+  </div>
+
+  <!-- ===================== DESIGN ===================== -->
+  <div class="sec"><span class="ic">🧩</span> Design — quem desenha o que a TSMC fabrica</div>
+
+  <div class="niche" style="--accent:#2dd4bf;animation-delay:.03s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.01 · DESIGN</div>
+        <div class="nname">Custom Silicon / ASIC Design</div>
+        <div class="ntag">Desenham os ASICs dos CSPs em N3/N2 + CoWoS</div>
+        <div class="flags"><span class="flag mono">proxy direto</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Casas de ASIC (Taiwan)</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>3443<span class="x">GUC · TSMC det&eacute;m ~35%</span></span>
+          <span class="chip"><span class="t td"></span>3661<span class="x">Alchip</span></span>
+          <span class="chip"><span class="t ts"></span>3035<span class="x">Faraday</span></span>
+        </div></div>
+        <div><div class="row-label">Mega in-house (ASIC dos hyperscalers)</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>AVGO<span class="x">Broadcom</span></span>
+          <span class="chip"><span class="t tm"></span>MRVL<span class="x">Marvell</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FRONT-END ===================== -->
+  <div class="sec"><span class="ic">🔬</span> Front-end — fabricar o wafer (litografia &amp; materiais)</div>
+
+  <div class="niche" style="--accent:#3fd0e8;animation-delay:.06s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.02 · LITOGRAFIA</div>
+        <div class="nname">Scanners EUV &amp; &Oacute;ptica</div>
+        <div class="ntag">A m&aacute;quina mais cara da Terra (&gt;$300M/un)</div>
+        <div class="flags"><span class="flag mono">monop&oacute;lio</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>ASML<span class="x">monop&oacute;lio EUV</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas (donas da tecnologia-chave)</div><div class="chips">
+          <span class="chip priv">Carl Zeiss SMT<span class="x">&oacute;ptica</span></span><span class="chip priv">TRUMPF<span class="x">laser CO&#8322;</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#3fd0e8;animation-delay:.10s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.03 · M&Aacute;SCARAS</div>
+        <div class="nname">Inspe&ccedil;&atilde;o de M&aacute;scaras &amp; Photomasks</div>
+        <div class="ntag">Certificar que a m&aacute;scara EUV est&aacute; perfeita</div>
+        <div class="flags"><span class="flag mono">monop&oacute;lio</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>6920<span class="x">Lasertec · quase-monop&oacute;lio inspe&ccedil;&atilde;o EUV</span></span>
+          <span class="chip"><span class="t td"></span>7741<span class="x">Hoya · mask blanks</span></span>
+          <span class="chip"><span class="t ts"></span>PLAB<span class="x">Photronics</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#3fd0e8;animation-delay:.14s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.04 · MATERIAIS</div>
+        <div class="nname">Fotorresiste &amp; Qu&iacute;micos</div>
+        <div class="ntag">Jap&atilde;o det&eacute;m &gt;90% do EUV · consum&iacute;vel por wafer</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>4063<span class="x">Shin-Etsu Chem</span></span>
+          <span class="chip"><span class="t td"></span>4186<span class="x">Tokyo Ohka (TOK)</span></span>
+          <span class="chip"><span class="t td"></span>ENTG<span class="x">Entegris</span></span>
+        </div></div>
+        <div><div class="row-label">Privada</div><div class="chips">
+          <span class="chip priv">JSR<span class="x">l&iacute;der EUV · fechada pela JIC</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#3fd0e8;animation-delay:.18s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.05 · WAFERS</div>
+        <div class="nname">Wafers de Sil&iacute;cio</div>
+        <div class="ntag">O substrato base · olig&oacute;polio japon&ecirc;s</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>4063<span class="x">Shin-Etsu</span></span>
+          <span class="chip"><span class="t td"></span>3436<span class="x">SUMCO</span></span>
+          <span class="chip"><span class="t td"></span>6488<span class="x">GlobalWafers (TW)</span></span>
+          <span class="chip"><span class="t ts"></span>WAF<span class="x">Siltronic</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#3fd0e8;animation-delay:.22s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.06 · WFE</div>
+        <div class="nname">Deposi&ccedil;&atilde;o / Etch / Limpeza</div>
+        <div class="ntag">Equip. de fab · <b style="color:var(--mega)">topo dominado por megas</b></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Megas (j&aacute; descontados)</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>AMAT</span><span class="chip"><span class="t tm"></span>LRCX</span><span class="chip"><span class="t tm"></span>8035<span class="x">Tokyo Electron</span></span><span class="chip"><span class="t tm"></span>KLAC</span>
+        </div></div>
+        <div><div class="row-label">Os assim&eacute;tricos (nicho/subsistemas)</div><div class="chips">
+          <span class="chip"><span class="t td"></span>ACMR<span class="x">ACM · limpeza</span></span>
+          <span class="chip"><span class="t td"></span>MKSI<span class="x">MKS</span></span>
+          <span class="chip"><span class="t td"></span>AEIS<span class="x">Advanced Energy</span></span>
+          <span class="chip"><span class="t ts"></span>ACLS<span class="x">Axcelis · implante</span></span>
+          <span class="chip"><span class="t ts"></span>UCTT<span class="x">Ultra Clean</span></span>
+          <span class="chip"><span class="t ts"></span>ICHR<span class="x">Ichor</span></span>
+          <span class="chip"><span class="t ts"></span>VECO<span class="x">Veeco</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ADVANCED PACKAGING ===================== -->
+  <div class="sec"><span class="ic">📦</span> Advanced packaging — CoWoS, o gargalo de 2026</div>
+
+  <div class="niche" style="--accent:#ff8c42;animation-delay:.26s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.07 · PACKAGING</div>
+        <div class="nname">Bonders (Hybrid &amp; TCB)</div>
+        <div class="ntag">Colar chiplets a 0.1&micro;m · cora&ccedil;&atilde;o do CoWoS/SoIC</div>
+        <div class="flags"><span class="flag">gargalo</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>BESI<span class="x">l&iacute;der hybrid bonding</span></span>
+          <span class="chip"><span class="t td"></span>522<span class="x">ASMPT · l&iacute;der TCB</span></span>
+          <span class="chip"><span class="t td"></span>KLIC<span class="x">Kulicke &amp; Soffa</span></span>
+          <span class="chip"><span class="t tm"></span>6146<span class="x">Disco · dicing/grinding</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff8c42;animation-delay:.30s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.08 · PACKAGING</div>
+        <div class="nname">Inspe&ccedil;&atilde;o &amp; Metrologia AP</div>
+        <div class="ntag">Yield em pacotes com 500M de micro-bumps</div>
+        <div class="flags"><span class="flag">gargalo</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>KLAC<span class="x">KLA</span></span>
+          <span class="chip lead"><span class="t td"></span>ONTO<span class="x">Onto · alta quota TSMC AP</span></span>
+          <span class="chip"><span class="t td"></span>CAMT<span class="x">Camtek · pure-play AP</span></span>
+          <span class="chip"><span class="t td"></span>NVMI<span class="x">Nova</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff8c42;animation-delay:.34s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.09 · PACKAGING</div>
+        <div class="nname">OSAT — Overflow de CoWoS</div>
+        <div class="ntag">TSMC subcontrata sub-etapas · vendas a duplicar</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>ASX<span class="x">ASE · maior OSAT mundial</span></span>
+          <span class="chip"><span class="t td"></span>AMKR<span class="x">Amkor</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff8c42;animation-delay:.38s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.10 · SUBSTRATOS</div>
+        <div class="nname">Substratos ABF &amp; Glass</div>
+        <div class="ntag">Super-ciclo 2026-28 · Ajinomoto det&eacute;m o filme</div>
+        <div class="flags"><span class="flag mono">monop&oacute;lio</span><span class="flag">gargalo</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Material-chave</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>2802<span class="x">Ajinomoto · monop&oacute;lio do filme ABF</span></span>
+        </div></div>
+        <div><div class="row-label">Fabricantes de substrato</div><div class="chips">
+          <span class="chip"><span class="t td"></span>4062<span class="x">Ibiden</span></span>
+          <span class="chip"><span class="t td"></span>6967<span class="x">Shinko</span></span>
+          <span class="chip"><span class="t td"></span>3037<span class="x">Unimicron (TW)</span></span>
+          <span class="chip"><span class="t ts"></span>3189<span class="x">Kinsus</span></span>
+          <span class="chip"><span class="t ts"></span>8046<span class="x">Nan Ya PCB</span></span>
+          <span class="chip"><span class="t ts"></span>ATS<span class="x">AT&amp;S (&Aacute;ustria)</span></span>
+        </div></div>
+        <div><div class="row-label">Glass substrate (emergente)</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>GLW<span class="x">Corning</span></span>
+          <span class="chip"><span class="t td"></span>011790<span class="x">SKC/Absolics</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== BACK-END ===================== -->
+  <div class="sec"><span class="ic">🧪</span> Back-end — teste &amp; burn-in (escala com volume)</div>
+
+  <div class="niche" style="--accent:#5b8cff;animation-delay:.42s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.11 · TESTE</div>
+        <div class="nname">Teste, Probe &amp; Burn-in</div>
+        <div class="ntag">ATE · probe cards · burn-in p/ AI &amp; HBM</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>6857<span class="x">Advantest · l&iacute;der ATE</span></span>
+          <span class="chip"><span class="t td"></span>TER<span class="x">Teradyne</span></span>
+          <span class="chip"><span class="t td"></span>FORM<span class="x">FormFactor · probe cards</span></span>
+          <span class="chip"><span class="t td"></span>2360<span class="x">Chroma ATE (TW)</span></span>
+          <span class="chip"><span class="t ts"></span>COHU<span class="x">Cohu</span></span>
+          <span class="chip"><span class="t ts"></span>AEHR<span class="x">Aehr · pure-play burn-in</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FRONTEIRA ===================== -->
+  <div class="sec"><span class="ic">💡</span> A pr&oacute;xima fronteira — luz, n&atilde;o cobre (interconex&atilde;o &oacute;tica)</div>
+
+  <div class="niche" style="--accent:#a78bfa;animation-delay:.46s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.12 · FRONTEIRA</div>
+        <div class="nname">CPO / Silicon Photonics</div>
+        <div class="ntag">TSMC COUPE = backbone · gargalo: laser EML 200G</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Switch &amp; DSP (megas)</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>AVGO<span class="x">Broadcom · Tomahawk6</span></span>
+          <span class="chip"><span class="t tm"></span>MRVL<span class="x">Marvell · DSP</span></span>
+        </div></div>
+        <div><div class="row-label">&Oacute;ptica / laser (o gargalo)</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>LITE<span class="x">Lumentum · EML 200G</span></span>
+          <span class="chip"><span class="t td"></span>COHR<span class="x">Coherent</span></span>
+          <span class="chip"><span class="t ts"></span>AAOI<span class="x">Applied Opto · LPO</span></span>
+          <span class="chip"><span class="t ts"></span>POET<span class="x">POET · interposer &oacute;tico</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#a78bfa;animation-delay:.50s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.13 · FRONTEIRA</div>
+        <div class="nname">InP / Compound Semi</div>
+        <div class="ntag">O material da luz · d&eacute;fice de oferta &gt;70% · order book at&eacute; 2027+</div>
+        <div class="flags"><span class="flag mono">monop&oacute;lio</span><span class="flag">gargalo</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Substratos InP</div><div class="chips">
+          <span class="chip lead"><span class="t ts"></span>AXTI<span class="x">AXT · &uacute;nico pure-play, ~40% quota</span></span>
+          <span class="chip"><span class="t td"></span>5802<span class="x">Sumitomo Elec.</span></span>
+        </div></div>
+        <div><div class="row-label">Epitaxia / componentes</div><div class="chips">
+          <span class="chip"><span class="t td"></span>COHR<span class="x">Coherent · integrado</span></span>
+          <span class="chip"><span class="t ts"></span>IQE<span class="x">IQE · epiwafers</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TAIWAN ===================== -->
+  <div class="sec"><span class="ic">🇹🇼</span> Ecossistema local Taiwan — proxy puro do capex</div>
+
+  <div class="niche" style="--accent:#34d399;animation-delay:.54s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.14 · TAIWAN</div>
+        <div class="nname">Fornecedores Locais TW</div>
+        <div class="ntag">Ganham quota "local-to-local" por colabora&ccedil;&atilde;o direta</div>
+        <div class="flags"><span class="flag mono">monop&oacute;lio</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas (TW)</div><div class="chips">
+          <span class="chip lead"><span class="t ts"></span>3680<span class="x">Gudeng · EUV pods, quase-monop&oacute;lio</span></span>
+          <span class="chip"><span class="t td"></span>2360<span class="x">Chroma ATE</span></span>
+          <span class="chip"><span class="t ts"></span>6187<span class="x">All Ring Tech · underfill</span></span>
+          <span class="chip"><span class="t ts"></span>6510<span class="x">CHPT · probe/test</span></span>
+        </div></div>
+        <div><div class="row-label">Outros parceiros locais</div><div class="chips">
+          <span class="chip priv">Grand Process Tech</span><span class="chip priv">Scientech</span><span class="chip priv">Hermes-Epitek</span><span class="chip priv">Topco Scientific</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><span class="warn">⚠ N&Atilde;O &Eacute; CONSELHO DE INVESTIMENTO.</span> &nbsp;Conte&uacute;do educativo. <b>A tese:</b> a TSMC est&aacute; descontada (~$1T), mas muitos gargalos a montante n&atilde;o est&atilde;o — sobretudo no <b style="color:var(--cyan)">advanced packaging (CoWoS)</b> e no <b style="color:var(--cyan)">design de ASIC</b> (GUC/Alchip crescem por proxy direto). As <b style="color:var(--small)">small-caps</b> (AXT, Aehr, Gudeng, Faraday) e os <b style="color:var(--cyan)">quase-monop&oacute;lios</b> (Lasertec, Ajinomoto, Gudeng) s&atilde;o as apostas mais assim&eacute;tricas — e mais vol&aacute;teis. <b>Nota:</b> nem tudo o que &eacute; "AI bottleneck" &eacute; cadeia da TSMC — <i>power</i> e <i>cooling</i> (Vertiv, GE Vernova) s&atilde;o datacenter a jusante, pertencem ao mapa de Energia. <b>Riscos:</b> ciclo de equipamento (encomenda&rarr;receita&rarr;digest&atilde;o), risco de sobre-constru&ccedil;&atilde;o de packaging em 2027, concentra&ccedil;&atilde;o geopol&iacute;tica Taiwan/Jap&atilde;o/China (InP), e a Lasertec teve alega&ccedil;&otilde;es de short-seller (2024). Caps = snapshot aprox. Jun 2026.</p>
+    <p style="margin-top:10px;color:var(--txt-faint)">Carecao · Theme Baskets · Mapa de Depend&ecirc;ncias TSMC · 14 el&iacute;los · Jun 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>

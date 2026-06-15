@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ciberseguran&ccedil;a · Mapa de Nichos — Carecao</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap');
+  :root{
+    --bg:#0c0709;--card:#190f13;--card-2:#120b0e;--line:#2e1d23;--line-soft:#241318;
+    --txt:#f6e9ec;--txt-dim:#bd97a1;--txt-faint:#7e5f68;
+    --red:#ff4d6d;--orange:#ff9f40;--blue:#5b8cff;--teal:#2dd4bf;--violet:#a78bfa;
+    --mega:#8fa3b0;--mid:#f5a623;--small:#ff6b6b;
+    --glow:rgba(255,77,109,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);
+    background-image:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,77,109,.13), transparent 60%),
+      linear-gradient(var(--line-soft) 1px, transparent 1px),linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:auto, 42px 42px, 42px 42px;color:var(--txt);font-family:'Space Mono',monospace;
+    -webkit-font-smoothing:antialiased;padding:48px 24px 80px;min-height:100vh}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{border:1px solid var(--line);background:linear-gradient(180deg, rgba(25,15,19,.9), rgba(18,11,14,.9));
+    border-radius:14px;padding:28px 30px;position:relative;overflow:hidden;margin-bottom:14px}
+  header::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 20%, var(--glow), transparent 45%);pointer-events:none}
+  .head-inner{display:flex;align-items:center;gap:30px;position:relative;z-index:1}
+  .head-text{flex:1;min-width:0}
+  .hero{flex:0 0 auto;position:relative;width:196px;height:235px;animation:floaty 6s ease-in-out infinite}
+  .hero::before{content:"";position:absolute;inset:-22px;border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, rgba(255,77,109,.36), rgba(255,159,64,.16) 45%, transparent 70%);
+    filter:blur(6px);z-index:0;animation:pulse 4s ease-in-out infinite}
+  .hero::after{content:"";position:absolute;inset:-10px;border-radius:18px;border:1px solid rgba(255,77,109,.30);
+    box-shadow:inset 0 0 30px rgba(255,77,109,.10);pointer-events:none}
+  .hero .art{position:relative;z-index:1;width:100%;height:100%;border-radius:14px;border:1px solid var(--line);
+    background:linear-gradient(160deg,#190f13,#0c0709);box-shadow:0 18px 50px rgba(0,0,0,.5), 0 0 40px rgba(255,77,109,.18);
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .hero .badge{position:absolute;z-index:2;font-weight:700;font-size:10px;color:var(--red);padding:3px 8px;border-radius:20px;
+    background:rgba(12,7,9,.85);border:1px solid rgba(255,77,109,.45);box-shadow:0 0 14px rgba(255,77,109,.5)}
+  .hero .b1{top:-6px;left:-14px;animation:floaty 5s ease-in-out infinite}
+  .hero .b0{bottom:8px;right:-16px;color:var(--violet);border-color:rgba(167,139,250,.5);box-shadow:0 0 14px rgba(167,139,250,.45);animation:floaty 4.5s ease-in-out .8s infinite}
+  @keyframes floaty{50%{transform:translateY(-10px)}}
+  @keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
+  @keyframes scan{0%{transform:translateY(0)}100%{transform:translateY(150px)}}
+  .brand{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--red);font-weight:700}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,5vw,50px);line-height:1.02;letter-spacing:-.02em;margin:16px 0 10px}
+  h1 .q{color:var(--red)}
+  .sub{color:var(--txt-dim);font-size:13px;max-width:64ch;line-height:1.6}
+  .meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:18px;font-size:11px;color:var(--txt-faint);letter-spacing:.08em;text-transform:uppercase}
+  .meta b{color:var(--txt-dim);font-weight:700}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;border:1px solid var(--line);border-radius:10px;
+    padding:12px 18px;margin-bottom:22px;font-size:11.5px;color:var(--txt-dim);background:var(--card-2)}
+  .legend .grp{display:flex;align-items:center;gap:7px}
+  .legend .sep{width:1px;height:16px;background:var(--line)}
+  .ldot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .tk{display:inline-block;font-weight:700;color:#0c0709;background:var(--red);padding:1px 7px;border-radius:5px;font-size:11px}
+  .tk.soft{background:transparent;color:var(--txt-dim);border:1px dashed var(--line)}
+  .tk.bn{background:var(--small);color:#0c0709}
+  .tk.fr{background:var(--violet);color:#0c0709}
+  .sec{display:flex;align-items:center;gap:14px;margin:26px 2px 12px;font-family:'Syne',sans-serif;font-weight:700;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-dim)}
+  .sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sec .ic{font-size:15px}
+  .niche{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg, var(--card), var(--card-2));
+    margin-bottom:12px;overflow:hidden;opacity:0;transform:translateY(14px);animation:rise .55s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .niche-grid{display:grid;grid-template-columns:256px 1fr;align-items:stretch}
+  .nleft{padding:18px 20px;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;justify-content:center;gap:7px;position:relative}
+  .nleft::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--accent,var(--red));box-shadow:0 0 14px var(--accent,var(--red))}
+  .nidx{font-size:10px;color:var(--txt-faint);letter-spacing:.2em}
+  .nname{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;line-height:1.12;color:var(--txt)}
+  .ntag{font-size:10.5px;color:var(--txt-dim);line-height:1.4}
+  .flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+  .flag{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#0c0709;background:var(--small);padding:2px 7px;border-radius:4px}
+  .flag.fr{background:var(--violet)}
+  .flag.pv{background:transparent;color:var(--txt-dim);border:1px dashed var(--line)}
+  .caps{display:flex;align-items:center;gap:4px;margin-top:5px}
+  .caps .lbl{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-faint);margin-right:2px}
+  .caps .d{width:7px;height:7px;border-radius:50%}
+  .nright{padding:18px 20px;display:flex;flex-direction:column;gap:13px;justify-content:center}
+  .row-label{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{display:inline-flex;align-items:center;font-size:12px;padding:4px 9px;border-radius:6px;
+    background:rgba(255,77,109,.09);border:1px solid rgba(255,77,109,.26);color:var(--red);font-weight:700;
+    transition:transform .15s ease, background .15s ease}
+  .chip:hover{transform:translateY(-2px);background:rgba(255,77,109,.17)}
+  .chip.lead{background:rgba(255,77,109,.18);border-color:rgba(255,77,109,.55)}
+  .chip.priv{background:transparent;border:1px dashed var(--line);color:var(--txt-dim);font-weight:400}
+  .chip.priv:hover{transform:translateY(-2px);background:var(--line-soft)}
+  .chip .x{color:var(--txt-faint);font-weight:400;margin-left:5px}
+  .t{width:7px;height:7px;border-radius:50%;margin-right:6px;flex:0 0 auto}
+  .tm{background:var(--mega);box-shadow:0 0 6px rgba(143,163,176,.4)}
+  .td{background:var(--mid);box-shadow:0 0 6px rgba(245,166,35,.5)}
+  .ts{background:var(--small);box-shadow:0 0 6px rgba(255,107,107,.5)}
+  footer{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:11px;color:var(--txt-faint);line-height:1.7}
+  footer .warn{color:var(--mid);font-weight:700;letter-spacing:.06em}
+  footer b{color:var(--txt-dim)}
+  @media(max-width:720px){
+    .head-inner{flex-direction:column-reverse;align-items:flex-start;gap:22px}
+    .hero{width:160px;height:188px;align-self:center}
+    .niche-grid{grid-template-columns:1fr}
+    .nleft{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .nleft::before{top:auto;bottom:0;left:14px;right:14px;width:auto;height:3px}
+    body{padding:28px 14px 60px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="head-inner">
+      <div class="head-text">
+        <div class="brand"><span class="dot"></span> Carecao · Theme Baskets</div>
+        <h1>Mapa de Nichos · <span class="q">Ciberseguran&ccedil;a</span></h1>
+        <p class="sub">O contra-trade da IA e do quantum: apostar em quem lucra com a <i>amea&ccedil;a</i> que ambos criam. Gasto global &gt;$520B em 2026, com a IA a ser apontada como o maior driver de mudan&ccedil;a por 94% das empresas. A nova superf&iacute;cie de ataque &mdash; <b style="color:var(--orange)">identidade &amp; agentes de IA</b> &mdash; &eacute; o gargalo emergente; a <b style="color:var(--violet)">cripto p&oacute;s-quantum</b> &eacute; a frente mais cedo.</p>
+        <div class="meta">
+          <span><b>12</b> nichos</span>
+          <span><b>~$520B</b> gasto 2026</span>
+          <span><b>CAGR ~14%</b></span>
+          <span>Caps = snapshot aprox.</span>
+        </div>
+      </div>
+      <div class="hero">
+        <span class="badge b1">AI THREAT</span>
+        <span class="badge b0">Q-DAY</span>
+        <div class="art">
+          <svg viewBox="0 0 196 235" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <clipPath id="sh"><path d="M98 36 L150 58 V120 C150 162, 124 188, 98 200 C72 188, 46 162, 46 120 V58 Z"/></clipPath>
+            <g stroke="#ff4d6d" stroke-width=".8" opacity=".18" clip-path="url(#sh)">
+              <path d="M40 70 H160 M40 95 H160 M40 120 H160 M40 145 H160 M40 170 H160"/>
+              <path d="M70 40 V200 M98 36 V204 M126 40 V200"/>
+            </g>
+            <path d="M98 36 L150 58 V120 C150 162, 124 188, 98 200 C72 188, 46 162, 46 120 V58 Z"
+                  fill="none" stroke="#ff4d6d" stroke-width="2" style="filter:drop-shadow(0 0 8px rgba(255,77,109,.6))"/>
+            <rect x="84" y="106" width="28" height="26" rx="4" fill="#0c0709" stroke="#ff9f40" stroke-width="1.6"/>
+            <path d="M89 106 V98 a9 9 0 0 1 18 0 V106" fill="none" stroke="#ff9f40" stroke-width="1.6"/>
+            <circle cx="98" cy="116" r="3.4" fill="#ff9f40"/><rect x="96.6" y="116" width="2.8" height="9" fill="#ff9f40"/>
+            <g clip-path="url(#sh)"><rect x="40" y="60" width="120" height="3" fill="#ff9f40" opacity=".7" style="animation:scan 2.6s ease-in-out infinite"/></g>
+            <text x="98" y="225" text-anchor="middle" font-family="Space Mono" font-size="8" fill="#7e5f68" letter-spacing="2">SECURE</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="grp"><span class="ldot" style="background:var(--mega)"></span> mega <span style="color:var(--txt-faint)">&gt;$50B</span></span>
+    <span class="grp"><span class="ldot" style="background:var(--mid)"></span> mid <span style="color:var(--txt-faint)">$3-50B</span></span>
+    <span class="grp"><span class="ldot" style="background:var(--small)"></span> small <span style="color:var(--txt-faint)">&lt;$3B</span></span>
+    <span class="sep"></span>
+    <span class="grp"><span class="tk bn">gargalo</span></span>
+    <span class="grp"><span class="tk fr">fronteira</span></span>
+    <span class="grp"><span class="tk soft">privada</span></span>
+  </div>
+
+  <!-- ===================== PLATAFORMAS ===================== -->
+  <div class="sec"><span class="ic">🛡️</span> Plataformas &amp; per&iacute;metro — os consolidadores</div>
+
+  <div class="niche" style="--accent:#ff4d6d;animation-delay:.04s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.01 · PLATAFORMA</div>
+        <div class="nname">Plataformas de Seguran&ccedil;a</div>
+        <div class="ntag">Consolida&ccedil;&atilde;o "de 20 vendors para 3" · or&ccedil;amento concentra-se</div>
+        <div class="flags"><span class="flag">gargalo de gasto</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas (megas)</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>PANW<span class="x">Palo Alto</span></span>
+          <span class="chip"><span class="t tm"></span>CRWD<span class="x">CrowdStrike</span></span>
+          <span class="chip"><span class="t tm"></span>MSFT<span class="x">Defender · $37B</span></span>
+          <span class="chip"><span class="t tm"></span>FTNT<span class="x">Fortinet</span></span>
+          <span class="chip"><span class="t tm"></span>CSCO<span class="x">Cisco/Splunk</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff4d6d;animation-delay:.08s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.02 · REDE</div>
+        <div class="nname">Rede, Zero Trust &amp; SASE</div>
+        <div class="ntag">Per&iacute;metro definido por software · edge</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>NET<span class="x">Cloudflare</span></span>
+          <span class="chip"><span class="t td"></span>ZS<span class="x">Zscaler</span></span>
+          <span class="chip"><span class="t td"></span>CHKP<span class="x">Check Point</span></span>
+          <span class="chip"><span class="t td"></span>AKAM<span class="x">Akamai</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== NOVA SUPERFÍCIE IA ===================== -->
+  <div class="sec"><span class="ic">🤖</span> A nova superf&iacute;cie — identidade &amp; IA agêntica</div>
+
+  <div class="niche" style="--accent:#ff9f40;animation-delay:.12s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.03 · IDENTIDADE</div>
+        <div class="nname">Identidade &amp; Acesso (IAM/PAM)</div>
+        <div class="ntag">"Cada agente de IA precisa de credenciais" · identidade de m&aacute;quinas</div>
+        <div class="flags"><span class="flag">gargalo nº1 da IA</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>CYBR<span class="x">CyberArk · PAM (&rarr;PANW, $25B)</span></span>
+          <span class="chip"><span class="t td"></span>OKTA<span class="x">Okta · identidade</span></span>
+          <span class="chip"><span class="t td"></span>SAIL<span class="x">SailPoint · governance</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff9f40;animation-delay:.16s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.04 · IA SECURITY</div>
+        <div class="nname">Seguran&ccedil;a da pr&oacute;pria IA</div>
+        <div class="ntag">Proteger agentes, modelos e prompts · o nicho mais novo</div>
+        <div class="flags"><span class="flag fr">fronteira</span><span class="flag pv">privado-heavy</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Exposi&ccedil;&atilde;o via cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>PANW<span class="x">Protect AI</span></span>
+          <span class="chip"><span class="t td"></span>ZS<span class="x">SPLX</span></span>
+          <span class="chip"><span class="t tm"></span>CRWD</span>
+        </div></div>
+        <div><div class="row-label">Privadas (onde nasce o valor)</div><div class="chips">
+          <span class="chip priv">Noma Security</span><span class="chip priv">WitnessAI</span><span class="chip priv">HiddenLayer</span><span class="chip priv">Cyera</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff4d6d;animation-delay:.20s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.05 · ENDPOINT</div>
+        <div class="nname">Endpoint &amp; XDR</div>
+        <div class="ntag">O "guarda-costas" do dispositivo · dom&iacute;nio dos l&iacute;deres</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>CRWD<span class="x">CrowdStrike · l&iacute;der</span></span>
+          <span class="chip"><span class="t tm"></span>MSFT<span class="x">Defender</span></span>
+          <span class="chip"><span class="t td"></span>S<span class="x">SentinelOne</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== DADOS/CLOUD/EXPOSIÇÃO ===================== -->
+  <div class="sec"><span class="ic">☁️</span> Dados, cloud &amp; exposi&ccedil;&atilde;o — o campo de batalha mid-cap</div>
+
+  <div class="niche" style="--accent:#5b8cff;animation-delay:.24s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.06 · CLOUD</div>
+        <div class="nname">Cloud / CNAPP</div>
+        <div class="ntag">Proteger workloads cloud-native · maior CAGR (~18%)</div>
+        <div class="flags"><span class="flag pv">privado-heavy</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t td"></span>ZS<span class="x">Zscaler</span></span>
+          <span class="chip"><span class="t td"></span>NTSK<span class="x">Netskope</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas / adquiridas</div><div class="chips">
+          <span class="chip priv">Wiz<span class="x">&rarr; Google, $32B</span></span><span class="chip priv">Cyera</span><span class="chip priv">Upwind</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#5b8cff;animation-delay:.28s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.07 · DADOS</div>
+        <div class="nname">Seguran&ccedil;a de Dados (DSPM)</div>
+        <div class="ntag">Proteger o "tesouro" (os dados), n&atilde;o s&oacute; a muralha</div>
+        <div class="flags"><span class="flag">subsetor M&amp;A mais quente</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>VRNS<span class="x">Varonis · DSPM</span></span>
+          <span class="chip"><span class="t td"></span>RBRK<span class="x">Rubrik · ciber-resili&ecirc;ncia</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">Cyera</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#5b8cff;animation-delay:.32s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.08 · EXPOSI&Ccedil;&Atilde;O</div>
+        <div class="nname">Gest&atilde;o de Exposi&ccedil;&atilde;o &amp; Vulnerabilidades</div>
+        <div class="ntag">Encontrar as "portas abertas" antes do atacante</div>
+        <div class="flags"><span class="flag">alvos de take-private/LBO</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t td"></span>TENB<span class="x">Tenable · l&iacute;der VM</span></span>
+          <span class="chip"><span class="t td"></span>QLYS<span class="x">Qualys</span></span>
+          <span class="chip"><span class="t ts"></span>RPD<span class="x">Rapid7</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== HUMANO/SERVIÇOS ===================== -->
+  <div class="sec"><span class="ic">🧑‍💻</span> O fator humano — servi&ccedil;os, SOC &amp; infra cr&iacute;tica</div>
+
+  <div class="niche" style="--accent:#2dd4bf;animation-delay:.36s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.09 · SERVI&Ccedil;OS</div>
+        <div class="nname">Servi&ccedil;os &amp; SOC</div>
+        <div class="ntag">O gargalo de <b style="color:var(--teal)">talento</b> · escassez de m&atilde;o-de-obra</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>ACN<span class="x">Accenture</span></span>
+          <span class="chip"><span class="t td"></span>BAH<span class="x">Booz Allen</span></span>
+          <span class="chip"><span class="t td"></span>LDOS<span class="x">Leidos</span></span>
+          <span class="chip"><span class="t td"></span>CACI</span>
+        </div></div>
+        <div><div class="row-label">Privada (l&iacute;der de servi&ccedil;os)</div><div class="chips">
+          <span class="chip priv">Deloitte<span class="x">~16% quota</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#2dd4bf;animation-delay:.40s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.10 · OT/IoT</div>
+        <div class="nname">OT / IoT / Infra Cr&iacute;tica</div>
+        <div class="ntag">Proteger f&aacute;bricas, redes el&eacute;tricas, dispositivos</div>
+        <div class="flags"><span class="flag pv">maioritariamente privado</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas (exposi&ccedil;&atilde;o)</div><div class="chips">
+          <span class="chip"><span class="t td"></span>TENB<span class="x">Tenable OT</span></span>
+          <span class="chip"><span class="t tm"></span>HON<span class="x">Honeywell</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas (pure-plays)</div><div class="chips">
+          <span class="chip priv">Dragos</span><span class="chip priv">Claroty</span><span class="chip priv">Nozomi</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== QUÂNTICA ===================== -->
+  <div class="sec"><span class="ic">🔐</span> A frente qu&acirc;ntica — cripto p&oacute;s-quantum (a aposta mais cedo)</div>
+
+  <div class="niche" style="--accent:#a78bfa;animation-delay:.44s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.11 · PQC</div>
+        <div class="nname">Criptografia P&oacute;s-Quantum</div>
+        <div class="ntag">"Harvest now, decrypt later" · normas NIST 2024 · prazos 2028-35</div>
+        <div class="flags"><span class="flag fr">cedo · sem pure-play limpo</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Incumbentes (capturam o valor)</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>NET<span class="x">Cloudflare</span></span>
+          <span class="chip"><span class="t mid"></span>Thales</span>
+          <span class="chip"><span class="t tm"></span>IBM</span>
+        </div></div>
+        <div><div class="row-label">Pure-plays (micro/especulativo)</div><div class="chips">
+          <span class="chip"><span class="t ts"></span>LAES<span class="x">SEALSQ · chips PQC</span></span>
+          <span class="chip priv">PQShield</span><span class="chip priv">ISARA</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#a78bfa;animation-delay:.48s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.12 · QKD</div>
+        <div class="nname">QKD &amp; Hardware Quantum-Safe</div>
+        <div class="ntag">Distribui&ccedil;&atilde;o qu&acirc;ntica de chaves &middot; HSMs &middot; nicho f&iacute;sico</div>
+        <div class="flags"><span class="flag fr">especulativo</span></div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas (micro)</div><div class="chips">
+          <span class="chip"><span class="t ts"></span>ARQQ<span class="x">Arqit · chaves sim&eacute;tricas</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas / diversificadas</div><div class="chips">
+          <span class="chip priv">ID Quantique</span><span class="chip priv">Toshiba (QKD)</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><span class="warn">⚠ N&Atilde;O &Eacute; CONSELHO DE INVESTIMENTO.</span> Conte&uacute;do educativo. <b>Cen&aacute;rio:</b> a procura &eacute; secular e <i>compliance-driven</i> (menos c&iacute;clica), com a IA a criar tanto o ataque como a defesa (a "assimetria da IA"). O dinheiro concentra-se via <b>consolida&ccedil;&atilde;o em plataforma</b> e uma onda de M&amp;A (Google/Wiz, PANW/CyberArk, Cisco/Splunk). <b>O gargalo emergente</b> &eacute; a identidade &amp; a seguran&ccedil;a de agentes de IA &mdash; mas o valor mais novo nasce sobretudo em <b>privadas</b>. <b>Timing honesto:</b> os l&iacute;deres cotados (CRWD ~90x, PANW ~55x lucros) j&aacute; correram ~60% em 2026 e negoceiam como "AI winners" &mdash; quentes e caros, e correlacionados ao mesmo macro da tua carteira. A <b style="color:var(--violet)">frente PQC/quantum</b> &eacute; a mais cedo, mas dif&iacute;cil de jogar sem comprar incumbentes ou micro-caps especulativas. Caps = snapshot aprox. Jun 2026.</p>
+    <p style="margin-top:10px;color:var(--txt-faint)">Carecao · Theme Baskets · Mapa de Nichos Ciberseguran&ccedil;a · Jun 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NVDA · Comprar em quedas vs. subir sempre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root{
+    --paper:#FBF8F2; --panel:#FFFFFF; --ink:#1C1B18; --muted:#6E6A60; --hair:#E6E0D4;
+    --coral:#C2410C; --coral-soft:#FBEAE0; --blue:#1E5A8A; --blue-soft:#E4EDF5;
+    --ok:#3B6D11;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(var(--hair) 0.5px,transparent 0.5px);
+    background-size:22px 22px;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:48px 24px 64px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--coral);margin:0 0 12px}
+  h1{font-family:"Fraunces",serif;font-weight:500;font-size:clamp(30px,5vw,46px);line-height:1.05;margin:0 0 10px;letter-spacing:-.01em}
+  .lede{font-size:16px;color:var(--muted);margin:0 0 4px;max-width:62ch}
+  .rule{height:1px;background:var(--hair);margin:28px 0}
+  .controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .controls label{font-size:14px;color:var(--muted);white-space:nowrap}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:var(--hair);border-radius:99px;flex:1;min-width:160px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--coral);cursor:pointer;border:3px solid var(--paper);box-shadow:0 0 0 1px var(--coral)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--coral);cursor:pointer;border:3px solid var(--paper)}
+  .mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+  .readout{font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:500;min-width:64px;text-align:right}
+  .chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px}
+  .chip{background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:14px 16px}
+  .chip .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}
+  .chip .v{font-family:"IBM Plex Mono",monospace;font-size:24px;font-weight:500;margin:0}
+  .chart-label{font-size:13px;color:var(--muted);margin:0 0 8px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .swatch{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .chart-box{position:relative;width:100%;height:240px;background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:14px;margin-bottom:32px}
+  .chart-box.small{height:200px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:32px}
+  .card{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:20px 22px;position:relative}
+  .card.win{border:1.5px solid var(--coral)}
+  .card .badge{position:absolute;top:-11px;left:18px;background:var(--coral-soft);color:var(--coral);font-size:12px;font-weight:500;padding:3px 10px;border-radius:8px}
+  .card h3{font-family:"Fraunces",serif;font-weight:500;font-size:19px;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:14px;border-top:1px solid var(--hair)}
+  .row:first-of-type{border-top:none}
+  .row .lab{color:var(--muted)}
+  .row .num{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:15px}
+  .takeaway{background:var(--ink);color:var(--paper);border-radius:16px;padding:28px 30px;margin:8px 0 28px}
+  .takeaway p{margin:0;font-family:"Fraunces",serif;font-size:21px;line-height:1.45;font-weight:400}
+  .takeaway .accent{color:#F2A06B}
+  .notes h4{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 10px}
+  .notes ul{margin:0;padding-left:18px;color:var(--ink)}
+  .notes li{margin-bottom:8px;font-size:14.5px}
+  .foot{font-size:12px;color:var(--muted);margin-top:26px;line-height:1.6}
+  .reveal{opacity:0;transform:translateY(10px);animation:rise .6s ease forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.12s}.d3{animation-delay:.2s}.d4{animation-delay:.28s}.d5{animation-delay:.36s}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow reveal d1">Simulação de acumulação · DCA $100/mês</p>
+  <h1 class="reveal d1">Comprar em quedas<br>vs. subir sempre</h1>
+  <p class="lede reveal d2">NVDA · janeiro 2021 – dezembro 2025. Dois caminhos para o <em>mesmo</em> preço final. A única diferença: um passou pelo crash de 2022, o outro subiu em linha reta.</p>
+
+  <div class="rule reveal d2"></div>
+
+  <div class="controls reveal d3">
+    <label for="mensal">Investimento mensal</label>
+    <input type="range" id="mensal" min="50" max="500" step="10" value="100">
+    <span class="readout" id="mensal-out">$100</span>
+  </div>
+
+  <div class="chips reveal d3">
+    <div class="chip"><p class="k">Total investido (igual)</p><p class="v" id="m-investido">$6,000</p></div>
+    <div class="chip"><p class="k">Meses</p><p class="v">60</p></div>
+    <div class="chip"><p class="k">Preço final (igual)</p><p class="v" id="m-final">$188</p></div>
+  </div>
+
+  <div class="chart-label reveal d4">
+    <span>Preço da NVDA (ajustado, $)</span>
+    <span class="legend">
+      <span><i class="swatch" style="background:var(--coral)"></i>Real (com crash)</span>
+      <span><i class="swatch" style="background:var(--blue)"></i>Subida suave</span>
+    </span>
+  </div>
+  <div class="chart-box reveal d4"><canvas id="priceChart"></canvas></div>
+
+  <div class="cards reveal d4">
+    <div class="card win">
+      <span class="badge">Anos de ações baratas</span>
+      <h3><i class="dot" style="background:var(--coral)"></i>Trajeto real (com crash)</h3>
+      <div class="row"><span class="lab">Ações compradas</span><span class="num" id="r-acoes">189</span></div>
+      <div class="row"><span class="lab">Valor final</span><span class="num" id="r-valor">$35,400</span></div>
+      <div class="row"><span class="lab">Retorno</span><span class="num" style="color:var(--coral)" id="r-ret">+490%</span></div>
+    </div>
+    <div class="card">
+      <h3><i class="dot" style="background:var(--blue)"></i>Subida suave (imaginária)</h3>
+      <div class="row"><span class="lab">Ações compradas</span><span class="num" id="s-acoes">94</span></div>
+      <div class="row"><span class="lab">Valor final</span><span class="num" id="s-valor">$17,700</span></div>
+      <div class="row"><span class="lab">Retorno</span><span class="num" style="color:var(--blue)" id="s-ret">+195%</span></div>
+    </div>
+  </div>
+
+  <div class="chart-label reveal d5"><span>Ações acumuladas ao longo do tempo</span></div>
+  <div class="chart-box small reveal d5"><canvas id="cumChart"></canvas></div>
+
+  <div class="takeaway reveal d5">
+    <p>Mesmo dinheiro, mesmo preço final — e mesmo assim o caminho que passou pelo crash gerou <span class="accent">cerca do dobro</span>. Enquanto acumulas, não é a subida que te enriquece: é comprares barato. Quanto mais fundo e mais demorado o mergulho, maior o prémio.</p>
+  </div>
+
+  <div class="notes reveal d5">
+    <h4>O reverso da moeda</h4>
+    <ul>
+      <li>Só funcionou porque a NVDA <strong>recuperou</strong> — e tornou-se a líder da era da IA. A maioria das ações que cai ~66% não faz um 10x a seguir.</li>
+      <li>É fácil ver agora; comprar a ~$11 em outubro de 2022, com o sentimento todo negativo, exigia uma convicção que poucos tinham em tempo real.</li>
+      <li>O raciocínio é bem mais seguro com um <strong>índice diversificado</strong> (ex: ETF mundial) do que com uma única ação.</li>
+      <li>Precisas de liquidez e estômago para continuar a comprar durante a queda. A parte difícil quase nunca é a matemática.</li>
+    </ul>
+  </div>
+
+  <p class="foot">
+    Preços ajustados a splits e dividendos. Valores anuais reais (mín. de $11,21 em 2022; fecho de 2025 a $186,50) via Macrotrends; preços mensais de 2024–2025 derivados das variações mensais reais; meses de 2021–2023 são aproximados, ancorados aos valores anuais. Simulação de fins educativos — não é recomendação de investimento.
+  </p>
+
+</div>
+
+<script>
+(function(){
+  var pReal = [
+    13.08,13.7,13.3,15.1,16.4,20.0,20.2,22.3,20.7,26.1,32.6,29.35,
+    24.3,24.3,27.3,18.5,18.6,15.1,18.1,15.0,12.2,13.5,16.9,14.60,
+    19.5,23.2,27.8,27.8,37.8,42.3,46.7,49.3,43.5,40.8,46.7,49.49,
+    61.49,79.06,90.30,86.34,109.56,123.46,116.94,119.29,121.35,132.66,138.15,137.39,
+    120.04,124.89,108.36,108.90,135.10,157.96,177.83,174.15,186.55,202.46,176.97,187.50
+  ];
+  var n = pReal.length, start = pReal[0], end = pReal[n-1], FINAL = end;
+  var pSmooth = pReal.map(function(_,i){ return start + (end-start)*i/(n-1); });
+  var mNames = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var labels = pReal.map(function(_,i){ return mNames[i%12]+" '"+(21+Math.floor(i/12)); });
+  var usd0 = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
+
+  function cum(prices,m){ var c=0; return prices.map(function(p){ c+=m/p; return c; }); }
+  function total(prices,m){ return prices.reduce(function(s,p){ return s+m/p; },0); }
+
+  var ink='#6E6A60', grid='rgba(0,0,0,0.06)';
+  Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
+  Chart.defaults.color=ink;
+
+  var priceChart=new Chart(document.getElementById('priceChart'),{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {data:pReal,borderColor:'#C2410C',backgroundColor:'#C2410C',borderWidth:2,tension:.25,pointRadius:0},
+      {data:pSmooth.map(function(v){return Math.round(v*10)/10;}),borderColor:'#1E5A8A',backgroundColor:'#1E5A8A',borderWidth:2,borderDash:[6,4],tension:0,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return (c.datasetIndex===0?'Real':'Suave')+': $'+c.parsed.y.toFixed(1);}}}},
+      scales:{x:{grid:{display:false},ticks:{color:ink,maxRotation:45,autoSkip:true,maxTicksLimit:10}},
+              y:{grid:{color:grid},ticks:{color:ink,callback:function(v){return '$'+v;}}}}}
+  });
+
+  var cumChart=new Chart(document.getElementById('cumChart'),{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {data:cum(pReal,100),borderColor:'#C2410C',backgroundColor:'rgba(194,65,12,0.08)',borderWidth:2,tension:.25,pointRadius:0,fill:true},
+      {data:cum(pSmooth,100),borderColor:'#1E5A8A',backgroundColor:'transparent',borderWidth:2,borderDash:[6,4],tension:.25,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return (c.datasetIndex===0?'Real':'Suave')+': '+c.parsed.y.toFixed(1)+' ações';}}}},
+      scales:{x:{grid:{display:false},ticks:{color:ink,maxRotation:45,autoSkip:true,maxTicksLimit:10}},
+              y:{grid:{color:grid},ticks:{color:ink},title:{display:true,text:'ações',color:ink}}}}
+  });
+
+  var slider=document.getElementById('mensal');
+  function update(){
+    var m=+slider.value;
+    document.getElementById('mensal-out').textContent='$'+m;
+    document.getElementById('m-investido').textContent=usd0.format(m*n);
+    document.getElementById('m-final').textContent='$'+Math.round(FINAL);
+    var tR=total(pReal,m),tS=total(pSmooth,m),inv=m*n;
+    var vR=tR*FINAL,vS=tS*FINAL;
+    document.getElementById('r-acoes').textContent=Math.round(tR);
+    document.getElementById('s-acoes').textContent=Math.round(tS);
+    document.getElementById('r-valor').textContent=usd0.format(vR);
+    document.getElementById('s-valor').textContent=usd0.format(vS);
+    document.getElementById('r-ret').textContent='+'+Math.round((vR/inv-1)*100)+'%';
+    document.getElementById('s-ret').textContent='+'+Math.round((vS/inv-1)*100)+'%';
+    cumChart.data.datasets[0].data=cum(pReal,m);
+    cumChart.data.datasets[1].data=cum(pSmooth,m);
+    cumChart.update();
+  }
+  slider.addEventListener('input',update);
+  update();
+})();
+</script>
+</body>
+</html>

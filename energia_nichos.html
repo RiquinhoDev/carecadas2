@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energia · Mapa de Nichos — Carecao</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap');
+
+  :root{
+    --bg:#0c0a07;
+    --card:#1a150d;
+    --card-2:#140f08;
+    --line:#2c2417;
+    --line-soft:#221c12;
+    --txt:#f4ece0;
+    --txt-dim:#a3947b;
+    --txt-faint:#70634d;
+    --gold:#f5a623;
+    --amber:#f0b13a;
+    --rose:#ff6b6b;
+    --mega:#8fa3b0;
+    --mid:#f5a623;
+    --small:#ff6b6b;
+    --glow:rgba(245,166,35,.13);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg);
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(245,166,35,.12), transparent 60%),
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:auto, 42px 42px, 42px 42px;
+    color:var(--txt);
+    font-family:'Space Mono', monospace;
+    -webkit-font-smoothing:antialiased;
+    padding:48px 24px 80px;min-height:100vh;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+
+  header{
+    border:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(26,21,13,.9), rgba(20,15,8,.9));
+    border-radius:14px;padding:28px 30px;position:relative;overflow:hidden;margin-bottom:14px;
+  }
+  header::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 20%, var(--glow), transparent 45%);pointer-events:none}
+  .head-inner{display:flex;align-items:center;gap:30px;position:relative;z-index:1}
+  .head-text{flex:1;min-width:0}
+
+  .hero{flex:0 0 auto;position:relative;width:188px;height:235px;animation:floaty 6s ease-in-out infinite}
+  .hero::before{content:"";position:absolute;inset:-22px;border-radius:50%;
+    background:radial-gradient(circle at 50% 45%, rgba(245,166,35,.38), rgba(255,107,107,.16) 45%, transparent 70%);
+    filter:blur(6px);z-index:0;animation:pulse 4s ease-in-out infinite}
+  .hero::after{content:"";position:absolute;inset:-10px;border-radius:18px;
+    border:1px solid rgba(245,166,35,.30);box-shadow:inset 0 0 30px rgba(245,166,35,.10);pointer-events:none}
+  .hero .art{position:relative;z-index:1;width:100%;height:100%;border-radius:14px;border:1px solid var(--line);
+    background:linear-gradient(160deg,#1a150d,#0c0a07);
+    box-shadow:0 18px 50px rgba(0,0,0,.5), 0 0 40px rgba(245,166,35,.18);
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .hero .badge{position:absolute;z-index:2;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;
+    color:var(--gold);padding:3px 8px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+    background:rgba(12,10,7,.85);border:1px solid rgba(245,166,35,.45);box-shadow:0 0 14px rgba(245,166,35,.5)}
+  .hero .b1{top:-6px;left:-14px;animation:floaty 5s ease-in-out infinite}
+  .hero .b0{bottom:8px;right:-16px;color:var(--amber);border-color:rgba(240,177,58,.5);box-shadow:0 0 14px rgba(240,177,58,.45);animation:floaty 4.5s ease-in-out .8s infinite}
+  @keyframes floaty{50%{transform:translateY(-10px)}}
+  @keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
+  @keyframes dash{to{stroke-dashoffset:-40}}
+  .bolt{animation:flick 3.5s ease-in-out infinite}
+  @keyframes flick{0%,100%{opacity:1}48%{opacity:1}50%{opacity:.45}52%{opacity:1}}
+
+  .brand{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .brand .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.02em;margin:16px 0 10px}
+  h1 .q{color:var(--gold)}
+  .sub{color:var(--txt-dim);font-size:13px;max-width:62ch;line-height:1.6}
+  .meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:18px;font-size:11px;color:var(--txt-faint);letter-spacing:.08em;text-transform:uppercase}
+  .meta b{color:var(--txt-dim);font-weight:700}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;border:1px solid var(--line);border-radius:10px;
+    padding:12px 18px;margin-bottom:22px;font-size:11.5px;color:var(--txt-dim);background:var(--card-2)}
+  .legend .grp{display:flex;align-items:center;gap:7px}
+  .legend .sep{width:1px;height:16px;background:var(--line)}
+  .ldot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .tk{display:inline-block;font-weight:700;color:#0c0a07;background:var(--gold);padding:2px 7px;border-radius:5px;font-size:11px;letter-spacing:.04em}
+  .tk.soft{background:transparent;color:var(--txt-dim);border:1px dashed var(--line);padding:1px 7px}
+  .tk.bn{background:var(--rose);color:#0c0a07}
+
+  .sec{display:flex;align-items:center;gap:14px;margin:26px 2px 12px;font-family:'Syne',sans-serif;font-weight:700;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-dim)}
+  .sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sec .ic{font-size:16px}
+
+  .niche{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg, var(--card), var(--card-2));
+    margin-bottom:12px;overflow:hidden;opacity:0;transform:translateY(14px);animation:rise .55s cubic-bezier(.2,.7,.3,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .niche-grid{display:grid;grid-template-columns:248px 1fr;align-items:stretch}
+  .nleft{padding:18px 20px;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;justify-content:center;gap:8px;position:relative}
+  .nleft::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--accent,var(--gold));box-shadow:0 0 14px var(--accent,var(--gold))}
+  .nidx{font-size:10px;color:var(--txt-faint);letter-spacing:.2em}
+  .nname{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;line-height:1.12;color:var(--txt)}
+  .ntag{font-size:10.5px;color:var(--txt-dim);line-height:1.4}
+  .flag{display:inline-block;margin-top:2px;width:fit-content;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#0c0a07;background:var(--rose);padding:2px 7px;border-radius:4px}
+  .caps{display:flex;align-items:center;gap:4px;margin-top:6px}
+  .caps .lbl{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-faint);margin-right:2px}
+  .caps .d{width:7px;height:7px;border-radius:50%}
+
+  .nright{padding:18px 20px;display:flex;flex-direction:column;gap:14px;justify-content:center}
+  .row-label{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--txt-faint);margin-bottom:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{display:inline-flex;align-items:center;font-size:12px;padding:4px 9px;border-radius:6px;
+    background:rgba(245,166,35,.10);border:1px solid rgba(245,166,35,.28);color:var(--gold);font-weight:700;letter-spacing:.02em;
+    transition:transform .15s ease, background .15s ease}
+  .chip:hover{transform:translateY(-2px);background:rgba(245,166,35,.18)}
+  .chip.lead{background:rgba(245,166,35,.20);border-color:rgba(245,166,35,.6)}
+  .chip.priv{background:transparent;border:1px dashed var(--line);color:var(--txt-dim);font-weight:400}
+  .chip.priv:hover{transform:translateY(-2px);background:var(--line-soft)}
+  .chip .x{color:var(--txt-faint);font-weight:400;margin-left:5px}
+  .t{width:7px;height:7px;border-radius:50%;margin-right:6px;flex:0 0 auto}
+  .tm{background:var(--mega);box-shadow:0 0 6px rgba(143,163,176,.4)}
+  .td{background:var(--mid);box-shadow:0 0 6px rgba(245,166,35,.5)}
+  .ts{background:var(--small);box-shadow:0 0 6px rgba(255,107,107,.5)}
+  .none{color:var(--txt-faint);font-size:12px;font-style:italic}
+
+  footer{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;font-size:11px;color:var(--txt-faint);line-height:1.7}
+  footer .warn{color:var(--amber);font-weight:700;letter-spacing:.06em}
+  footer b{color:var(--txt-dim)}
+
+  @media(max-width:720px){
+    .head-inner{flex-direction:column-reverse;align-items:flex-start;gap:22px}
+    .hero{width:150px;height:188px;align-self:center}
+    .niche-grid{grid-template-columns:1fr}
+    .nleft{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .nleft::before{top:auto;bottom:0;left:14px;right:14px;width:auto;height:3px}
+    body{padding:28px 14px 60px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="head-inner">
+      <div class="head-text">
+        <div class="brand"><span class="dot"></span> Carecao · Theme Baskets</div>
+        <h1>Mapa de Nichos · <span class="q">Energia</span></h1>
+        <p class="sub">Onde está o gargalo do paradigma energético de hoje. Cada ticker está classificado por dimensão (mega / mid / small) — porque é nas <b style="color:var(--mid)">mid</b> e <b style="color:var(--small)">small caps</b> que detêm o choke-point que vive a assimetria. As megas que dominam um gargalo já estão, regra geral, descontadas.</p>
+        <div class="meta">
+          <span><b>12</b> nichos</span>
+          <span><b>Super-ciclo</b> $1.5T at&eacute; 2030</span>
+          <span><b>Jun 2026</b></span>
+          <span>Caps = snapshot aprox.</span>
+        </div>
+      </div>
+      <div class="hero">
+        <span class="badge b1">⚡ MW</span>
+        <span class="badge b0">kV ⚡</span>
+        <div class="art">
+          <svg viewBox="0 0 188 235" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#f5a623" stroke-width="1" opacity=".30" fill="none" stroke-dasharray="6 6" style="animation:dash 2.5s linear infinite">
+              <path d="M20 60 H168"/><path d="M20 120 H168"/><path d="M20 180 H168"/>
+              <path d="M60 20 V215"/><path d="M128 20 V215"/>
+            </g>
+            <g fill="#0c0a07" stroke="#f5a623" stroke-width="1.4">
+              <circle cx="60" cy="60" r="5"/><circle cx="128" cy="120" r="5"/>
+              <circle cx="60" cy="180" r="5"/><circle cx="128" cy="60" r="4"/>
+            </g>
+            <g stroke="#a3947b" stroke-width="2" fill="none" opacity=".55">
+              <path d="M94 200 L80 110 L108 110 Z"/>
+              <path d="M70 130 L118 130 M74 150 L114 150 M78 172 L110 172"/>
+              <path d="M62 110 H126 M58 96 H130"/>
+            </g>
+            <path class="bolt" d="M104 40 L78 118 L96 118 L84 196 L120 104 L100 104 L114 40 Z"
+                  fill="#f5a623" stroke="#ffd588" stroke-width="1.2"
+                  style="filter:drop-shadow(0 0 10px rgba(245,166,35,.8))"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span class="grp"><span class="ldot" style="background:var(--mega)"></span> mega <span style="color:var(--txt-faint)">&gt;$50B · descontada</span></span>
+    <span class="grp"><span class="ldot" style="background:var(--mid)"></span> mid <span style="color:var(--txt-faint)">$3–50B · sweet-spot</span></span>
+    <span class="grp"><span class="ldot" style="background:var(--small)"></span> small <span style="color:var(--txt-faint)">&lt;$3B · alta assimetria</span></span>
+    <span class="sep"></span>
+    <span class="grp"><span class="tk soft">privada</span> n&atilde;o cotada</span>
+    <span class="grp"><span class="tk bn">gargalo</span> choke-point</span>
+  </div>
+
+  <!-- ===================== GERAÇÃO ===================== -->
+  <div class="sec"><span class="ic">⚙️</span> Gera&ccedil;&atilde;o despach&aacute;vel — o que est&aacute; em d&eacute;fice</div>
+
+  <div class="niche" style="--accent:#f5a623;animation-delay:.04s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.01 · GERA&Ccedil;&Atilde;O</div>
+        <div class="nname">Turbinas a G&aacute;s</div>
+        <div class="ntag">Gera&ccedil;&atilde;o firme · backlogs at&eacute; 2028+</div>
+        <span class="flag">gargalo</span>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>GEV<span class="x">Vernova · 34% share</span></span>
+          <span class="chip"><span class="t tm"></span>ENR<span class="x">Siemens Energy</span></span>
+          <span class="chip"><span class="t tm"></span>7011<span class="x">Mitsubishi HI</span></span>
+          <span class="chip"><span class="t tm"></span>BKR<span class="x">Baker Hughes</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#f5a623;animation-delay:.08s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.02 · GERA&Ccedil;&Atilde;O</div>
+        <div class="nname">Nuclear &amp; SMR</div>
+        <div class="ntag">Base-load 24/7 limpa · queridinho da IA-power</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Operadores &amp; reatores</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>CEG<span class="x">Constellation</span></span>
+          <span class="chip"><span class="t tm"></span>VST<span class="x">Vistra</span></span>
+          <span class="chip"><span class="t td"></span>BWXT</span>
+          <span class="chip"><span class="t tm"></span>GEV<span class="x">BWRX-300</span></span>
+        </div></div>
+        <div><div class="row-label">SMR pure-plays (pr&eacute;-comercial)</div><div class="chips">
+          <span class="chip"><span class="t td"></span>OKLO</span>
+          <span class="chip"><span class="t td"></span>SMR<span class="x">NuScale</span></span>
+          <span class="chip"><span class="t ts"></span>NNE<span class="x">Nano Nuclear</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">TerraPower</span><span class="chip priv">X-energy</span><span class="chip priv">Kairos Power</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#f5a623;animation-delay:.12s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.03 · GERA&Ccedil;&Atilde;O</div>
+        <div class="nname">Geot&eacute;rmica Nova Gera&ccedil;&atilde;o</div>
+        <div class="ntag">Base-load limpa · EGS / fechado · pure-plays raros</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>ORA<span class="x">Ormat · l&iacute;der cotado</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">Fervo Energy</span><span class="chip priv">Sage Geosystems</span><span class="chip priv">Quaise</span><span class="chip priv">Eavor</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== REDE ===================== -->
+  <div class="sec"><span class="ic">🔌</span> Rede &amp; transmiss&atilde;o — o verdadeiro bottleneck de 2026</div>
+
+  <div class="niche" style="--accent:#ff6b6b;animation-delay:.16s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.04 · REDE</div>
+        <div class="nname">Transformadores &amp; Switchgear</div>
+        <div class="ntag">Lead-times brutais · d&eacute;fice at&eacute; 2030 · <b style="color:var(--mega)">dominado por megas</b></div>
+        <span class="flag">gargalo n&ordm;1</span>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>6501<span class="x">Hitachi Energy · l&iacute;der</span></span>
+          <span class="chip"><span class="t tm"></span>ENR<span class="x">Siemens Energy</span></span>
+          <span class="chip"><span class="t tm"></span>ETN<span class="x">Eaton</span></span>
+          <span class="chip"><span class="t tm"></span>ABBN<span class="x">ABB</span></span>
+          <span class="chip"><span class="t tm"></span>SU<span class="x">Schneider</span></span>
+          <span class="chip"><span class="t tm"></span>GEV<span class="x">Prolec</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff6b6b;animation-delay:.20s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.05 · REDE</div>
+        <div class="nname">Cabos HVDC &amp; Submarinos</div>
+        <div class="ntag">Lead-times &gt;2 anos · olig&oacute;polio · <b style="color:var(--mid)">l&iacute;der ainda mid-cap</b></div>
+        <span class="flag">gargalo</span>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>PRY<span class="x">Prysmian · l&iacute;der</span></span>
+          <span class="chip"><span class="t td"></span>NEX<span class="x">Nexans</span></span>
+          <span class="chip"><span class="t td"></span>NKT</span>
+          <span class="chip"><span class="t td"></span>5802<span class="x">Sumitomo Elec.</span></span>
+          <span class="chip"><span class="t td"></span>5801<span class="x">Furukawa</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">LS Cable &amp; System</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#ff8c5a;animation-delay:.24s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.06 · REDE</div>
+        <div class="nname">Software de Rede &amp; GETs</div>
+        <div class="ntag">Grid-enhancing · DERMS · gest&atilde;o de interconex&atilde;o</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t tm"></span>GEV<span class="x">GridOS</span></span>
+          <span class="chip"><span class="t tm"></span>SU<span class="x">Schneider</span></span>
+          <span class="chip"><span class="t td"></span>ITRI<span class="x">Itron</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">LineVision</span><span class="chip priv">TS Conductor</span><span class="chip priv">Smart Wires</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ARMAZENAMENTO ===================== -->
+  <div class="sec"><span class="ic">🔋</span> Armazenamento — firmar a renov&aacute;vel intermitente</div>
+
+  <div class="niche" style="--accent:#3ddc8a;animation-delay:.28s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.07 · STORAGE</div>
+        <div class="nname">BESS Utility-Scale</div>
+        <div class="ntag">Baterias &agrave; escala de rede · microgrids p/ datacenter</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t ts"></span>FLNC<span class="x">Fluence · pure-play l&iacute;der</span></span>
+          <span class="chip"><span class="t tm"></span>TSLA<span class="x">Megapack</span></span>
+          <span class="chip"><span class="t td"></span>ENS<span class="x">EnerSys</span></span>
+          <span class="chip"><span class="t ts"></span>STEM</span>
+        </div></div>
+        <div><div class="row-label">C&eacute;lulas (privado / estrangeiro)</div><div class="chips">
+          <span class="chip priv">CATL</span><span class="chip priv">BYD</span><span class="chip priv">LG Energy Solution</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#3ddc8a;animation-delay:.32s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.08 · STORAGE</div>
+        <div class="nname">Long-Duration Storage</div>
+        <div class="ntag">8h+ · a fronteira · maioritariamente privado</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t ts"></span>NRGV<span class="x">Energy Vault</span></span>
+          <span class="chip"><span class="t ts"></span>ESS<span class="x">ESS Inc</span></span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">Form Energy</span><span class="chip priv">Hydrostor</span><span class="chip priv">Antora</span><span class="chip priv">EnerVenue</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== INTERFACE DATACENTER ===================== -->
+  <div class="sec"><span class="ic">🖥️</span> Interface datacenter — da rede ao chip (sobreposi&ccedil;&atilde;o c/ IA)</div>
+
+  <div class="niche" style="--accent:#7aa2ff;animation-delay:.36s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.09 · INTERFACE</div>
+        <div class="nname">Power Train · UPS · PDU</div>
+        <div class="ntag">Distribui&ccedil;&atilde;o cr&iacute;tica · busways · switchgear DC</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>VRT<span class="x">Vertiv · l&iacute;der</span></span>
+          <span class="chip"><span class="t td"></span>NVT<span class="x">nVent</span></span>
+          <span class="chip"><span class="t tm"></span>ETN<span class="x">Eaton</span></span>
+          <span class="chip"><span class="t tm"></span>2308<span class="x">Delta Electronics</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#7aa2ff;animation-delay:.40s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.10 · INTERFACE</div>
+        <div class="nname">Inversores &amp; Power Electronics</div>
+        <div class="ntag">Convers&atilde;o AC/DC · semicondutores SiC / GaN</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--mega)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip"><span class="t td"></span>ENPH<span class="x">Enphase</span></span>
+          <span class="chip"><span class="t ts"></span>SEDG<span class="x">SolarEdge</span></span>
+          <span class="chip"><span class="t td"></span>POWI<span class="x">Power Integrations</span></span>
+          <span class="chip"><span class="t tm"></span>300274<span class="x">Sungrow</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== UPSTREAM ===================== -->
+  <div class="sec"><span class="ic">⛏️</span> Upstream &amp; combust&iacute;vel — a montante de tudo</div>
+
+  <div class="niche" style="--accent:#f0b13a;animation-delay:.44s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.11 · UPSTREAM</div>
+        <div class="nname">Ur&acirc;nio &amp; Enriquecimento</div>
+        <div class="ntag">Combust&iacute;vel do nuclear · HALEU para SMRs</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Mineiras &amp; combust&iacute;vel</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>CCJ<span class="x">Cameco · l&iacute;der</span></span>
+          <span class="chip"><span class="t td"></span>LEU<span class="x">Centrus · HALEU</span></span>
+          <span class="chip"><span class="t td"></span>UEC</span>
+          <span class="chip"><span class="t ts"></span>UUUU<span class="x">Energy Fuels</span></span>
+          <span class="chip"><span class="t td"></span>NXE<span class="x">NexGen</span></span>
+          <span class="chip"><span class="t ts"></span>DNN<span class="x">Denison</span></span>
+          <span class="chip"><span class="t ts"></span>ASPI</span>
+        </div></div>
+        <div><div class="row-label">Privadas</div><div class="chips">
+          <span class="chip priv">Urenco</span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="niche" style="--accent:#f0b13a;animation-delay:.48s">
+    <div class="niche-grid">
+      <div class="nleft">
+        <div class="nidx">CH.12 · UPSTREAM</div>
+        <div class="nname">Cobre &amp; Materiais Cr&iacute;ticos</div>
+        <div class="ntag">"O metal da eletrifica&ccedil;&atilde;o" · oferta estruturalmente curta</div>
+        <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
+      </div>
+      <div class="nright">
+        <div><div class="row-label">Cotadas</div><div class="chips">
+          <span class="chip lead"><span class="t tm"></span>FCX<span class="x">Freeport · l&iacute;der</span></span>
+          <span class="chip"><span class="t tm"></span>SCCO<span class="x">Southern Copper</span></span>
+          <span class="chip"><span class="t td"></span>IVN<span class="x">Ivanhoe</span></span>
+          <span class="chip"><span class="t td"></span>TECK<span class="x">Teck</span></span>
+          <span class="chip"><span class="t td"></span>ANTO<span class="x">Antofagasta</span></span>
+          <span class="chip"><span class="t ts"></span>ERO<span class="x">Ero Copper</span></span>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><span class="warn">⚠ N&Atilde;O &Eacute; CONSELHO DE INVESTIMENTO.</span> &nbsp;Conte&uacute;do educativo. <b>Leitura por tier:</b> os gargalos dominados por <b style="color:var(--mega)">megas</b> (transformadores, cobre, power-train) s&atilde;o os mais defens&aacute;veis mas j&aacute; descontados — compras qualidade no choke. A assimetria vive nos gargalos onde o l&iacute;der ainda &eacute; <b style="color:var(--mid)">mid-cap</b> (cabos HVDC: Prysmian/Nexans) ou onde os pure-plays s&atilde;o <b style="color:var(--small)">small-caps</b> (SMRs OKLO/SMR/NNE, ur&acirc;nio j&uacute;nior, storage FLNC) — maior potencial, mas volatilidade extrema; sleeve especulativo dimensionado, n&atilde;o core. Caps s&atilde;o snapshot aproximado de Jun 2026 e mexem-se depressa neste setor.</p>
+    <p style="margin-top:10px;color:var(--txt-faint)">Carecao · Theme Baskets · Mapa de Nichos Energia · Tiers mega/mid/small · Jun 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>

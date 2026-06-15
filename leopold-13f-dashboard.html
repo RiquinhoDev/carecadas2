@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Situational Awareness LP · 13F Q1 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400&family=Archivo:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0907;
+    --bg2:#13110d;
+    --panel:#1a1712;
+    --panel2:#211d16;
+    --line:#332c20;
+    --gold:#e8c468;
+    --gold-deep:#c79a3a;
+    --gold-soft:#f2dca0;
+    --ink:#f4ecdd;
+    --muted:#9a9082;
+    --dim:#6a6256;
+    --green:#5fcf8e;
+    --green-deep:#2f8f5c;
+    --red:#d96b5c;
+    --red-deep:#8f3f34;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Archivo',sans-serif;
+    font-weight:400;
+    line-height:1.55;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* grain + glow atmosphere */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(900px 500px at 78% -8%, rgba(232,196,104,.10), transparent 60%),
+      radial-gradient(700px 600px at -10% 110%, rgba(95,207,142,.05), transparent 60%),
+      radial-gradient(600px 400px at 110% 80%, rgba(217,107,92,.05), transparent 60%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:48px 28px 80px}
+
+  /* ---------- HEADER ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    padding-bottom:34px;margin-bottom:42px;
+    opacity:0;transform:translateY(18px);animation:rise .8s .05s forwards cubic-bezier(.2,.7,.2,1);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--gold-deep);margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  h1{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(34px,6vw,62px);
+    line-height:1.02;letter-spacing:-.02em;color:var(--ink);
+  }
+  h1 .accent{
+    font-style:italic;font-weight:400;
+    background:linear-gradient(100deg,var(--gold-soft),var(--gold),var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .sub{margin-top:16px;color:var(--muted);max-width:680px;font-size:15px}
+  .sub b{color:var(--ink);font-weight:600}
+
+  /* ---------- STAT STRIP ---------- */
+  .stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    margin-bottom:56px;
+  }
+  .stat{
+    background:var(--panel);padding:22px 22px 24px;
+    opacity:0;transform:translateY(18px);animation:rise .7s forwards cubic-bezier(.2,.7,.2,1);
+  }
+  .stat:nth-child(1){animation-delay:.12s}
+  .stat:nth-child(2){animation-delay:.20s}
+  .stat:nth-child(3){animation-delay:.28s}
+  .stat:nth-child(4){animation-delay:.36s}
+  .stat .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+  .stat .v{font-family:'Fraunces',serif;font-size:32px;font-weight:600;line-height:1;letter-spacing:-.01em}
+  .stat .v.gold{color:var(--gold)}
+  .stat .v.red{color:var(--red)}
+  .stat .v.green{color:var(--green)}
+  .stat .n{font-size:12px;color:var(--muted);margin-top:8px}
+
+  /* ---------- SECTION ---------- */
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin:0 0 26px}
+  .sec-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold-deep);letter-spacing:.1em}
+  .sec-title{font-family:'Fraunces',serif;font-size:26px;font-weight:600;letter-spacing:-.01em}
+  .sec-note{font-size:13px;color:var(--muted);margin-left:auto;text-align:right;max-width:330px}
+
+  section{margin-bottom:62px}
+
+  /* ---------- LONG CARDS ---------- */
+  .longs{display:flex;flex-direction:column;gap:10px}
+  .row{
+    display:grid;grid-template-columns:200px 1fr 132px;align-items:center;gap:20px;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:18px 22px;transition:border-color .3s,transform .3s,background .3s;
+    opacity:0;transform:translateY(16px);animation:rise .6s forwards cubic-bezier(.2,.7,.2,1);
+  }
+  .row:hover{border-color:var(--gold-deep);transform:translateX(4px);background:var(--panel2)}
+  .row .name{font-family:'Fraunces',serif;font-size:19px;font-weight:600}
+  .row .tic{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.08em}
+  .row .meta{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.4}
+  .row.flag .name::after{content:"REFORÇO";font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.12em;
+    background:var(--gold);color:#1a1305;padding:2px 6px;border-radius:4px;margin-left:9px;vertical-align:middle;font-weight:700}
+
+  .bar-wrap{position:relative}
+  .prices{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:7px}
+  .prices .to{color:var(--ink)}
+  .track{height:8px;background:#0e0c08;border-radius:6px;overflow:hidden;border:1px solid #2a2419}
+  .fill{height:100%;border-radius:6px;width:0;
+    background:linear-gradient(90deg,var(--green-deep),var(--green));
+    box-shadow:0 0 14px rgba(95,207,142,.35);
+    transition:width 1.3s cubic-bezier(.16,.84,.3,1);}
+  .fill.special{background:linear-gradient(90deg,var(--gold-deep),var(--gold-soft));box-shadow:0 0 14px rgba(232,196,104,.4)}
+  .fill.na{background:linear-gradient(90deg,#3a342a,#5a5141);box-shadow:none}
+
+  .chg{text-align:right}
+  .chg .pct{font-family:'Fraunces',serif;font-size:26px;font-weight:600;line-height:1}
+  .chg .pct.green{color:var(--green)}
+  .chg .pct.gold{color:var(--gold)}
+  .chg .pct.na{color:var(--dim);font-size:18px}
+  .chg .lab{font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;margin-top:5px}
+
+  /* ---------- NEW + PUTS GRID ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:42px}
+  .mini{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:9px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    opacity:0;transform:translateY(14px);animation:rise .6s forwards cubic-bezier(.2,.7,.2,1);}
+  .mini .l .nm{font-family:'Fraunces',serif;font-weight:600;font-size:16px}
+  .mini .l .tc{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--gold);letter-spacing:.08em}
+  .mini .l .ds{font-size:11px;color:var(--muted);margin-top:3px}
+  .mini .r{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;white-space:nowrap}
+  .mini .r.up{color:var(--green)}
+  .mini .r.new{color:var(--gold)}
+
+  .put{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+  .put .pt{font-family:'JetBrains Mono',monospace;font-size:12px;width:52px;color:var(--ink);letter-spacing:.05em}
+  .put .ptrack{flex:1;height:7px;background:#0e0c08;border-radius:6px;overflow:hidden;border:1px solid #2a2419}
+  .put .pfill{height:100%;width:0;border-radius:6px;
+    background:linear-gradient(90deg,var(--red-deep),var(--red));
+    transition:width 1.1s cubic-bezier(.16,.84,.3,1);}
+  .put .amt{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);width:54px;text-align:right}
+
+  .closed{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .chip{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);border:1px solid var(--red-deep);
+    border-radius:20px;padding:6px 13px;background:rgba(217,107,92,.06)}
+  .chip s{color:var(--dim)}
+
+  /* ---------- FOOTER / CAVEATS ---------- */
+  .caveats{border:1px solid var(--line);border-left:3px solid var(--gold-deep);border-radius:10px;
+    background:linear-gradient(180deg,var(--panel),var(--bg2));padding:24px 26px}
+  .caveats h3{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:12px;color:var(--gold-soft)}
+  .caveats ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .caveats li{font-size:13.5px;color:var(--muted);padding-left:20px;position:relative}
+  .caveats li::before{content:"›";position:absolute;left:0;color:var(--gold);font-weight:700}
+  .caveats li b{color:var(--ink);font-weight:600}
+  .foot{margin-top:34px;text-align:center;font-size:11.5px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:.04em;line-height:1.8}
+
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+
+  @media(max-width:760px){
+    .stats{grid-template-columns:1fr 1fr}
+    .row{grid-template-columns:1fr;gap:14px}
+    .row .chg{text-align:left;display:flex;align-items:baseline;gap:12px}
+    .chg .lab{margin-top:0}
+    .grid2{grid-template-columns:1fr;gap:46px}
+    .sec-head{flex-direction:column;gap:6px}
+    .sec-note{margin-left:0;text-align:left}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow"><span class="dot"></span> Form 13F-HR · CIK 0002045724 · Filed 18 Mai 2026 · Snapshot 31 Mar 2026</div>
+    <h1>Situational&nbsp;Awareness&nbsp;LP<br><span class="accent">a carteira de Leopold Aschenbrenner</span></h1>
+    <p class="sub">O que ele <b>comprou e reforçou</b> no 1.º trimestre de 2026 — e quanto cada posição valorizou desde o <b>snapshot de 31 de março</b> até <b>1 de junho de 2026</b>. Atenção: a maior fatia do filing são <b>opções PUT</b> (apostas <i>contra</i> os chips), não posições compradas.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Valor reportado (nocional)</div><div class="v gold">$13,68 B</div><div class="n">42 posições no total</div></div>
+    <div class="stat"><div class="k">Puts contra chips</div><div class="v red">~$8,46 B</div><div class="n">aposta <i>bearish</i> — não comprado</div></div>
+    <div class="stat"><div class="k">Carteira longa (ações)</div><div class="v green">~$3,85 B</div><div class="n">o que de facto comprou</div></div>
+    <div class="stat"><div class="k">Maior <i>long</i></div><div class="v">Bloom Energy</div><div class="n">6,5M ações · ~$879 M</div></div>
+  </div>
+
+  <!-- LONGS -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <span class="sec-title">Posições compradas &amp; reforçadas</span>
+      <span class="sec-note">Variação de preço 31 Mar → 1 Jun 2026. Barras a verde = ganho; a dourado = caso especial.</span>
+    </div>
+    <div class="longs" id="longs"></div>
+  </section>
+
+  <!-- NEW + PUTS -->
+  <section>
+    <div class="grid2">
+      <div>
+        <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Novas posições</span></div>
+        <div id="news"></div>
+        <div style="margin-top:22px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:12px">Posições fechadas no trimestre</div>
+          <div class="closed">
+            <span class="chip">Cipher Mining <s>CIFR</s></span>
+            <span class="chip">Hut 8 <s>HUT</s></span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Puts contra os chips</span></div>
+        <div style="font-size:12.5px;color:var(--muted);margin-bottom:18px;margin-top:-8px">Exposição nocional. A tese central — apostar na queda dos semicondutores — tem estado sob pressão com a recuperação destes nomes.</div>
+        <div id="puts"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAVEATS -->
+  <section style="margin-bottom:0">
+    <div class="caveats">
+      <h3>Notas de leitura</h3>
+      <ul>
+        <li>O número de manchete (<b>$13,68 B</b>) inclui o valor nocional das opções; a carteira de ações longa real ronda os <b>~$3,85 B</b>.</li>
+        <li>O <b>único reforço claro e massivo foi a CleanSpark</b> (1,64M → 12,28M ações, ~7,5×). Em peso de carteira, APLD, IREN, RIOT, CORZ e CRWV chegaram a <b>recuar</b>.</li>
+        <li>Preços de 31 Mar marcados "~" para BE, CRWV, CLSK e SNDK são <b>derivados do próprio 13F</b> (valor ÷ ações). Os restantes mineradores são <b>aproximados</b> (o 13F só reporta valor em $).</li>
+        <li>A <b>SanDisk</b> teve <i>stock splits</i> no período, o que distorce o cálculo direto — daí ser apresentada como caso especial.</li>
+      </ul>
+    </div>
+    <div class="foot">
+      Fontes: SEC EDGAR · 13f.info · QuiverQuant · Benzinga · Yahoo/Investing/Robinhood (cotações 1 Jun 2026)<br>
+      Informação factual, não aconselhamento de investimento · valores aproximados
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const longs=[
+    {n:"Bloom Energy",t:"BE",meta:"Maior posição longa · 6,5M ações + calls",from:"~$135",to:"~$276",pct:104,disp:"+104%",cls:"green",flag:false},
+    {n:"CleanSpark",t:"CLSK",meta:"1,64M → 12,28M ações · $16,6M → $104,5M",from:"~$8,5",to:"~$13",pct:53,disp:"+53%",cls:"green",flag:true},
+    {n:"CoreWeave",t:"CRWV",meta:"7,18M ações + calls · ~$556M",from:"~$77",to:"~$110",pct:42,disp:"+42%",cls:"green",flag:false},
+    {n:"Core Scientific",t:"CORZ",meta:"~$389M · variação aproximada",from:"~$19",to:"~$29",pct:50,disp:"~+50%",cls:"green",flag:false},
+    {n:"IREN",t:"IREN",meta:"~$401M · variação aproximada",from:"~$53",to:"~$63",pct:20,disp:"~+20%",cls:"green",flag:false},
+    {n:"Riot Platforms",t:"RIOT",meta:"~$142M · fecho 31 Mar por confirmar",from:"—",to:"~$27",pct:14,disp:"n/d",cls:"na",flag:false},
+    {n:"Applied Digital",t:"APLD",meta:"~$320M · fecho 31 Mar por confirmar",from:"—",to:"~$39",pct:12,disp:"n/d",cls:"na",flag:false},
+    {n:"SanDisk",t:"SNDK",meta:"1,14M ações + calls · ~$724M · splits no período",from:"~$635",to:"~$1.500+",pct:90,disp:"enorme",cls:"gold",flag:false},
+  ];
+
+  const news=[
+    {n:"HIVE Digital",t:"HIVE",d:"Nova posição · disparou no dia do filing",r:"~+34%",cls:"up"},
+    {n:"T1 Energy",t:"TE",d:"Nova posição · disparou no dia do filing",r:"~+20%",cls:"up"},
+    {n:"Sharon AI",t:"—",d:"Nova posição · infraestrutura de IA",r:"NOVA",cls:"new"},
+  ];
+
+  const puts=[
+    {t:"SMH",v:2.0,a:"$2,0 B"},
+    {t:"NVDA",v:1.6,a:"$1,6 B"},
+    {t:"ORCL",v:1.1,a:"$1,1 B"},
+    {t:"AVGO",v:1.0,a:"$1,0 B"},
+    {t:"AMD",v:0.97,a:"$969 M"},
+    {t:"MU",v:0.58,a:"$584 M"},
+    {t:"TSM",v:0.54,a:"$535 M"},
+    {t:"ASML",v:0.49,a:"$494 M"},
+    {t:"INTC",v:0.16,a:"$159 M"},
+    {t:"GLW",v:0.02,a:"$21 M"},
+  ];
+
+  const maxPct=104, maxPut=2.0;
+  const L=document.getElementById('longs');
+  longs.forEach((d,i)=>{
+    const fillCls = d.cls==="gold"?"special":(d.cls==="na"?"na":"");
+    const el=document.createElement('div');
+    el.className="row"+(d.flag?" flag":"");
+    el.style.animationDelay=(0.1+i*0.07)+"s";
+    el.innerHTML=`
+      <div>
+        <div class="name">${d.n}</div>
+        <div class="tic">${d.t}</div>
+        <div class="meta">${d.meta}</div>
+      </div>
+      <div class="bar-wrap">
+        <div class="prices"><span>${d.from}</span><span class="to">${d.to}</span></div>
+        <div class="track"><div class="fill ${fillCls}" data-w="${Math.max(8,Math.round(d.pct/maxPct*100))}"></div></div>
+      </div>
+      <div class="chg">
+        <div class="pct ${d.cls}">${d.disp}</div>
+        <div class="lab">31 MAR → 1 JUN</div>
+      </div>`;
+    L.appendChild(el);
+  });
+
+  const N=document.getElementById('news');
+  news.forEach((d,i)=>{
+    const el=document.createElement('div');
+    el.className="mini";el.style.animationDelay=(0.15+i*0.08)+"s";
+    el.innerHTML=`<div class="l"><div class="nm">${d.n}</div><div class="tc">${d.t}</div><div class="ds">${d.d}</div></div><div class="r ${d.cls}">${d.r}</div>`;
+    N.appendChild(el);
+  });
+
+  const P=document.getElementById('puts');
+  puts.forEach((d,i)=>{
+    const el=document.createElement('div');
+    el.className="put";
+    el.innerHTML=`<span class="pt">${d.t}</span><div class="ptrack"><div class="pfill" data-w="${Math.round(d.v/maxPut*100)}"></div></div><span class="amt">${d.a}</span>`;
+    P.appendChild(el);
+  });
+
+  // animate bars on load
+  window.addEventListener('load',()=>{
+    setTimeout(()=>{
+      document.querySelectorAll('.fill,.pfill').forEach(f=>{f.style.width=f.dataset.w+'%';});
+    },350);
+  });
+</script>
+</body>
+</html>

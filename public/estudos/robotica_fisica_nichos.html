@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robótica Física · Mapa de Nichos · Carecão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0c;
+    --bg-grad:#101013;
+    --panel:#141518;
+    --panel-2:#17181c;
+    --line:#26282e;
+    --line-soft:#1d1f24;
+    --txt:#e9e7e2;
+    --txt-dim:#8c8f98;
+    --txt-faint:#5e616b;
+
+    /* tema robótico — âmbar */
+    --amber:#ff9d2f;
+    --amber-hot:#ffb84d;
+    --amber-deep:#c2701a;
+    --amber-glow:rgba(255,157,47,.16);
+
+    /* sistema de tiers (consistente em todos os mapas) */
+    --tier-mega:#8a929e;   /* >$50B — boxes descontadas */
+    --tier-mid:#f5c518;    /* $3-50B — sweet-spot */
+    --tier-small:#ff5d73;  /* <$3B — alta assimetria */
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1100px 520px at 50% -8%, #18130c 0%, transparent 60%),
+      linear-gradient(180deg, var(--bg-grad), var(--bg) 40%);
+    color:var(--txt);
+    font-family:"Space Mono",monospace;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    padding:0 20px 80px;
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+
+  /* ---------- HEADER ---------- */
+  header{padding:64px 0 40px;border-bottom:1px solid var(--line-soft)}
+  .eyebrow{
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--amber);font-weight:700;display:flex;align-items:center;gap:10px
+  }
+  .eyebrow::before{content:"";width:22px;height:22px;border-radius:6px;
+    background:var(--amber-glow);border:1px solid var(--amber-deep);
+    display:inline-flex;flex:0 0 auto;
+    background-image:radial-gradient(circle at 50% 50%, var(--amber) 0 2px, transparent 3px);
+  }
+  h1{
+    font-family:"Syne",sans-serif;font-weight:800;
+    font-size:clamp(38px,6vw,68px);line-height:1.0;letter-spacing:-.02em;
+    margin:18px 0 14px;
+  }
+  h1 .accent{color:var(--amber)}
+  .lede{color:var(--txt-dim);font-size:15px;max-width:660px;margin-bottom:26px}
+  .thesis{
+    display:inline-flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    border:1px solid var(--line);border-left:3px solid var(--amber);
+    background:linear-gradient(90deg,var(--amber-glow),transparent 80%);
+    padding:12px 16px;border-radius:4px;font-size:13px;color:var(--txt)
+  }
+  .thesis b{font-family:"Syne",sans-serif;color:var(--amber-hot);font-weight:700;letter-spacing:.01em}
+  .thesis span{color:var(--txt-dim)}
+
+  /* ---------- LEGENDA TIERS ---------- */
+  .legend{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;font-size:11.5px;color:var(--txt-dim)}
+  .legend .li{display:flex;align-items:center;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;display:inline-block}
+  .dot.mega{background:var(--tier-mega)}
+  .dot.mid{background:var(--tier-mid);box-shadow:0 0 7px rgba(245,197,24,.4)}
+  .dot.small{background:var(--tier-small);box-shadow:0 0 7px rgba(255,93,115,.4)}
+  .legend b{color:var(--txt)}
+
+  /* ---------- SECÇÕES ---------- */
+  .sec-label{
+    display:flex;align-items:center;gap:14px;margin:48px 0 18px;
+    font-family:"Syne",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt)
+  }
+  .sec-label .tag{font-family:"Space Mono";font-weight:400;font-size:11px;
+    color:var(--txt-faint);letter-spacing:.04em;text-transform:none}
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+  .sec-label.muted{color:var(--txt-dim)}
+
+  /* ---------- CARD ---------- */
+  .grid{display:grid;gap:14px}
+  .card{
+    display:grid;grid-template-columns:300px 1fr;gap:0;
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    position:relative
+  }
+  .card.contrast{opacity:.92;border-style:dashed;border-color:#2a2c33}
+  .card .left{
+    padding:20px 20px 18px;border-right:1px solid var(--line-soft);
+    position:relative
+  }
+  .card.choke .left::before{
+    content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;
+    background:linear-gradient(180deg,var(--amber),var(--amber-deep));border-radius:0 3px 3px 0
+  }
+  .nicho-no{font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.1em}
+  .card.contrast .nicho-no{color:var(--txt-faint)}
+  .nicho-name{font-family:"Syne",sans-serif;font-weight:700;font-size:19px;
+    line-height:1.15;margin:5px 0 9px;letter-spacing:-.01em}
+  .nicho-tag{font-size:12px;color:var(--txt-dim);line-height:1.5;margin-bottom:13px}
+
+  .flags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .flag{
+    font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+    padding:3px 7px;border-radius:4px;border:1px solid var(--amber-deep);
+    color:var(--amber-hot);background:var(--amber-glow);white-space:nowrap
+  }
+  .card.contrast .flag{border-color:#3a3d45;color:var(--txt-dim);background:#1b1d22}
+
+  .profile{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--txt-faint);
+    letter-spacing:.06em;text-transform:uppercase}
+  .profile .dots{display:flex;gap:4px}
+
+  /* ---------- RIGHT / CHIPS ---------- */
+  .right{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
+  .chipset{display:flex;flex-direction:column;gap:8px}
+  .chipset .head{font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--txt-faint);font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:#0f1013;border:1px solid var(--line);border-radius:7px;
+    padding:6px 10px;font-size:12px;color:var(--txt)
+  }
+  .chip em{font-style:normal;color:var(--txt-faint);font-size:10.5px;letter-spacing:.02em}
+  .chip.leader{
+    border-color:var(--amber);
+    background:linear-gradient(180deg,rgba(255,157,47,.12),rgba(255,157,47,.04));
+    box-shadow:0 0 0 1px rgba(255,157,47,.18) inset
+  }
+  .chip.leader .star{color:var(--amber);font-size:11px;margin-left:1px}
+  .chip.mono::after{content:"quase-mono";font-size:8.5px;color:var(--amber-hot);
+    border:1px solid var(--amber-deep);border-radius:3px;padding:1px 4px;letter-spacing:.04em}
+  .subnote{font-size:11px;color:var(--txt-faint);line-height:1.5;
+    border-top:1px dashed var(--line-soft);padding-top:11px}
+  .subnote b{color:var(--txt-dim);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10px}
+
+  /* ---------- PROCURA / DEPLOYERS ---------- */
+  .demand-sec{margin-top:36px;border:1px solid var(--line);border-left:3px solid var(--amber-deep);
+    border-radius:12px;background:linear-gradient(90deg,var(--amber-glow),#0e0f12 55%);padding:18px 22px}
+  .demand-sec .h{font-family:"Syne",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt);margin-bottom:5px}
+  .demand-sec .sub{font-size:11.5px;color:var(--txt-faint);margin-bottom:15px}
+  .demand-row{display:flex;flex-wrap:wrap;gap:8px}
+  .dchip{display:inline-flex;flex-direction:column;gap:2px;
+    background:#0f1013;border:1px solid var(--line);border-radius:8px;padding:8px 11px}
+  .dchip .nm{font-size:12.5px;color:var(--txt);font-weight:700}
+  .dchip .nm em{font-style:normal;color:var(--txt-faint);font-weight:400;font-size:10.5px;margin-left:5px}
+  .dchip .role{font-size:10px;color:var(--amber-hot);letter-spacing:.02em}
+  .dchip .role::before{content:"↘ ";color:var(--amber)}
+
+  /* ---------- CROSS-LINKS ---------- */
+  .xlink-sec{margin-top:20px;border:1px solid var(--line-soft);border-radius:12px;
+    background:#0e0f12;padding:20px 22px}
+  .xlink-sec .h{font-family:"Syne",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:5px}
+  .xlink-sec .sub{font-size:11.5px;color:var(--txt-faint);margin-bottom:16px}
+  .xlinks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .xlink{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:var(--panel)}
+  .xlink .nm{font-family:"Syne",sans-serif;font-weight:700;font-size:14px;color:var(--txt);margin-bottom:3px}
+  .xlink .tk{font-size:11px;color:var(--txt-faint);margin-bottom:8px}
+  .xlink .why{font-size:11px;color:var(--amber-hot);line-height:1.45}
+  .xlink .why::before{content:"→ ";color:var(--amber)}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line-soft)}
+  .disclaimer{font-family:"Syne",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.06em;color:var(--amber);margin-bottom:8px}
+  .fine{font-size:11px;color:var(--txt-faint);line-height:1.6;max-width:760px}
+  .fine code{color:var(--txt-dim)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:760px){
+    .card{grid-template-columns:1fr}
+    .card .left{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .card.choke .left::before{display:none}
+    .xlinks{grid-template-columns:1fr}
+    h1{font-size:40px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Carecão · Theme Baskets</div>
+    <h1>Robótica <span class="accent">Física</span></h1>
+    <p class="lede">Mapa de nichos do corpo dos humanoides. Foco puro no que escala com <b>unidades de robôs</b> — não com o super-ciclo de compute. O cérebro e os ímanes vivem noutros mapas.</p>
+    <div class="thesis">
+      <b>buy the chokes, not the boxes</b>
+      <span>—&nbsp; atuadores = 40-60% do BoM. O motor é a parte fácil; a escassez está na transmissão de precisão, na pele e nas mãos.</span>
+    </div>
+
+    <div class="legend">
+      <div class="li"><span class="dot mega"></span><span><b>Mega</b> &gt;$50B · boxes descontadas</span></div>
+      <div class="li"><span class="dot mid"></span><span><b>Mid</b> $3-50B · sweet-spot de assimetria</span></div>
+      <div class="li"><span class="dot small"></span><span><b>Small</b> &lt;$3B · alta assimetria / alta vol</span></div>
+      <div class="li"><span style="color:var(--amber);font-weight:700">★</span><span>líder do nicho</span></div>
+    </div>
+  </header>
+
+  <!-- ===================== GARGALOS ===================== -->
+  <div class="sec-label">Gargalos — onde está o alfa <span class="tag">/ pure-plays do choke-point</span></div>
+  <div class="grid">
+
+    <!-- 1. REDUTORES -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">01</div>
+        <div class="nicho-name">Redutores de precisão</div>
+        <div class="nicho-tag">Harmonic/strain-wave + RV/cicloidais. A junta não roda sem isto. Vida útil ~8.000h = peça de desgaste = receita recorrente.</div>
+        <div class="flags">
+          <span class="flag">Gargalo nº1</span>
+          <span class="flag">Oligopólio</span>
+          <span class="flag">Desgaste = recorrente</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot small"></span><span class="dot mid"></span><span class="dot mid"></span><span class="dot mid"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot small"></span>Harmonic Drive Systems<em>6324·JP</em><span class="star">★</span></span>
+            <span class="chip mono"><span class="dot mid"></span>Nabtesco<em>6268·JP</em></span>
+            <span class="chip"><span class="dot mid"></span>Leaderdrive 绿的谐波<em>688017·CN</em></span>
+            <span class="chip"><span class="dot mid"></span>Sumitomo Heavy<em>6302·JP</em></span>
+            <span class="chip"><span class="dot mid"></span>Double Ring<em>002472·CN</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>+ rolamentos de precisão</b> &nbsp;crossed-roller / thin-section: RBC Bearings <code>RBC·US</code> · THK <code>6481·JP</code> · Timken <code>TKR·US</code> · Changsheng <code>CN</code></div>
+      </div>
+    </article>
+
+    <!-- 2. ROLLER SCREWS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">02</div>
+        <div class="nicho-name">Roller screws / fusos lineares</div>
+        <div class="nicho-tag">Convertem rotação em força linear. O Optimus usa 14. Só ~5 fundições no mundo fazem a liga aeroespacial. Self-locking absorve impacto.</div>
+        <div class="flags">
+          <span class="flag">Gargalo emergente</span>
+          <span class="flag">O mais limpo</span>
+          <span class="flag">Self-locking</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mid"></span><span class="dot small"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>Schaeffler<em>SHA·DE</em></span>
+            <span class="chip"><span class="dot mid"></span>SKF / Ewellix<em>SKFB·SE</em></span>
+            <span class="chip"><span class="dot mid"></span>Moog<em>MOG.A·US</em></span>
+            <span class="chip"><span class="dot small"></span>Nippon Thompson · IKO<em>6480·JP</em></span>
+            <span class="chip"><span class="dot mid"></span>Beite<em>603009·CN</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot small"></span>GSA<em>SUÍÇA · fornece Tesla</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot small"></span>Rollvis<em>SUÍÇA</em></span>
+            <span class="chip"><span class="dot small"></span>Xinjian<em>CN · campeão escondido</em></span>
+            <span class="chip"><span class="dot small"></span>Wuzhou New Spring<em>CN</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. ATUADOR INTEGRADO -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">03</div>
+        <div class="nicho-name">Atuador integrado · módulo Tier-1</div>
+        <div class="nicho-tag">Quem entregar a junta completa (motor + redutor + screw + sensor + controlo) standardizada e barata captura a maior fatia do BoM. Em aberto.</div>
+        <div class="flags">
+          <span class="flag">A guerra pelo BoM</span>
+          <span class="flag">Tier-1 auto a entrar</span>
+          <span class="flag">Em aberto</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mid"></span><span class="dot mid"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot mid"></span>Schaeffler<em>SHA·DE · all-in-one</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mid"></span>Hyundai Mobis<em>012330·KR · fornece Atlas</em></span>
+            <span class="chip"><span class="dot mid"></span>Regal Rexnord<em>RRX·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Sanhua<em>002050·CN</em></span>
+            <span class="chip"><span class="dot mid"></span>Tuopu<em>601689·CN</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot small"></span>Maxon<em>SUÍÇA</em></span>
+            <span class="chip"><span class="dot mega"></span>Bosch<em>DE</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. MÃOS DEXTEROUS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">04</div>
+        <div class="nicho-name">Mãos dexterous · end-effectors</div>
+        <div class="nicho-tag">31% do BoM — o maior item de custo isolado. O "final mile" da destreza, e o mais imaturo = mais pista pela frente. Quase tudo privado.</div>
+        <div class="flags">
+          <span class="flag">31% do BoM</span>
+          <span class="flag">Final mile</span>
+          <span class="flag">Privado-heavy</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot small"></span><span class="dot small"></span><span class="dot small"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot small"></span>Sharpa<em>CN · pick NVIDIA GR00T</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot small"></span>PaXini · DexH13<em>CN · 1.140 sensores</em></span>
+            <span class="chip"><span class="dot small"></span>Unitree · Dex5<em>CN · 94 sensores</em></span>
+            <span class="chip"><span class="dot small"></span>AgiBot · OmniHand<em>CN</em></span>
+            <span class="chip"><span class="dot small"></span>Fourier · FDH-6<em>CN</em></span>
+            <span class="chip"><span class="dot small"></span>Tesollo · DG-5F<em>KR</em></span>
+            <span class="chip"><span class="dot small"></span>Shadow Robot<em>UK</em></span>
+            <span class="chip"><span class="dot small"></span>Sanctuary<em>CA</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Cotada periférica</b> &nbsp;Wonik Robotics (mão Allegro) <code>KR</code> — exposição parcial.</div>
+      </div>
+    </article>
+
+    <!-- 5. PERCEPÇÃO DE CONTACTO -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">05</div>
+        <div class="nicho-name">Percepção de contacto</div>
+        <div class="nicho-tag">Pele tátil + força-binário: distinguir um ovo de um copo. Bosch: "4 anos de produção mundial de sensores mal chegam para 12.500 robôs". A escala é o gargalo.</div>
+        <div class="flags">
+          <span class="flag">Gargalo de percepção</span>
+          <span class="flag">Escala brutal</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mid"></span><span class="dot small"></span><span class="dot mega"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>Novanta · ATI<em>NOVT·US · força-binário</em></span>
+            <span class="chip"><span class="dot mid"></span>TDK · InvenSense<em>6762·JP</em></span>
+            <span class="chip"><span class="dot mid"></span>Sensata<em>ST·US</em></span>
+            <span class="chip"><span class="dot mid"></span>STMicro<em>STM·EU</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot small"></span>XELA Robotics · uSkin<em>JP</em><span class="star">★</span></span>
+            <span class="chip mono"><span class="dot mega"></span>Bosch · MEMS<em>DE</em></span>
+            <span class="chip"><span class="dot small"></span>PaXini<em>CN</em></span>
+            <span class="chip"><span class="dot small"></span>Bota Systems<em>SUÍÇA</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 6. MENTE / VLA -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">06</div>
+        <div class="nicho-name">Mente · modelos VLA</div>
+        <div class="nicho-tag">O cérebro-software (vision-language-action). É onde o valor durável tende a acumular a 30 anos — mas, como na IA agêntica, sem pure-play cotado limpo.</div>
+        <div class="flags">
+          <span class="flag">Valor durável (30A)</span>
+          <span class="flag">Sem pure-play cotado</span>
+          <span class="flag">Privado-heavy</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mega"></span><span class="dot mega"></span><span class="dot small"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas · só os toll-keepers</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mega"></span>NVIDIA · GR00T<em>NVDA·US</em></span>
+            <span class="chip"><span class="dot mega"></span>Alphabet · Gemini Robotics<em>GOOGL·US</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot small"></span>Physical Intelligence<em>~$2.4B</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot small"></span>Skild AI<em>—</em></span>
+            <span class="chip"><span class="dot small"></span>Figure · Helix<em>in-house</em></span>
+            <span class="chip"><span class="dot small"></span>1X · World Model<em>in-house</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== CONTRASTE ===================== -->
+  <div class="sec-label muted">Contraste — parece gargalo, não é <span class="tag">/ ensina onde NÃO olhar</span></div>
+  <div class="grid">
+
+    <!-- 7. OEMs -->
+    <article class="card contrast">
+      <div class="left">
+        <div class="nicho-no">07</div>
+        <div class="nicho-name">OEMs / marcas — "as boxes"</div>
+        <div class="nicho-tag">As caixas já descontadas. Ou privadas / pré-IPO, ou megas diversificadas. A Unitree já comoditiza o hardware ao estilo EV chinês — pressão de margem.</div>
+        <div class="flags">
+          <span class="flag">Baixa assimetria</span>
+          <span class="flag">Comoditização</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mega"></span><span class="dot mega"></span><span class="dot mid"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mega"></span>Tesla · Optimus<em>TSLA·US</em></span>
+            <span class="chip"><span class="dot mega"></span>Hyundai · Boston Dynamics<em>005380·KR</em></span>
+            <span class="chip"><span class="dot mid"></span>Xpeng · IRON<em>XPEV·US</em></span>
+            <span class="chip"><span class="dot mid"></span>UBTech<em>9880·HK</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>Figure<em>~$39B</em></span>
+            <span class="chip"><span class="dot mid"></span>Apptronik<em>~$5.5B</em></span>
+            <span class="chip"><span class="dot small"></span>Unitree<em>$1.3B · IPO STAR</em></span>
+            <span class="chip"><span class="dot small"></span>1X · Agility · AgiBot<em>—</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 8. MOTORES FRAMELESS -->
+    <article class="card contrast">
+      <div class="left">
+        <div class="nicho-no">08</div>
+        <div class="nicho-name">Motores frameless — "a armadilha"</div>
+        <div class="nicho-tag">Parece o gargalo do atuador. É a parte fácil: barreiras técnicas baixas, pouca vantagem de first-mover, sem moat durável. Não confundir com o redutor.</div>
+        <div class="flags">
+          <span class="flag">Armadilha</span>
+          <span class="flag">Comoditizado</span>
+          <span class="flag">Sem moat</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mega"></span><span class="dot mega"></span><span class="dot mid"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mega"></span>Parker Hannifin<em>PH·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Nidec<em>6594·JP</em></span>
+            <span class="chip"><span class="dot mid"></span>AMETEK<em>AME·US · coreless</em></span>
+            <span class="chip"><span class="dot mid"></span>Regal Rexnord · Kollmorgen<em>RRX·US</em></span>
+            <span class="chip"><span class="dot small"></span>Allient · Allied Motion<em>ALNT·US</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot small"></span>Maxon<em>SUÍÇA</em></span>
+            <span class="chip"><span class="dot small"></span>TQ-RoboDrive<em>DE</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== PROCURA / DEPLOYERS ===================== -->
+  <div class="demand-sec">
+    <div class="h">Procura / deployers — quem puxa o mercado</div>
+    <div class="sub">O lado da procura: quem compra, testa e valida (e, em alguns casos, financia). Não são picks de gargalo — são o sinal de que a procura é real e está a pagar.</div>
+    <div class="demand-row">
+      <div class="dchip"><div class="nm">Amazon<em>AMZN·US</em></div><div class="role">testa Digit · investe (Agility, Neura)</div></div>
+      <div class="dchip"><div class="nm">GXO Logistics<em>GXO·US</em></div><div class="role">Digit em armazém</div></div>
+      <div class="dchip"><div class="nm">Mercedes-Benz<em>MBG·DE</em></div><div class="role">testa Apollo · investe Apptronik</div></div>
+      <div class="dchip"><div class="nm">BMW<em>BMW·DE</em></div><div class="role">Figure na linha de Spartanburg</div></div>
+      <div class="dchip"><div class="nm">Foxconn · Hon Hai<em>2317·TW</em></div><div class="role">eletrónica · linha de montagem</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== CROSS-LINKS ===================== -->
+  <div class="xlink-sec">
+    <div class="h">Adjacentes — mostrados, não pickados</div>
+    <div class="sub">Reais no BoM, mas não é aqui que se compram: ou reciclam um macro que já tens, ou pertencem a outro mapa.</div>
+    <div class="xlinks">
+      <div class="xlink">
+        <div class="nm">Compute / cérebro</div>
+        <div class="tk">NVIDIA · Jetson Thor + Isaac &nbsp;<code>NVDA</code></div>
+        <div class="why">é o mesmo macro de IA/compute que já tens em carteira</div>
+      </div>
+      <div class="xlink">
+        <div class="nm">Ímanes NdFeB</div>
+        <div class="tk">MP Materials · Lynas · JL Mag &nbsp;<code>MP · LYC · 300748</code></div>
+        <div class="why">vai para o mapa de Minerais Críticos (China ~90% do refino)</div>
+      </div>
+      <div class="xlink">
+        <div class="nm">Baterias / power</div>
+        <div class="tk">CATL · BYD · etc.</div>
+        <div class="why">é o trade EV; sem gargalo único de humanoides</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="disclaimer">⚠ NÃO É CONSELHO DE INVESTIMENTO</div>
+    <p class="fine">
+      Mapa educativo da série Carecão / Theme Baskets. As classificações por tier (mega/mid/small) são um <i>snapshot aproximado</i> de capitalização e mudam com o mercado — verifica sempre os valores atuais antes de qualquer decisão. Empresas privadas usam a última avaliação pública conhecida. A inclusão de uma empresa não é endosso; muitas exposições são parciais (a robótica é uma fração da receita). O nicho 08 está listado precisamente como <i>contra-exemplo</i>. Faz a tua própria pesquisa.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

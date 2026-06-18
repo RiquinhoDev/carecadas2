@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O TSMC da Biologia · Mapa de Nichos · Carecão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090a;
+    --bg-grad:#0e1012;
+    --panel:#131517;
+    --panel-2:#16191b;
+    --line:#25292c;
+    --line-soft:#1c1f21;
+    --txt:#e8ebe9;
+    --txt-dim:#899093;
+    --txt-faint:#5c6366;
+
+    /* tema biologia — teal clínico */
+    --teal:#19c4a6;
+    --teal-hot:#5eead4;
+    --teal-deep:#0d8a73;
+    --teal-glow:rgba(25,196,166,.15);
+
+    /* sistema de tiers (consistente em todos os mapas) */
+    --tier-mega:#8a929e;   /* >$50B — boxes descontadas */
+    --tier-mid:#f5c518;    /* $3-50B — sweet-spot */
+    --tier-small:#ff5d73;  /* <$3B — alta assimetria */
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1100px 520px at 50% -8%, #07201c 0%, transparent 60%),
+      linear-gradient(180deg, var(--bg-grad), var(--bg) 40%);
+    color:var(--txt);
+    font-family:"Space Mono",monospace;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    padding:0 20px 80px;
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+
+  /* ---------- HEADER ---------- */
+  header{padding:64px 0 40px;border-bottom:1px solid var(--line-soft)}
+  .eyebrow{
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--teal);font-weight:700;display:flex;align-items:center;gap:10px
+  }
+  .eyebrow::before{content:"";width:22px;height:22px;border-radius:6px;
+    background:var(--teal-glow);border:1px solid var(--teal-deep);
+    display:inline-flex;flex:0 0 auto;
+    background-image:radial-gradient(circle at 50% 50%, var(--teal) 0 2px, transparent 3px);
+  }
+  h1{
+    font-family:"Syne",sans-serif;font-weight:800;
+    font-size:clamp(34px,5.4vw,62px);line-height:1.02;letter-spacing:-.02em;
+    margin:18px 0 14px;
+  }
+  h1 .accent{color:var(--teal)}
+  .lede{color:var(--txt-dim);font-size:15px;max-width:680px;margin-bottom:26px}
+  .thesis{
+    display:inline-flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    border:1px solid var(--line);border-left:3px solid var(--teal);
+    background:linear-gradient(90deg,var(--teal-glow),transparent 80%);
+    padding:12px 16px;border-radius:4px;font-size:13px;color:var(--txt)
+  }
+  .thesis b{font-family:"Syne",sans-serif;color:var(--teal-hot);font-weight:700;letter-spacing:.01em}
+  .thesis span{color:var(--txt-dim)}
+
+  /* ---------- LEGENDA TIERS ---------- */
+  .legend{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;font-size:11.5px;color:var(--txt-dim)}
+  .legend .li{display:flex;align-items:center;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;display:inline-block}
+  .dot.mega{background:var(--tier-mega)}
+  .dot.mid{background:var(--tier-mid);box-shadow:0 0 7px rgba(245,197,24,.4)}
+  .dot.small{background:var(--tier-small);box-shadow:0 0 7px rgba(255,93,115,.4)}
+  .legend b{color:var(--txt)}
+
+  /* ---------- SECÇÕES ---------- */
+  .sec-label{
+    display:flex;align-items:center;gap:14px;margin:48px 0 18px;
+    font-family:"Syne",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt)
+  }
+  .sec-label .tag{font-family:"Space Mono";font-weight:400;font-size:11px;
+    color:var(--txt-faint);letter-spacing:.04em;text-transform:none}
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+  .sec-label.muted{color:var(--txt-dim)}
+
+  /* ---------- CARD ---------- */
+  .grid{display:grid;gap:14px}
+  .card{
+    display:grid;grid-template-columns:310px 1fr;gap:0;
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    position:relative
+  }
+  .card.contrast{opacity:.93;border-style:dashed;border-color:#292d30}
+  .card .left{
+    padding:20px 20px 18px;border-right:1px solid var(--line-soft);
+    position:relative
+  }
+  .card.choke .left::before{
+    content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;
+    background:linear-gradient(180deg,var(--teal),var(--teal-deep));border-radius:0 3px 3px 0
+  }
+  .nicho-no{font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.1em}
+  .card.contrast .nicho-no{color:var(--txt-faint)}
+  .nicho-name{font-family:"Syne",sans-serif;font-weight:700;font-size:18px;
+    line-height:1.15;margin:5px 0 9px;letter-spacing:-.01em}
+  .nicho-tag{font-size:12px;color:var(--txt-dim);line-height:1.5;margin-bottom:13px}
+
+  .flags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .flag{
+    font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+    padding:3px 7px;border-radius:4px;border:1px solid var(--teal-deep);
+    color:var(--teal-hot);background:var(--teal-glow);white-space:nowrap
+  }
+  .flag.warn{border-color:#a8732a;color:#f0b35e;background:rgba(200,130,30,.12)}
+  .card.contrast .flag{border-color:#3a3f42;color:var(--txt-dim);background:#1b1e20}
+
+  .profile{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--txt-faint);
+    letter-spacing:.06em;text-transform:uppercase}
+  .profile .dots{display:flex;gap:4px}
+
+  /* ---------- RIGHT / CHIPS ---------- */
+  .right{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
+  .chipset{display:flex;flex-direction:column;gap:8px}
+  .chipset .head{font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--txt-faint);font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:#0e1012;border:1px solid var(--line);border-radius:7px;
+    padding:6px 10px;font-size:12px;color:var(--txt)
+  }
+  .chip em{font-style:normal;color:var(--txt-faint);font-size:10.5px;letter-spacing:.02em}
+  .chip.leader{
+    border-color:var(--teal);
+    background:linear-gradient(180deg,rgba(25,196,166,.12),rgba(25,196,166,.04));
+    box-shadow:0 0 0 1px rgba(25,196,166,.18) inset
+  }
+  .chip.leader .star{color:var(--teal);font-size:11px;margin-left:1px}
+  .chip.mono::after{content:"quase-mono";font-size:8.5px;color:var(--teal-hot);
+    border:1px solid var(--teal-deep);border-radius:3px;padding:1px 4px;letter-spacing:.04em}
+  .subnote{font-size:11px;color:var(--txt-faint);line-height:1.5;
+    border-top:1px dashed var(--line-soft);padding-top:11px}
+  .subnote b{color:var(--txt-dim);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10px}
+
+  /* ---------- PROCURA / DEMANDA ---------- */
+  .demand-sec{margin-top:36px;border:1px solid var(--line);border-left:3px solid var(--teal-deep);
+    border-radius:12px;background:linear-gradient(90deg,var(--teal-glow),#0e1012 55%);padding:18px 22px}
+  .demand-sec .h{font-family:"Syne",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt);margin-bottom:5px}
+  .demand-sec .sub{font-size:11.5px;color:var(--txt-faint);margin-bottom:15px}
+  .demand-row{display:flex;flex-wrap:wrap;gap:8px}
+  .dchip{display:inline-flex;flex-direction:column;gap:2px;
+    background:#0e1012;border:1px solid var(--line);border-radius:8px;padding:8px 11px}
+  .dchip .nm{font-size:12.5px;color:var(--txt);font-weight:700}
+  .dchip .nm em{font-style:normal;color:var(--txt-faint);font-weight:400;font-size:10.5px;margin-left:5px}
+  .dchip .role{font-size:10px;color:var(--teal-hot);letter-spacing:.02em}
+  .dchip .role::before{content:"↘ ";color:var(--teal)}
+
+  /* ---------- CROSS-LINKS ---------- */
+  .xlink-sec{margin-top:20px;border:1px solid var(--line-soft);border-radius:12px;
+    background:#0d0f10;padding:20px 22px}
+  .xlink-sec .h{font-family:"Syne",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:5px}
+  .xlink-sec .sub{font-size:11.5px;color:var(--txt-faint);margin-bottom:16px}
+  .xlinks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .xlink{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:var(--panel)}
+  .xlink .nm{font-family:"Syne",sans-serif;font-weight:700;font-size:14px;color:var(--txt);margin-bottom:3px}
+  .xlink .tk{font-size:11px;color:var(--txt-faint);margin-bottom:8px}
+  .xlink .why{font-size:11px;color:var(--teal-hot);line-height:1.45}
+  .xlink .why::before{content:"→ ";color:var(--teal)}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line-soft)}
+  .disclaimer{font-family:"Syne",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.06em;color:var(--teal);margin-bottom:8px}
+  .fine{font-size:11px;color:var(--txt-faint);line-height:1.6;max-width:780px}
+  .fine code{color:var(--txt-dim)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:760px){
+    .card{grid-template-columns:1fr}
+    .card .left{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .card.choke .left::before{display:none}
+    .xlinks{grid-template-columns:1fr}
+    h1{font-size:36px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Carecão · Theme Baskets</div>
+    <h1>O <span class="accent">TSMC</span> da Biologia</h1>
+    <p class="lede">Picks &amp; shovels da indústria farmacêutica. As "boxes" aqui são as biotech que apostam num fármaco (risco binário de FDA); os gargalos ganham <b>qualquer que seja o vencedor</b>. Driver descorrelacionado do compute — e a sair de um vale de 3 anos. Catalisador: o <b>BIOSECURE Act</b> (lei desde dez/2025) força o reshoring para fora da China.</p>
+    <div class="thesis">
+      <b>buy the chokes, not the boxes</b>
+      <span>—&nbsp; ~40% do fabrico farmacêutico já é outsourced. Mapa ponderado para os drivers de maior crescimento: GLP-1, ADCs e radiofármacos.</span>
+    </div>
+
+    <div class="legend">
+      <div class="li"><span class="dot mega"></span><span><b>Mega</b> &gt;$50B · boxes descontadas</span></div>
+      <div class="li"><span class="dot mid"></span><span><b>Mid</b> $3-50B · sweet-spot de assimetria</span></div>
+      <div class="li"><span class="dot small"></span><span><b>Small</b> &lt;$3B · alta assimetria / alta vol</span></div>
+      <div class="li"><span style="color:var(--teal);font-weight:700">★</span><span>líder do nicho</span></div>
+    </div>
+  </header>
+
+  <!-- ===================== GARGALOS ===================== -->
+  <div class="sec-label">Gargalos — onde está o alfa <span class="tag">/ ordenado do mais ao menos limpo</span></div>
+  <div class="grid">
+
+    <!-- 1. FILL-FINISH -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">01</div>
+        <div class="nicho-name">Fill-finish / containment</div>
+        <div class="nicho-tag">Os stoppers de elastómero e o vidro que selam cada injetável. Ficam escritos no dossier de aprovação da FDA — trocar exige re-submeter. Tollbooth em cada biológico, vacina e caneta GLP-1.</div>
+        <div class="flags">
+          <span class="flag">Tollbooth universal</span>
+          <span class="flag">Escrito no dossier FDA</span>
+          <span class="flag">Switching cost brutal</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mid"></span><span class="dot mega"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot mid"></span>West Pharmaceutical<em>WST·US · stoppers</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mid"></span>Stevanato<em>STVN·US · vidro/cartridges</em></span>
+            <span class="chip"><span class="dot mega"></span>Becton Dickinson<em>BDX·US · seringas</em></span>
+            <span class="chip"><span class="dot small"></span>Gerresheimer<em>GXI·DE · canetas</em></span>
+            <span class="chip"><span class="dot mid"></span>AptarGroup<em>ATR·US</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>+ vidro tubular Tipo I</b> &nbsp;SCHOTT <code>privada</code> · Corning Valor <code>GLW·US</code> (distribuído em exclusivo pela West) · Nipro <code>JP</code></div>
+      </div>
+    </article>
+
+    <!-- 2. RESINAS / PROTEIN A -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">02</div>
+        <div class="nicho-name">Resinas de cromatografia / Protein A</div>
+        <div class="nicho-tag">O passo de captura na purificação de anticorpos. O gargalo escondido: a Protein A recombinante é o ligante que os próprios concorrentes compram para as resinas deles.</div>
+        <div class="flags">
+          <span class="flag">Gargalo escondido</span>
+          <span class="flag">Quase-mono no ligante</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mega"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader mono"><span class="dot mid"></span>Repligen<em>RGEN·US · rProtein A</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mega"></span>Cytiva (Danaher)<em>DHR·US · MabSelect</em></span>
+            <span class="chip"><span class="dot mid"></span>Tosoh<em>4042·JP</em></span>
+            <span class="chip"><span class="dot mega"></span>Purolite (Ecolab)<em>ECL·US</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>China</b> &nbsp;Bestchrom — a escalar resinas a preço agressivo.</div>
+      </div>
+    </article>
+
+    <!-- 3. PEPTIDOS / OLIGOS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">03</div>
+        <div class="nicho-name">CDMO de péptidos &amp; oligos · GLP-1 / TIDES</div>
+        <div class="nicho-tag">O boom Ozempic/Mounjaro. O gargalo real não é a química — são os reatores SPPS GMP de larga escala (1.000-5.000L) e sobretudo a purificação por HPLC preparativa, com lead times enormes de equipamento.</div>
+        <div class="flags">
+          <span class="flag">Super-ciclo GLP-1</span>
+          <span class="flag">Take-or-pay</span>
+          <span class="flag">HPLC = o estrangulamento</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot small"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot mid"></span>Bachem<em>BANB·SW</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot small"></span>PolyPeptide<em>PPGN·SW</em></span>
+            <span class="chip"><span class="dot mid"></span>Lonza<em>LONN·SW</em></span>
+            <span class="chip"><span class="dot mega"></span>Thermo Fisher<em>TMO·US</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>CordenPharma<em>&gt;$1B, a duplicar p/ 42.000L</em></span>
+            <span class="chip"><span class="dot small"></span>AmbioPharm · CSBio<em>US</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4. ADC / BIOCONJUGADOS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">04</div>
+        <div class="nicho-name">CDMO de bioconjugados · ADC</div>
+        <div class="nicho-tag">O "renascimento" da oncologia (mercado de bioconjugação →$71B até 2031). A bioconjugação exige manuseio de HPAPI em alta contenção (OEB-5, +40% de custo); &lt;30% das biotech têm isto in-house = outsourcing forçado.</div>
+        <div class="flags">
+          <span class="flag">Oncologia · alto crescimento</span>
+          <span class="flag">HPAPI / OEB-5</span>
+          <span class="flag">Capacidade escassa</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mega"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot mid"></span>Lonza<em>LONN·SW</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mega"></span>Samsung Biologics<em>207940·KR</em></span>
+            <span class="chip"><span class="dot mega"></span>Merck KGaA<em>MRK·DE</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot small"></span>Abzena<em>ThioBridge</em></span>
+            <span class="chip"><span class="dot mid"></span>Catalent<em>Novo Holdings</em></span>
+            <span class="chip"><span class="dot small"></span>TOT Biopharm<em>CN</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 5. RADIOFARMACOS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">05</div>
+        <div class="nicho-name">Radiofármacos / isótopos · RDC</div>
+        <div class="nicho-tag">Provavelmente o gargalo mais limpo de toda a biotec: isótopos com meia-vida de horas (logística impossível de armazenar), hot-cells GMP e pouquíssimos produtores de isótopos. Escassez física, não financeira.</div>
+        <div class="flags">
+          <span class="flag">O gargalo mais limpo</span>
+          <span class="flag">Escassez de isótopos</span>
+          <span class="flag">Hot-cells GMP</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot small"></span><span class="dot mid"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot small"></span>Eckert &amp; Ziegler<em>EUZ·DE · pure-play isótopos</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mid"></span>Lantheus<em>LNTH·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Telix Pharmaceuticals<em>TLX·AU</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>Curium<em>FR</em></span>
+            <span class="chip"><span class="dot small"></span>NorthStar · Nusano<em>US · isótopos</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 6. BIOPROCESSAMENTO -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">06</div>
+        <div class="nicho-name">Bioprocessamento · single-use</div>
+        <div class="nicho-tag">O coração recorrente: biorreatores descartáveis, filtros, sensores, meios de cultura. Os assemblies single-use são validados e qualificados no processo (e no dossier) — daí o switching cost. Ciclo a inflectir do fundo pós-COVID.</div>
+        <div class="flags">
+          <span class="flag">Razor-blade recorrente</span>
+          <span class="flag">Qualificado no dossier</span>
+          <span class="flag warn">⚠ recuperação irregular</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mega"></span><span class="dot mega"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>Sartorius Stedim<em>DIM·FR · ⚠ profit warning</em></span>
+            <span class="chip"><span class="dot mega"></span>Danaher · Cytiva<em>DHR·US</em></span>
+            <span class="chip"><span class="dot mega"></span>Merck KGaA · Millipore<em>MRK·DE</em></span>
+            <span class="chip"><span class="dot mega"></span>Thermo Fisher<em>TMO·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Avantor<em>AVTR·US</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 7. CDMO BIOLOGICOS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">07</div>
+        <div class="nicho-name">CDMO de biológicos — "as fabs"</div>
+        <div class="nicho-tag">O TSMC literal: fabricam o princípio ativo biológico para quem o desenha. O BIOSECURE Act força a saída da China e desvia procura para o Ocidente, Coreia e Índia — reshoring de vários anos.</div>
+        <div class="flags">
+          <span class="flag">O TSMC literal</span>
+          <span class="flag">BIOSECURE = reshoring</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mega"></span><span class="dot mega"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader"><span class="dot mid"></span>Lonza<em>LONN·SW · líder global</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mega"></span>Samsung Biologics<em>207940·KR</em></span>
+            <span class="chip"><span class="dot mega"></span>Fujifilm<em>4901·JP</em></span>
+            <span class="chip"><span class="dot mid"></span>WuXi Biologics<em>2269·HK · ⚠ BIOSECURE</em></span>
+            <span class="chip"><span class="dot mid"></span>Lotte · Celltrion<em>KR</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Saiu de bolsa</b> &nbsp;Catalent ($4.2B receita) — comprada pela Novo Holdings em 2025.</div>
+      </div>
+    </article>
+
+    <!-- 8. MODELOS PRECLINICOS -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">08</div>
+        <div class="nicho-name">Modelos preclínicos + toxicologia</div>
+        <div class="nicho-tag">O portão para a FDA: os modelos animais e os estudos de segurança exigidos nas submissões regulatórias. Quase-monopólio em modelos — mas o gargalo com a nuvem mais escura.</div>
+        <div class="flags">
+          <span class="flag">O portão para a FDA</span>
+          <span class="flag warn">⚠ ameaça NAMs</span>
+          <span class="flag warn">⚠ prejuízo 2025</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot mid"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip leader mono"><span class="dot mid"></span>Charles River<em>CRL·US · modelos+tox</em><span class="star">★</span></span>
+            <span class="chip"><span class="dot mid"></span>IQVIA<em>IQV·US · clínico/dados</em></span>
+            <span class="chip"><span class="dot mid"></span>ICON<em>ICLR·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Medpace<em>MEDP·US</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Ressalva</b> &nbsp;a FDA empurra para alternativas a testes em animais (NAMs); a CRL está em reestruturação (vendeu CDMO/discovery em 2026).</div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== CONTRASTE & FRONTEIRA ===================== -->
+  <div class="sec-label muted">Contraste &amp; fronteira <span class="tag">/ as boxes, o contestado e o binário</span></div>
+  <div class="grid">
+
+    <!-- 9. INSTRUMENTOS -->
+    <article class="card contrast">
+      <div class="left">
+        <div class="nicho-no">09</div>
+        <div class="nicho-name">Instrumentos — "as picas largas"</div>
+        <div class="nicho-tag">Megas de qualidade que possuem muitos gargalos (a Cytiva é da Danaher, a Patheon da Thermo) — mas como ações são diversificadas. Baixa assimetria. O análogo aos OEMs do mapa de robótica.</div>
+        <div class="flags">
+          <span class="flag">As boxes</span>
+          <span class="flag">Baixa assimetria</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mega"></span><span class="dot mega"></span><span class="dot mid"></span><span class="dot mid"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mega"></span>Thermo Fisher<em>TMO·US</em></span>
+            <span class="chip"><span class="dot mega"></span>Danaher<em>DHR·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Agilent<em>A·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Mettler-Toledo<em>MTD·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Waters<em>WAT·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Bruker · Bio-Rad · Revvity<em>US</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 10. SEQUENCIAMENTO -->
+    <article class="card contrast">
+      <div class="left">
+        <div class="nicho-no">10</div>
+        <div class="nicho-name">Sequenciamento / NGS</div>
+        <div class="nicho-tag">Razor-blade puro (consumíveis ~6× os instrumentos) e base instalada enorme — mas o fosso está a erodir. A Roche lança o SBX em 2026 (sensores reutilizáveis, mais barato), além de Ultima e Element.</div>
+        <div class="flags">
+          <span class="flag">Razor-blade</span>
+          <span class="flag warn">⚠ fosso a erodir</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot mid"></span><span class="dot small"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot mid"></span>Illumina<em>ILMN·US · dominante</em></span>
+            <span class="chip"><span class="dot small"></span>PacBio<em>PACB·US</em></span>
+            <span class="chip"><span class="dot small"></span>Oxford Nanopore<em>ONT·LSE</em></span>
+            <span class="chip"><span class="dot mega"></span>Roche · SBX<em>ROG·SW · disruptor</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 11. mRNA/LNP + TECHBIO -->
+    <article class="card contrast">
+      <div class="left">
+        <div class="nicho-no">11</div>
+        <div class="nicho-name">Fronteira — mRNA/LNP &amp; TechBio</div>
+        <div class="nicho-tag">Alta volatilidade. No mRNA, o gargalo é a IP do lípido ionizável, em mãos privadas e em guerra de patentes. No TechBio, é binário e correlacionado à IA — não é o driver descorrelacionado que procuramos.</div>
+        <div class="flags">
+          <span class="flag warn">⚠ alta vol</span>
+          <span class="flag warn">⚠ binário / correlacionado IA</span>
+          <span class="flag">Sem pure-play limpo</span>
+        </div>
+        <div class="profile">Perfil
+          <span class="dots"><span class="dot small"></span><span class="dot small"></span><span class="dot small"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head">Cotadas</div>
+          <div class="chips">
+            <span class="chip"><span class="dot small"></span>Maravai · CleanCap<em>MRVI·US · capeação mRNA</em></span>
+            <span class="chip"><span class="dot small"></span>Schrödinger<em>SDGR·US</em></span>
+            <span class="chip"><span class="dot mid"></span>Tempus<em>TEM·US</em></span>
+            <span class="chip"><span class="dot small"></span>Recursion · AbCellera<em>RXRX · ABCL</em></span>
+          </div>
+        </div>
+        <div class="chipset">
+          <div class="head">Privadas — IP de LNP</div>
+          <div class="chips">
+            <span class="chip"><span class="dot small"></span>Acuitas<em>IP da Comirnaty</em></span>
+            <span class="chip"><span class="dot small"></span>Genevant<em>patentes LNP</em></span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== PROCURA / DEMANDA ===================== -->
+  <div class="demand-sec">
+    <div class="h">Procura / demanda — quem puxa o mercado</div>
+    <div class="sub">As "boxes" do lado da procura: as farmacêuticas cujos blockbusters criam a necessidade dos gargalos. Não são picks de gargalo — mostram para onde corre o dinheiro.</div>
+    <div class="demand-row">
+      <div class="dchip"><div class="nm">Eli Lilly<em>LLY·US</em></div><div class="role">GLP-1 (Mounjaro/Zepbound) + oral orforglipron</div></div>
+      <div class="dchip"><div class="nm">Novo Nordisk<em>NVO·US</em></div><div class="role">GLP-1 (Ozempic/Wegovy) · dona da Catalent</div></div>
+      <div class="dchip"><div class="nm">Novartis<em>NVS·US</em></div><div class="role">radiofármacos (Pluvicto/Lutathera)</div></div>
+      <div class="dchip"><div class="nm">AstraZeneca · Daiichi<em>AZN·US</em></div><div class="role">ADCs (Enhertu/Datroway)</div></div>
+    </div>
+  </div>
+
+  <!-- ===================== CROSS-LINKS ===================== -->
+  <div class="xlink-sec">
+    <div class="h">Adjacentes — mostrados, não pickados</div>
+    <div class="sub">Reais na cadeia, mas não é aqui que se compram: ou estão privados, ou pertencem a outra lógica.</div>
+    <div class="xlinks">
+      <div class="xlink">
+        <div class="nm">Catalent</div>
+        <div class="tk">CDMO top-5 · Novo Holdings</div>
+        <div class="why">o gigante CDMO saiu de bolsa em 2025 — sem acesso direto</div>
+      </div>
+      <div class="xlink">
+        <div class="nm">Vidro tubular Tipo I</div>
+        <div class="tk">SCHOTT · Corning Valor &nbsp;<code>GLW</code></div>
+        <div class="why">sub-gargalo a montante do fill-finish; SCHOTT é privada</div>
+      </div>
+      <div class="xlink">
+        <div class="nm">IP de lípidos (LNP)</div>
+        <div class="tk">Acuitas · Genevant</div>
+        <div class="why">o gargalo do mRNA é uma patente privada em litígio</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="disclaimer">⚠ NÃO É CONSELHO DE INVESTIMENTO</div>
+    <p class="fine">
+      Mapa educativo da série Carecão / Theme Baskets. As classificações por tier (mega/mid/small) são um <i>snapshot aproximado</i> de capitalização e mudam com o mercado — confirma sempre os valores atuais. Empresas privadas usam a última avaliação pública conhecida. As flags ⚠ assinalam riscos relevantes (fosso a erodir, recuperação irregular, ameaças regulatórias). A inclusão de uma empresa não é endosso; muitas exposições são parciais. Os cards 09-11 são contraste/fronteira, não picks de gargalo. Faz a tua própria pesquisa.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

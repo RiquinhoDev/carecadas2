@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Minha Estratégia · Tese de Investimento · Carecão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090a;
+    --bg-grad:#0e1012;
+    --panel:#131517;
+    --panel-2:#16191b;
+    --line:#25292c;
+    --line-soft:#1c1f21;
+    --txt:#e8ebe9;
+    --txt-dim:#899093;
+    --txt-faint:#5c6366;
+
+    /* tema estratégia — teal "validado" */
+    --teal:#19c4a6;
+    --teal-hot:#5eead4;
+    --teal-deep:#0d8a73;
+    --teal-glow:rgba(25,196,166,.15);
+
+    /* sistema de sinais */
+    --ok:#19c4a6;          /* validado por evidência */
+    --warn:#f5c518;        /* ressalva / cuidado */
+    --warn-soft:#f0b35e;
+    --risk:#ff5d73;        /* armadilha / erro a corrigir */
+    --risk-glow:rgba(255,93,115,.13);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+      radial-gradient(1100px 520px at 50% -8%, #07201c 0%, transparent 60%),
+      linear-gradient(180deg, var(--bg-grad), var(--bg) 40%);
+    color:var(--txt);
+    font-family:"Space Mono",monospace;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    padding:0 20px 80px;
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+
+  /* ---------- HEADER ---------- */
+  header{padding:64px 0 40px;border-bottom:1px solid var(--line-soft)}
+  .eyebrow{
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--teal);font-weight:700;display:flex;align-items:center;gap:10px
+  }
+  .eyebrow::before{content:"";width:22px;height:22px;border-radius:6px;
+    background:var(--teal-glow);border:1px solid var(--teal-deep);
+    display:inline-flex;flex:0 0 auto;
+    background-image:radial-gradient(circle at 50% 50%, var(--teal) 0 2px, transparent 3px);
+  }
+  h1{
+    font-family:"Syne",sans-serif;font-weight:800;
+    font-size:clamp(34px,5.4vw,62px);line-height:1.02;letter-spacing:-.02em;
+    margin:18px 0 14px;
+  }
+  h1 .accent{color:var(--teal)}
+  .lede{color:var(--txt-dim);font-size:15px;max-width:720px;margin-bottom:26px}
+  .lede b{color:var(--txt)}
+  .thesis{
+    display:inline-flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+    border:1px solid var(--line);border-left:3px solid var(--teal);
+    background:linear-gradient(90deg,var(--teal-glow),transparent 80%);
+    padding:12px 16px;border-radius:4px;font-size:13px;color:var(--txt)
+  }
+  .thesis b{font-family:"Syne",sans-serif;color:var(--teal-hot);font-weight:700;letter-spacing:.01em}
+  .thesis span{color:var(--txt-dim)}
+
+  /* ---------- LEGENDA SINAIS ---------- */
+  .legend{display:flex;gap:26px;flex-wrap:wrap;margin-top:28px;font-size:11.5px;color:var(--txt-dim)}
+  .legend .li{display:flex;align-items:center;gap:8px}
+  .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;display:inline-block}
+  .dot.val{background:var(--ok);box-shadow:0 0 7px rgba(25,196,166,.4)}
+  .dot.warn{background:var(--warn);box-shadow:0 0 7px rgba(245,197,24,.4)}
+  .dot.risk{background:var(--risk);box-shadow:0 0 7px rgba(255,93,115,.4)}
+  .legend b{color:var(--txt)}
+
+  /* ---------- SECÇÕES ---------- */
+  .sec-label{
+    display:flex;align-items:center;gap:14px;margin:48px 0 18px;
+    font-family:"Syne",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt)
+  }
+  .sec-label .tag{font-family:"Space Mono";font-weight:400;font-size:11px;
+    color:var(--txt-faint);letter-spacing:.04em;text-transform:none}
+  .sec-label .pill{font-family:"Space Mono";font-weight:700;font-size:10px;
+    color:var(--teal);border:1px solid var(--teal-deep);background:var(--teal-glow);
+    border-radius:20px;padding:3px 10px;letter-spacing:.1em}
+  .sec-label::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+  .sec-label.muted{color:var(--txt-dim)}
+
+  /* ---------- CARD ---------- */
+  .grid{display:grid;gap:14px}
+  .card{
+    display:grid;grid-template-columns:340px 1fr;gap:0;
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    position:relative
+  }
+  .card.trap{border-style:dashed;border-color:#4a2c31}
+  .card .left{
+    padding:20px 20px 18px;border-right:1px solid var(--line-soft);
+    position:relative
+  }
+  .card.choke .left::before{
+    content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;
+    background:linear-gradient(180deg,var(--teal),var(--teal-deep));border-radius:0 3px 3px 0
+  }
+  .card.trap .left::before{
+    content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;
+    background:linear-gradient(180deg,var(--risk),#8a2e3b);border-radius:0 3px 3px 0
+  }
+  .nicho-no{font-size:11px;color:var(--teal);font-weight:700;letter-spacing:.1em}
+  .card.trap .nicho-no{color:var(--risk)}
+  .nicho-name{font-family:"Syne",sans-serif;font-weight:700;font-size:18px;
+    line-height:1.18;margin:5px 0 9px;letter-spacing:-.01em}
+  .take{font-size:12px;color:var(--txt-dim);line-height:1.5;margin-bottom:13px}
+  .take b{color:var(--txt);font-weight:700}
+
+  .flags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .flag{
+    font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;
+    padding:3px 7px;border-radius:4px;border:1px solid var(--teal-deep);
+    color:var(--teal-hot);background:var(--teal-glow);white-space:nowrap
+  }
+  .flag.warn{border-color:#a8732a;color:var(--warn-soft);background:rgba(200,130,30,.12)}
+  .flag.risk{border-color:#8a2e3b;color:var(--risk);background:var(--risk-glow)}
+
+  .profile{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--txt-faint);
+    letter-spacing:.06em;text-transform:uppercase}
+  .profile .dots{display:flex;gap:4px}
+
+  /* ---------- RIGHT / CHIPS ---------- */
+  .right{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px}
+  .chipset{display:flex;flex-direction:column;gap:8px}
+  .chipset .head{font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--txt-faint);font-weight:700;display:flex;align-items:center;gap:7px}
+  .chipset .head .mk{width:7px;height:7px;border-radius:50%;display:inline-block}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:#0e1012;border:1px solid var(--line);border-radius:7px;
+    padding:6px 10px;font-size:12px;color:var(--txt);line-height:1.35
+  }
+  .chip em{font-style:normal;color:var(--txt-faint);font-size:10.5px;letter-spacing:.02em}
+  .chip.study{
+    border-color:var(--teal);align-items:flex-start;
+    background:linear-gradient(180deg,rgba(25,196,166,.12),rgba(25,196,166,.04));
+    box-shadow:0 0 0 1px rgba(25,196,166,.16) inset;flex-direction:column;gap:2px;max-width:100%
+  }
+  .chip.study .src{font-weight:700;color:var(--teal-hot);font-size:11px;letter-spacing:.02em}
+  .chip.study .find{color:var(--txt-dim);font-size:11px;font-style:normal}
+  .chip.stat{border-color:#33383b}
+  .chip.stat b{color:var(--teal-hot);font-weight:700}
+  .chip.bad{border-color:#4a2c31}
+  .chip.bad b{color:var(--risk);font-weight:700}
+
+  .subnote{font-size:11.5px;color:var(--txt-dim);line-height:1.55;
+    border-top:1px dashed var(--line-soft);padding-top:11px}
+  .subnote b{color:var(--warn-soft);font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:10px}
+  .subnote.fix b{color:var(--teal-hot)}
+  .subnote.danger b{color:var(--risk)}
+
+  /* ---------- SISTEMA / FUNNEL ---------- */
+  .funnel{margin-top:36px;border:1px solid var(--line);border-left:3px solid var(--teal-deep);
+    border-radius:12px;background:linear-gradient(90deg,var(--teal-glow),#0e1012 55%);padding:18px 22px}
+  .funnel .h{font-family:"Syne",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt);margin-bottom:5px}
+  .funnel .sub{font-size:11.5px;color:var(--txt-faint);margin-bottom:16px}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .step{background:#0e1012;border:1px solid var(--line);border-radius:9px;padding:13px 13px 14px;position:relative}
+  .step .n{font-size:10px;color:var(--teal);font-weight:700;letter-spacing:.1em}
+  .step .q{font-family:"Syne",sans-serif;font-weight:700;font-size:14px;color:var(--txt);margin:4px 0 7px}
+  .step .m{font-size:10.5px;color:var(--txt-dim);line-height:1.5}
+  .step .m::before{content:"→ ";color:var(--teal)}
+  .step.last{border-color:var(--teal-deep);background:linear-gradient(180deg,rgba(25,196,166,.1),#0e1012)}
+  .funnel .kicker{font-size:12px;color:var(--teal-hot);margin-top:14px;font-weight:700}
+
+  /* ---------- FERRAMENTAS ---------- */
+  .tool-sec{margin-top:20px;border:1px solid var(--line-soft);border-radius:12px;
+    background:#0d0f10;padding:20px 22px}
+  .tool-sec .h{font-family:"Syne",sans-serif;font-weight:700;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:5px}
+  .tool-sec .sub{font-size:11.5px;color:var(--txt-faint);margin-bottom:16px}
+  .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .tool{border:1px solid var(--line);border-radius:9px;padding:13px 14px;background:var(--panel)}
+  .tool .nm{font-family:"Syne",sans-serif;font-weight:700;font-size:14px;color:var(--txt);margin-bottom:3px}
+  .tool .tk{font-size:11px;color:var(--txt-faint);margin-bottom:8px}
+  .tool .why{font-size:11px;color:var(--teal-hot);line-height:1.45}
+  .tool .why::before{content:"→ ";color:var(--teal)}
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line-soft)}
+  .disclaimer{font-family:"Syne",sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.06em;color:var(--teal);margin-bottom:8px}
+  .sources{font-size:11px;color:var(--txt-dim);line-height:1.7;max-width:880px;margin-bottom:14px}
+  .sources b{color:var(--txt);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:10px}
+  .sources span{color:var(--txt-faint)}
+  .fine{font-size:11px;color:var(--txt-faint);line-height:1.6;max-width:820px}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:760px){
+    .card{grid-template-columns:1fr}
+    .card .left{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .card.choke .left::before,.card.trap .left::before{display:none}
+    .steps{grid-template-columns:1fr 1fr}
+    .tools{grid-template-columns:1fr}
+    h1{font-size:36px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Carecão · Tese de Investimento</div>
+    <h1>Comprar <span class="accent">Qualidade</span> em Saldo</h1>
+    <p class="lede">A minha estratégia para investidor agressivo de longo prazo, decomposta em três filtros — <b>preço</b>, <b>moat</b> e <b>indicadores</b> — e testada contra o que a evidência mostra. Cada card é um <i>take</i> meu: a teal o que os estudos confirmam, a âmbar a ressalva ao aplicar, a vermelho onde o take falha e tem de ser corrigido.</p>
+    <div class="thesis">
+      <b>qualidade primeiro, preço por último</b>
+      <span>—&nbsp; o desconto decide <i>quando</i> entro, não <i>se</i> entro. O que filtra "se" é o moat e a sobrevivência, não o tamanho da queda.</span>
+    </div>
+
+    <div class="legend">
+      <div class="li"><span class="dot val"></span><span><b>Validado</b> · estudo/dados a suportar o take</span></div>
+      <div class="li"><span class="dot warn"></span><span><b>Ressalva</b> · cuidado ao aplicar</span></div>
+      <div class="li"><span class="dot risk"></span><span><b>Armadilha</b> · onde o take falha / a corrigir</span></div>
+      <div class="li"><span style="color:var(--teal);font-weight:700">★</span><span>insight central</span></div>
+    </div>
+  </header>
+
+  <!-- ===================== PILAR 1 — PREÇO ===================== -->
+  <div class="sec-label">Pilar 1 — Preço &amp; drawdown <span class="pill">assimetria por tamanho</span><span class="tag">/ comprar quedas, mas não qualquer queda</span></div>
+  <div class="grid">
+
+    <!-- 1.1 MEGACAP -20% -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">01 · TAKE</div>
+        <div class="nicho-name">Megacap a −20% do ATH = comprar</div>
+        <div class="take">Uma megacap com moat sólido a −20% do máximo está <b>numa má fase</b>, não em declínio estrutural. Quanto maior e mais defensável, mais fundo o desconto que aceito.</div>
+        <div class="flags">
+          <span class="flag">Validado p/ sobreviventes</span>
+          <span class="flag warn">⚠ depende do "porquê"</span>
+        </div>
+        <div class="profile">Força da evidência
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot warn"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>O que a evidência diz</div>
+          <div class="chips">
+            <span class="chip study"><span class="src">Trade That Swing / LPL (S&amp;P 500)</span><span class="find">quedas de −20% no índice acontecem 1-2×/5 anos e a maioria não passa de −30% → boas oportunidades</span></span>
+            <span class="chip stat"><b>MOAT ETF</b><em>adicionou NVDA e META após as quedas de IA de 2025</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Ressalva</b> &nbsp;funciona porque a megacap se comporta como quase-índice: sobrevive por construção. Mas um −20% pode ser o mercado a <i>detetar erosão do moat</i> (ver card 06). O desconto não distingue "barato porque odiado" de "barato porque pior".</div>
+      </div>
+    </article>
+
+    <!-- 1.2 SMALL CAP -10% -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">02 · TAKE</div>
+        <div class="nicho-name">Small cap só a −10% ou menos</div>
+        <div class="take">Em empresas pequenas, um desconto fundo é <b>bandeira vermelha</b>, não pechincha: se caem muito, muitas vezes <b>não têm volta a dar</b>. Compro perto do topo ou não compro.</div>
+        <div class="flags">
+          <span class="flag">Validado por academia</span>
+          <span class="flag warn">⚠ não te livra do momentum</span>
+        </div>
+        <div class="profile">Força da evidência
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot val"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>O que a evidência diz</div>
+          <div class="chips">
+            <span class="chip study"><span class="src">Campbell, Hilscher &amp; Szilagyi (2008) · J. of Finance ★</span><span class="find">ações em distress dão retornos anormalmente baixos — efeito mais forte nas small caps</span></span>
+            <span class="chip study"><span class="src">Perfil de falência (mesmo estudo)</span><span class="find">alta alavancagem, baixos retornos passados e preço baixo prevêem bancarrota</span></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Ressalva</b> &nbsp;o −10% não te protege do <i>momentum</i>: losers continuam a cair no curto-médio prazo, e o efeito é mais forte em ações pequenas e ilíquidas (literatura do 52-week low). O desconto raso ajuda, mas não é sinal de entrada por si só.</div>
+      </div>
+    </article>
+
+    <!-- 1.3 ARMADILHA — preço sozinho -->
+    <article class="card trap">
+      <div class="left">
+        <div class="nicho-no">03 · A CORRIGIR</div>
+        <div class="nicho-name">O preço sozinho é o sinal mais fraco</div>
+        <div class="take">Os limiares <b>−20% / −10%</b> são arbitrários e a profundidade do desconto <b>quase não prevê</b> a recuperação. O que prevê é a qualidade do negócio.</div>
+        <div class="flags">
+          <span class="flag risk">✕ base rate brutal</span>
+          <span class="flag risk">✕ custo de oportunidade</span>
+        </div>
+        <div class="profile">Risco de aplicar mal
+          <span class="dots"><span class="dot risk"></span><span class="dot risk"></span><span class="dot risk"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--risk)"></span>Os números que assustam</div>
+          <div class="chips">
+            <span class="chip bad">Mauboussin / Counterpoint (2024)<em>~<b>54%</b> das ações individuais nunca recuperam o pico anterior</em></span>
+            <span class="chip bad">Maggiulli · buy-the-dip vs DCA<em>esperar em cash perde para o DCA em ~<b>2/3</b> dos períodos de 40 anos</em></span>
+          </div>
+        </div>
+        <div class="subnote danger"><b>Correção</b> &nbsp;a pergunta certa não é "caiu quanto?" mas "caiu por razão <i>não-fundamental</i> (macro, rotação) ou <i>fundamental</i> (deterioração real)?". O preço é o último filtro do sistema, não o primeiro.</div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== PILAR 2 — MOAT ===================== -->
+  <div class="sec-label">Pilar 2 — Moat &amp; vantagem competitiva <span class="pill">quero ser dono?</span><span class="tag">/ a largura e a direção do fosso</span></div>
+  <div class="grid">
+
+    <!-- 2.1 MOAT + DESCONTO -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">04 · TAKE</div>
+        <div class="nicho-name">Moat largo + desconto = combinação de ouro</div>
+        <div class="take">Vantagem competitiva difícil de contestar <b>aliada ao −20%</b> é a melhor entrada possível. Compro o fosso quando está em saldo.</div>
+        <div class="flags">
+          <span class="flag">Institucionalizado num índice</span>
+          <span class="flag warn">⚠ não é alpha garantido</span>
+        </div>
+        <div class="profile">Força da evidência
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot warn"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>O que a evidência diz</div>
+          <div class="chips">
+            <span class="chip study"><span class="src">Morningstar Wide Moat Focus / VanEck MOAT ★</span><span class="find">é literalmente a tua tese — wide moat + abaixo do fair value — e bateu o S&amp;P ao longo da sua vida desde 2012</span></span>
+            <span class="chip stat"><b>5 fontes de moat</b><em>switching costs · intangíveis · efeito de rede · vantagem de custo · escala eficiente</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Ressalva</b> &nbsp;qualidade+valor não bate sempre: o MOAT ETF ficou <i>atrás</i> do S&amp;P na última década (~13,4% vs ~15,4%/ano) por subponderar o mega-cap growth. Em mercados dominados pelas Mag7, a disciplina de preço custa. Usa-o como watchlist, não como promessa de outperformance.</div>
+      </div>
+    </article>
+
+    <!-- 2.2 PICKS DE MOAT FORTE -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">05 · TAKE</div>
+        <div class="nicho-name">Os meus picks de moat forte</div>
+        <div class="take">MSFT, NVDA, META e Alphabet têm fossos largos e difíceis de contestar. Mapear <b>qual</b> a fonte do moat importa — nem todos são iguais.</div>
+        <div class="flags">
+          <span class="flag">Fontes de moat distintas</span>
+          <span class="flag warn">⚠ "imparável" é linguagem de risco</span>
+        </div>
+        <div class="profile">Força da evidência
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot warn"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>Fonte do fosso, pick a pick</div>
+          <div class="chips">
+            <span class="chip"><span class="dot val"></span>META<em>efeito de rede + dados — o moat mais forte</em></span>
+            <span class="chip"><span class="dot val"></span>MSFT<em>switching costs do ecossistema</em></span>
+            <span class="chip"><span class="dot val"></span>NVDA<em>o moat é o CUDA, não o silício</em></span>
+            <span class="chip"><span class="dot val"></span>GOOGL<em>rede + intangíveis + escala</em></span>
+          </div>
+        </div>
+        <div class="subnote"><b>Ressalva</b> &nbsp;NVDA: AMD e chips chineses igualam FLOPs; o que não igualam é a década de software preso ao CUDA — vigia o ecossistema, não os benchmarks. GOOGL: "imparável" é forte demais — o Gemini está a ganhar (de ~5% para ~18% do tráfego de IA enquanto o ChatGPT caiu de 87% para 68%), mas os AI Overviews canibalizam 20-40% dos cliques e há antitrust em cima.</div>
+      </div>
+    </article>
+
+    <!-- 2.3 ADBE — ARMADILHA -->
+    <article class="card trap">
+      <div class="left">
+        <div class="nicho-no">06 · A ARMADILHA</div>
+        <div class="nicho-name">ADBE: quando o desconto É a erosão do moat</div>
+        <div class="take">O meu próprio exemplo de moat que estreitou: <b>Canva, Figma e a IA</b> contestaram a Adobe largamente. O take está certo — e é exatamente por isso que ensina a lição.</div>
+        <div class="flags">
+          <span class="flag">Take confirmado</span>
+          <span class="flag risk">✕ o −20% levava-te à faca</span>
+        </div>
+        <div class="profile">Lição central
+          <span class="dots"><span class="dot risk"></span><span class="dot risk"></span><span class="dot val"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--risk)"></span>O que aconteceu</div>
+          <div class="chips">
+            <span class="chip study"><span class="src">Morningstar (2026) ★</span><span class="find">rebaixou o moat da Adobe de LARGO para ESTREITO por causa de Figma, Canva e IA generativa</span></span>
+            <span class="chip bad">Preço<em>−<b>60%+</b> do pico de 2024, a ~12-14× lucros futuros — o desconto era erosão real, não mau humor</em></span>
+            <span class="chip bad">Setor<em>Morningstar rebaixou <b>6</b> moats de software por receios de IA</em></span>
+          </div>
+        </div>
+        <div class="subnote fix"><b>A correção: adiciona a "direção" do moat</b> &nbsp;não basta "tem moat largo?" — pergunta "está a alargar, estável ou a estreitar?". <i>Largo + estável + desconto não-fundamental</i> = ouro (NVDA/META 2025). <i>(Ex-)largo + a erodir + grande desconto</i> = armadilha (ADBE).</div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== PILAR 3 — INDICADORES ===================== -->
+  <div class="sec-label">Pilar 3 — Indicadores <span class="pill">foco tech</span><span class="tag">/ cada métrica responde a uma pergunta diferente</span></div>
+  <div class="grid">
+
+    <!-- 3.1 MÉTRICAS POR FASE DE VIDA -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">07 · TAKE</div>
+        <div class="nicho-name">As métricas dependem da fase de vida</div>
+        <div class="take">P/E, CAGR e dívida nas maduras; nas growth small caps o P/E vale pouco porque <b>operam com grandes dívidas para crescer</b>. O instinto certo — com um erro perigoso.</div>
+        <div class="flags">
+          <span class="flag">Lifecycle correto</span>
+          <span class="flag risk">✕ "a dívida não interessa"</span>
+        </div>
+        <div class="profile">Força da evidência
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot risk"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>A parte certa</div>
+          <div class="chips">
+            <span class="chip"><span class="dot val"></span>P/E inútil sem lucro<em>usa EV/Sales, Rule of 40, NRR</em></span>
+            <span class="chip"><span class="dot val"></span>Métricas ≠ universais<em>a ferramenta muda com a fase</em></span>
+          </div>
+        </div>
+        <div class="subnote danger"><b>Erro a corrigir</b> &nbsp;"nas mid-micro a dívida não interessa" contradiz o Pilar 1 — alta alavancagem é o preditor #1 de falência. A dívida é <i>o que mata</i> as small caps. Não deixa de importar; mudas a métrica: <b>runway</b> (trimestres de cash), <b>maturities</b> (risco de refinanciamento), <b>interest coverage</b>, <b>diluição</b>.</div>
+      </div>
+    </article>
+
+    <!-- 3.2 P/E EQUILIBRADO TECH -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">08 · TAKE</div>
+        <div class="nicho-name">P/E equilibrado em tech</div>
+        <div class="take">Invisto sobretudo em tech, por isso quero <b>múltiplos de P/E equilibrados</b>. Certo — mas "equilibrado" precisa de upgrade.</div>
+        <div class="flags">
+          <span class="flag">Intuição certa</span>
+          <span class="flag warn">⚠ P/E isolado engana</span>
+        </div>
+        <div class="profile">Força da evidência
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot warn"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>O upgrade: P/E em contexto</div>
+          <div class="chips">
+            <span class="chip"><span class="dot val"></span>PEG ★<em>P/E ÷ crescimento — P/E 30 a crescer 25% &lt; P/E 18 a crescer 3%</em></span>
+            <span class="chip"><span class="dot val"></span>ROIC<em>o melhor detetor de moat: retorno sobre capital alto e sustentado</em></span>
+            <span class="chip"><span class="dot val"></span>Margem (tendência)<em>estável/a expandir = pricing power intacto</em></span>
+            <span class="chip"><span class="dot val"></span>NRR (SaaS)<em>&gt;110-120% = switching costs em ação</em></span>
+          </div>
+        </div>
+        <div class="subnote fix"><b>Liga ao Pilar 2</b> &nbsp;estas são as métricas que <i>verificam</i> que o moat é real e não narrativa: ROIC a cair ano após ano = fosso a estreitar. Qualidade alta justifica múltiplo alto.</div>
+      </div>
+    </article>
+
+    <!-- 3.3 TRAPS DE TECH -->
+    <article class="card trap">
+      <div class="left">
+        <div class="nicho-no">09 · CUIDADOS</div>
+        <div class="nicho-name">Os três traps específicos de tech</div>
+        <div class="take">Contabilidade de tech tem armadilhas que <b>inflam a aparência</b> de rentabilidade. Vigiar sempre, sobretudo em small caps.</div>
+        <div class="flags">
+          <span class="flag risk">✕ SBC</span>
+          <span class="flag risk">✕ GAAP vs non-GAAP</span>
+          <span class="flag warn">⚠ capex IA</span>
+        </div>
+        <div class="profile">Atenção
+          <span class="dots"><span class="dot risk"></span><span class="dot warn"></span><span class="dot warn"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--risk)"></span>O que te enganam a ver</div>
+          <div class="chips">
+            <span class="chip bad">Stock-based comp<em>lucro "ajustado" soma de volta o SBC — mas dilui-te a sério. Olha o GAAP + shares outstanding</em></span>
+            <span class="chip bad">Gap GAAP↔non-GAAP<em>quanto maior, mais cético deves ser</em></span>
+            <span class="chip bad">Capex de IA<em>a deprimir o FCF das hyperscalers agora — não confundir com deterioração</em></span>
+            <span class="chip bad">"Adjusted EBITDA"<em>ignora juros (a tua dívida!) — desconfia em small caps</em></span>
+          </div>
+        </div>
+        <div class="subnote fix"><b>Regra-mãe</b> &nbsp;o free cash flow GAAP é o que mais difícil é de maquilhar. Quando a "rentabilidade" só aparece nos slides ajustados, acredita no cash flow.</div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== SISTEMA INTEGRADO ===================== -->
+  <div class="funnel">
+    <div class="h">O sistema integrado — a ordem dos filtros</div>
+    <div class="sub">Os três pilares não são paralelos: são um funil. O preço vem por último, e só decide o <i>timing</i>.</div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">01 · MOAT</div>
+        <div class="q">Quero ser dono?</div>
+        <div class="m">fonte e largura do fosso</div>
+        <div class="m">direção: a alargar/estável/a erodir</div>
+      </div>
+      <div class="step">
+        <div class="n">02 · QUALIDADE</div>
+        <div class="q">O moat é real?</div>
+        <div class="m">ROIC alto e sustentado</div>
+        <div class="m">margens, FCF, NRR</div>
+      </div>
+      <div class="step">
+        <div class="n">03 · RISCO</div>
+        <div class="q">Sobrevive?</div>
+        <div class="m">runway &amp; burn</div>
+        <div class="m">maturities, diluição, alavancagem</div>
+      </div>
+      <div class="step last">
+        <div class="n">04 · PREÇO</div>
+        <div class="q">Quando entro?</div>
+        <div class="m">o teu −20% / −10%</div>
+        <div class="m">PEG, FCF yield vs história</div>
+      </div>
+    </div>
+    <div class="kicker">A diferença entre comprar a NVDA a −20% e a ADBE a −20% está nos passos 01-03 — não no desconto.</div>
+  </div>
+
+  <!-- ===================== ESTRATÉGIA APLICADA — 4 CASOS REAIS ===================== -->
+  <div class="sec-label">A estratégia aplicada — 4 casos reais <span class="pill">o funil em ação</span><span class="tag">/ 2 acertos · 2 armadilhas · mega + small · dados aprox. Jun 2026</span></div>
+  <div class="grid">
+
+    <!-- BOM · MEGA · META -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">✓ ACERTO · MEGA CAP</div>
+        <div class="nicho-name">META — qualidade em saldo que funcionou</div>
+        <div class="take">Crash de <b>−77%</b> em 2022 por receios <b>não-fundamentais</b> — o núcleo do moat ficou intacto. O caso de manual do TAKE 01.</div>
+        <div class="flags">
+          <span class="flag">passou Moat·Qualidade·Risco</span>
+          <span class="flag">o preço só deu o timing</span>
+        </div>
+        <div class="profile">Veredicto do funil
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot val"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>Os 4 filtros, com dados reais</div>
+          <div class="chips">
+            <span class="chip stat"><b>① Moat ✓</b><em>efeito de rede + dados · ~3,2B utilizadores diários · estável/a alargar (Reels, ranking por IA)</em></span>
+            <span class="chip stat"><b>② Qualidade ✓</b><em>ROIC alto · FCF forte · margem operacional de ~29% (2022) de volta a ~42%</em></span>
+            <span class="chip stat"><b>③ Risco ✓</b><em>balanço com caixa líquida positiva (~$40B+ cash) — sobrevive folgado a uma recessão de ads</em></span>
+            <span class="chip stat"><b>④ Preço ✓</b><em>$384→$88 (nov 2022) a ~10-12× lucros · queda = ATT da Apple + TikTok + perdas do Reality Labs, não erosão do core</em></span>
+          </div>
+        </div>
+        <div class="subnote fix"><b>Desfecho</b> &nbsp;recuperou o ATH em ~14 meses e chegou a <b style="color:var(--teal-hot)">~8×</b> o fundo (pico $787 em ago/2025). Moat/Qualidade/Risco já estavam certos — o −77% só decidiu <i>quando</i> entrar.</div>
+      </div>
+    </article>
+
+    <!-- BOM · SMALL · AXON -->
+    <article class="card choke">
+      <div class="left">
+        <div class="nicho-no">✓ ACERTO · SMALL/MID CAP</div>
+        <div class="nicho-name">AXON — a small cap que respeitou a regra dos −10%</div>
+        <div class="take">Qualidade comprada <b>perto do topo</b>, não numa queda funda — exatamente o que o Pilar 1 manda para as pequenas. Os dips foram rasos e recuperaram depressa.</div>
+        <div class="flags">
+          <span class="flag">qualidade antes do preço</span>
+          <span class="flag warn">⚠ múltiplo sempre caro</span>
+        </div>
+        <div class="profile">Veredicto do funil
+          <span class="dots"><span class="dot val"></span><span class="dot val"></span><span class="dot warn"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--ok)"></span>Os 4 filtros, com dados reais</div>
+          <div class="chips">
+            <span class="chip stat"><b>① Moat ✓</b><em>switching costs · o ecossistema Evidence.com prende as polícias · NRR ~120%+</em></span>
+            <span class="chip stat"><b>② Qualidade ✓</b><em>Rule of 40 folgado · ARR de software a crescer · ROIC a subir</em></span>
+            <span class="chip stat"><b>③ Risco ✓</b><em>rentável, balanço sólido, sem perfil de distress — não é faca a cair</em></span>
+            <span class="chip stat"><b>④ Preço ⚠</b><em>raramente em desconto fundo · recompensou comprar perto de máximos, não à espera do −20%</em></span>
+          </div>
+        </div>
+        <div class="subnote fix"><b>Desfecho</b> &nbsp;compôs de ~$1,5B (2017) para <b style="color:var(--teal-hot)">~$35B</b> de capitalização (2026) — mais de 20×. A pequena que ganha <i>porque</i> Moat e Risco estavam certos — o desconto raso foi só consistência com o Pilar 1.</div>
+      </div>
+    </article>
+
+    <!-- MAU · MEGA · INTC -->
+    <article class="card trap">
+      <div class="left">
+        <div class="nicho-no">✕ ARMADILHA · MEGA CAP</div>
+        <div class="nicho-name">INTC — quando o "−20% numa megacap" é a faca</div>
+        <div class="take">O gémeo mau do TAKE 01: a megacap barata cujo desconto <b>ERA</b> erosão estrutural. A irmã da ADBE no card 06.</div>
+        <div class="flags">
+          <span class="flag risk">✕ direção do moat: a erodir</span>
+          <span class="flag risk">✕ value trap repetido</span>
+        </div>
+        <div class="profile">Veredicto do funil
+          <span class="dots"><span class="dot risk"></span><span class="dot risk"></span><span class="dot risk"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--risk)"></span>Onde falha cada filtro</div>
+          <div class="chips">
+            <span class="chip bad"><b>① Moat ✕</b><em>perdeu a liderança de processo p/ TSMC, quota p/ AMD, e falhou mobile e IA/GPU (NVDA) — fosso a fechar</em></span>
+            <span class="chip bad"><b>② Qualidade ✕</b><em>ROIC desabou · FCF profundamente negativo (foundry a queimar mil milhões)</em></span>
+            <span class="chip bad"><b>③ Risco ✕</b><em>dividendo cortado e suspenso (2024) · capex gigante sem retorno à vista</em></span>
+            <span class="chip bad"><b>④ Preço ✕</b><em>"barata" a cada −20% desde 2021 ($68→~$18) — cada compra no dip foi value trap</em></span>
+          </div>
+        </div>
+        <div class="subnote danger"><b>Lição</b> &nbsp;igual à ADBE: o desconto não era mau humor do mercado, era o mercado a <i>detetar o moat a fechar</i>. Falha logo no passo 01 (direção) — a barateza estava justificada, não era oportunidade.</div>
+      </div>
+    </article>
+
+    <!-- MAU · SMALL · BYND -->
+    <article class="card trap">
+      <div class="left">
+        <div class="nicho-no">✕ ARMADILHA · SMALL CAP</div>
+        <div class="nicho-name">BYND — a small cap em distress que nunca voltou</div>
+        <div class="take">O manual do Pilar 1 ao vivo: <b>pequena + desconto fundo + alavancagem</b> = muitas vezes não tem volta a dar.</div>
+        <div class="flags">
+          <span class="flag risk">✕ distress anomaly</span>
+          <span class="flag risk">✕ dívida + diluição</span>
+        </div>
+        <div class="profile">Veredicto do funil
+          <span class="dots"><span class="dot risk"></span><span class="dot risk"></span><span class="dot risk"></span></span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="chipset">
+          <div class="head"><span class="mk" style="background:var(--risk)"></span>Onde falha cada filtro</div>
+          <div class="chips">
+            <span class="chip bad"><b>① Moat ✕</b><em>categoria plant-based comoditizada · concorrência + marca própria · procura a cair</em></span>
+            <span class="chip bad"><b>② Qualidade ✕</b><em>receita a encolher (~$465M em 2021 → ~$300M e a cair) · prejuízos persistentes · queima de cash</em></span>
+            <span class="chip bad"><b>③ Risco ✕</b><em>~$1,2B de dívida · capital próprio negativo (−$784M) · going-concern · troca de dívida + diluição (100M+ ações novas)</em></span>
+            <span class="chip bad"><b>④ Preço ✕</b><em>−99% do pico ($235→abaixo de $1, com aviso de delisting da Nasdaq em 2025) — o desconto fundo sinalizava o colapso, não a pechincha</em></span>
+          </div>
+        </div>
+        <div class="subnote danger"><b>Lição</b> &nbsp;o caso-escola da <i>distress anomaly</i> (Campbell-Hilscher-Szilagyi): alta alavancagem + preço baixo + retornos passados maus previam o desfecho. O −10% do Pilar 1 existe precisamente para te manter longe disto.</div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===================== FERRAMENTAS ===================== -->
+  <div class="tool-sec">
+    <div class="h">Ferramentas — onde ir buscar os sinais de graça</div>
+    <div class="sub">Não para comprar os ETFs, mas para usar as suas holdings e ratings como shopping list já filtrada.</div>
+    <div class="tools">
+      <div class="tool">
+        <div class="nm">Holdings do MOAT</div>
+        <div class="tk">VanEck · large/mid US</div>
+        <div class="why">watchlist large-cap: wide moat abaixo do fair value, já curado por 100+ analistas</div>
+      </div>
+      <div class="tool">
+        <div class="nm">Holdings do SMOT</div>
+        <div class="tk">VanEck · SMID US</div>
+        <div class="why">small/mid com filtro de qualidade — tira as facas a cair do Pilar 1</div>
+      </div>
+      <div class="tool">
+        <div class="nm">Moat rating Morningstar</div>
+        <div class="tk">largura + fair value</div>
+        <div class="why">dá-te a "direção do moat" de graça — foi o que apanhou a ADBE</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="disclaimer">⚠ NÃO É CONSELHO DE INVESTIMENTO</div>
+    <p class="sources">
+      <b>Estudos &amp; fontes citados</b><br>
+      <span>· Campbell, Hilscher &amp; Szilagyi (2008), "In Search of Distress Risk", <i>Journal of Finance</i> — distress anomaly, mais forte em small caps.<br>
+      · Mauboussin / Counterpoint Global (Morgan Stanley, 2024), "Drawdowns and Recoveries" — ~54% das ações nunca recuperam o pico; drawdown mediana 85%.<br>
+      · Morningstar Wide Moat Focus Index / VanEck MOAT, MOTI, SMOT — metodologia moat + valor, 5 fontes de moat, retornos vs S&amp;P 500.<br>
+      · Morningstar (2025-2026) — rebaixamento do moat da Adobe (largo→estreito) e de 6 empresas de software por receios de IA.<br>
+      · Literatura do 52-week high / momentum (George &amp; Hwang e relacionados) — continuação de losers no curto-médio prazo.<br>
+      · Maggiulli, "Even God Couldn't Beat Dollar-Cost Averaging" — buy-the-dip com cash perde para DCA em ~2/3 dos períodos.<br>
+      · Similarweb / Morningstar (2025-2026) — quota de tráfego Gemini vs ChatGPT; impacto dos AI Overviews nos cliques.</span>
+    </p>
+    <p class="fine">
+      Documento educativo da série Carecão. Resume e estrutura uma estratégia pessoal e a evidência que a apoia ou contesta — não é uma recomendação para comprar ou vender qualquer título. Os valores (descontos, múltiplos, quotas de mercado, retornos) são <i>snapshots aproximados</i> e mudam com o mercado — confirma sempre os dados atuais antes de agir. As classificações de moat são opiniões de terceiros e podem ser revistas. Faz a tua própria pesquisa.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

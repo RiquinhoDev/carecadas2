@@ -163,6 +163,15 @@
   .chip.stat b{color:var(--teal-hot);font-weight:700}
   .chip.bad{border-color:#4a2c31}
   .chip.bad b{color:var(--risk);font-weight:700}
+  /* filtros alinhados: rótulo | símbolo | descrição */
+  .chip.filt{display:grid;grid-template-columns:108px 14px 1fr;align-items:baseline;
+    gap:3px 9px;width:100%;max-width:100%}
+  .chip.filt b{white-space:nowrap}
+  .chip.filt .v{justify-self:center;font-style:normal;font-weight:700;font-size:12px}
+  .chip.stat .v{color:var(--teal-hot)}
+  .chip.bad .v{color:var(--risk)}
+  .chip.filt .v.w{color:var(--warn-soft)}
+  .chip.filt em{min-width:0}
 
   .subnote{font-size:11.5px;color:var(--txt-dim);line-height:1.55;
     border-top:1px dashed var(--line-soft);padding-top:11px}
@@ -554,10 +563,10 @@
         <div class="chipset">
           <div class="head"><span class="mk" style="background:var(--ok)"></span>Os 4 filtros, com dados reais</div>
           <div class="chips">
-            <span class="chip stat"><b>① Moat ✓</b><em>efeito de rede + dados · ~3,2B utilizadores diários · estável/a alargar (Reels, ranking por IA)</em></span>
-            <span class="chip stat"><b>② Qualidade ✓</b><em>ROIC alto · FCF forte · margem operacional de ~29% (2022) de volta a ~42%</em></span>
-            <span class="chip stat"><b>③ Risco ✓</b><em>balanço com caixa líquida positiva (~$40B+ cash) — sobrevive folgado a uma recessão de ads</em></span>
-            <span class="chip stat"><b>④ Preço ✓</b><em>$384→$88 (nov 2022) a ~10-12× lucros · queda = ATT da Apple + TikTok + perdas do Reality Labs, não erosão do core</em></span>
+            <span class="chip stat filt"><b>① Moat</b><i class="v">✓</i><em>efeito de rede + dados · ~3,2B utilizadores diários · estável/a alargar (Reels, ranking por IA)</em></span>
+            <span class="chip stat filt"><b>② Qualidade</b><i class="v">✓</i><em>ROIC alto · FCF forte · margem operacional de ~29% (2022) de volta a ~42%</em></span>
+            <span class="chip stat filt"><b>③ Risco</b><i class="v">✓</i><em>balanço com caixa líquida positiva (~$40B+ cash) — sobrevive folgado a uma recessão de ads</em></span>
+            <span class="chip stat filt"><b>④ Preço</b><i class="v">✓</i><em>$384→$88 (nov 2022) a ~10-12× lucros · queda = ATT da Apple + TikTok + perdas do Reality Labs, não erosão do core</em></span>
           </div>
         </div>
         <div class="subnote fix"><b>Desfecho</b> &nbsp;recuperou o ATH em ~14 meses e chegou a <b style="color:var(--teal-hot)">~8×</b> o fundo (pico $787 em ago/2025). Moat/Qualidade/Risco já estavam certos — o −77% só decidiu <i>quando</i> entrar.</div>
@@ -582,22 +591,22 @@
         <div class="chipset">
           <div class="head"><span class="mk" style="background:var(--ok)"></span>Os 4 filtros, com dados reais</div>
           <div class="chips">
-            <span class="chip stat"><b>① Moat ✓</b><em>switching costs · o ecossistema Evidence.com prende as polícias · NRR ~120%+</em></span>
-            <span class="chip stat"><b>② Qualidade ✓</b><em>Rule of 40 folgado · ARR de software a crescer · ROIC a subir</em></span>
-            <span class="chip stat"><b>③ Risco ✓</b><em>rentável, balanço sólido, sem perfil de distress — não é faca a cair</em></span>
-            <span class="chip stat"><b>④ Preço ⚠</b><em>raramente em desconto fundo · recompensou comprar perto de máximos, não à espera do −20%</em></span>
+            <span class="chip stat filt"><b>① Moat</b><i class="v">✓</i><em>switching costs · o ecossistema Evidence.com prende as polícias · NRR ~120%+</em></span>
+            <span class="chip stat filt"><b>② Qualidade</b><i class="v">✓</i><em>Rule of 40 folgado · ARR de software a crescer · ROIC a subir</em></span>
+            <span class="chip stat filt"><b>③ Risco</b><i class="v">✓</i><em>rentável, balanço sólido, sem perfil de distress — não é faca a cair</em></span>
+            <span class="chip stat filt"><b>④ Preço</b><i class="v w">⚠</i><em>raramente em desconto fundo · recompensou comprar perto de máximos, não à espera do −20%</em></span>
           </div>
         </div>
         <div class="subnote fix"><b>Desfecho</b> &nbsp;compôs de ~$1,5B (2017) para <b style="color:var(--teal-hot)">~$35B</b> de capitalização (2026) — mais de 20×. A pequena que ganha <i>porque</i> Moat e Risco estavam certos — o desconto raso foi só consistência com o Pilar 1.</div>
       </div>
     </article>
 
-    <!-- MAU · MEGA · INTC -->
+    <!-- MAU · MEGA · WBA -->
     <article class="card trap">
       <div class="left">
-        <div class="nicho-no">✕ ARMADILHA · MEGA CAP</div>
-        <div class="nicho-name">INTC — quando o "−20% numa megacap" é a faca</div>
-        <div class="take">O gémeo mau do TAKE 01: a megacap barata cujo desconto <b>ERA</b> erosão estrutural. A irmã da ADBE no card 06.</div>
+        <div class="nicho-no">✕ ARMADILHA · LARGE CAP</div>
+        <div class="nicho-name">WBA — quando o "−20% numa grande" é a faca</div>
+        <div class="take">O gémeo mau do TAKE 01: a grande cap barata cujo desconto <b>ERA</b> declínio estrutural. Cada dip foi uma faca a cair — a irmã da ADBE no card 06.</div>
         <div class="flags">
           <span class="flag risk">✕ direção do moat: a erodir</span>
           <span class="flag risk">✕ value trap repetido</span>
@@ -610,13 +619,13 @@
         <div class="chipset">
           <div class="head"><span class="mk" style="background:var(--risk)"></span>Onde falha cada filtro</div>
           <div class="chips">
-            <span class="chip bad"><b>① Moat ✕</b><em>perdeu a liderança de processo p/ TSMC, quota p/ AMD, e falhou mobile e IA/GPU (NVDA) — fosso a fechar</em></span>
-            <span class="chip bad"><b>② Qualidade ✕</b><em>ROIC desabou · FCF profundamente negativo (foundry a queimar mil milhões)</em></span>
-            <span class="chip bad"><b>③ Risco ✕</b><em>dividendo cortado e suspenso (2024) · capex gigante sem retorno à vista</em></span>
-            <span class="chip bad"><b>④ Preço ✕</b><em>"barata" a cada −20% desde 2021 ($68→~$18) — cada compra no dip foi value trap</em></span>
+            <span class="chip bad filt"><b>① Moat</b><i class="v">✕</i><em>farmácia de retalho sem fosso real · pressão de reembolsos · Amazon, mail-order e PBMs a comer a margem</em></span>
+            <span class="chip bad filt"><b>② Qualidade</b><i class="v">✕</i><em>margens esmagadas · aposta falhada em healthcare (VillageMD) · FCF sob pressão</em></span>
+            <span class="chip bad filt"><b>③ Risco</b><i class="v">✕</i><em>dívida pesada + litígios de opióides · dividendo suspenso (jan 2025, fim de 92 anos seguidos)</em></span>
+            <span class="chip bad filt"><b>④ Preço</b><i class="v">✕</i><em>"barata" a cada −20% desde ~2015 ($97→~$9) · fora do Dow (2024) · privatizada a $11,45 (Sycamore, 2025)</em></span>
           </div>
         </div>
-        <div class="subnote danger"><b>Lição</b> &nbsp;igual à ADBE: o desconto não era mau humor do mercado, era o mercado a <i>detetar o moat a fechar</i>. Falha logo no passo 01 (direção) — a barateza estava justificada, não era oportunidade.</div>
+        <div class="subnote danger"><b>Lição</b> &nbsp;igual à ADBE: o desconto não era mau humor do mercado, era o mercado a <i>precificar o declínio estrutural</i>. Falha logo no passo 01 (direção) — quem comprou cada dip apanhou a faca até à privatização a uma fração do pico.</div>
       </div>
     </article>
 
@@ -638,10 +647,10 @@
         <div class="chipset">
           <div class="head"><span class="mk" style="background:var(--risk)"></span>Onde falha cada filtro</div>
           <div class="chips">
-            <span class="chip bad"><b>① Moat ✕</b><em>categoria plant-based comoditizada · concorrência + marca própria · procura a cair</em></span>
-            <span class="chip bad"><b>② Qualidade ✕</b><em>receita a encolher (~$465M em 2021 → ~$300M e a cair) · prejuízos persistentes · queima de cash</em></span>
-            <span class="chip bad"><b>③ Risco ✕</b><em>~$1,2B de dívida · capital próprio negativo (−$784M) · going-concern · troca de dívida + diluição (100M+ ações novas)</em></span>
-            <span class="chip bad"><b>④ Preço ✕</b><em>−99% do pico ($235→abaixo de $1, com aviso de delisting da Nasdaq em 2025) — o desconto fundo sinalizava o colapso, não a pechincha</em></span>
+            <span class="chip bad filt"><b>① Moat</b><i class="v">✕</i><em>categoria plant-based comoditizada · concorrência + marca própria · procura a cair</em></span>
+            <span class="chip bad filt"><b>② Qualidade</b><i class="v">✕</i><em>receita a encolher (~$465M em 2021 → ~$300M e a cair) · prejuízos persistentes · queima de cash</em></span>
+            <span class="chip bad filt"><b>③ Risco</b><i class="v">✕</i><em>~$1,2B de dívida · capital próprio negativo (−$784M) · going-concern · troca de dívida + diluição (100M+ ações novas)</em></span>
+            <span class="chip bad filt"><b>④ Preço</b><i class="v">✕</i><em>−99% do pico ($235→abaixo de $1, com aviso de delisting da Nasdaq em 2025) — o desconto fundo sinalizava o colapso, não a pechincha</em></span>
           </div>
         </div>
         <div class="subnote danger"><b>Lição</b> &nbsp;o caso-escola da <i>distress anomaly</i> (Campbell-Hilscher-Szilagyi): alta alavancagem + preço baixo + retornos passados maus previam o desfecho. O −10% do Pilar 1 existe precisamente para te manter longe disto.</div>

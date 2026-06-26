@@ -54,9 +54,10 @@
     filter:blur(6px);z-index:0;animation:pulse 4s ease-in-out infinite}
   .hero::after{content:"";position:absolute;inset:-10px;border-radius:18px;
     border:1px solid rgba(245,166,35,.30);box-shadow:inset 0 0 30px rgba(245,166,35,.10);pointer-events:none}
-  .hero img{position:relative;z-index:1;width:100%;height:100%;
-    object-fit:cover;border-radius:14px;border:1px solid var(--line);
-    box-shadow:0 18px 50px rgba(0,0,0,.5), 0 0 40px rgba(245,166,35,.18)}
+  .hero .art{position:relative;z-index:1;width:100%;height:100%;border-radius:14px;border:1px solid var(--line);
+    background:linear-gradient(160deg,#1a150d,#0c0a07);
+    box-shadow:0 18px 50px rgba(0,0,0,.5), 0 0 40px rgba(245,166,35,.18);
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
   .hero .badge{position:absolute;z-index:2;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;
     color:var(--gold);padding:3px 8px;border-radius:20px;display:flex;align-items:center;justify-content:center;
     background:rgba(12,10,7,.85);border:1px solid rgba(245,166,35,.45);box-shadow:0 0 14px rgba(245,166,35,.5)}
@@ -154,7 +155,26 @@
       <div class="hero">
         <span class="badge b1">⚡ MW</span>
         <span class="badge b0">kV ⚡</span>
-        <img src="carecao-energia.png" alt="Carecao · Energia">
+        <div class="art">
+          <svg viewBox="0 0 188 235" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#f5a623" stroke-width="1" opacity=".30" fill="none" stroke-dasharray="6 6" style="animation:dash 2.5s linear infinite">
+              <path d="M20 60 H168"/><path d="M20 120 H168"/><path d="M20 180 H168"/>
+              <path d="M60 20 V215"/><path d="M128 20 V215"/>
+            </g>
+            <g fill="#0c0a07" stroke="#f5a623" stroke-width="1.4">
+              <circle cx="60" cy="60" r="5"/><circle cx="128" cy="120" r="5"/>
+              <circle cx="60" cy="180" r="5"/><circle cx="128" cy="60" r="4"/>
+            </g>
+            <g stroke="#a3947b" stroke-width="2" fill="none" opacity=".55">
+              <path d="M94 200 L80 110 L108 110 Z"/>
+              <path d="M70 130 L118 130 M74 150 L114 150 M78 172 L110 172"/>
+              <path d="M62 110 H126 M58 96 H130"/>
+            </g>
+            <path class="bolt" d="M104 40 L78 118 L96 118 L84 196 L120 104 L100 104 L114 40 Z"
+                  fill="#f5a623" stroke="#ffd588" stroke-width="1.2"
+                  style="filter:drop-shadow(0 0 10px rgba(245,166,35,.8))"/>
+          </svg>
+        </div>
       </div>
     </div>
   </header>
@@ -267,17 +287,19 @@
       <div class="nleft">
         <div class="nidx">CH.05 · REDE</div>
         <div class="nname">Cabos HVDC &amp; Submarinos</div>
-        <div class="ntag">Lead-times &gt;2 anos · olig&oacute;polio · <b style="color:var(--mid)">l&iacute;der ainda mid-cap</b></div>
+        <div class="ntag">Lead-times &gt;2 anos · olig&oacute;polio · <b style="color:var(--mid)">sweet-spot em NEX &amp; NKT</b></div>
         <span class="flag">gargalo</span>
         <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mid)"></span></div>
       </div>
       <div class="nright">
-        <div><div class="row-label">Cotadas</div><div class="chips">
-          <span class="chip lead"><span class="t td"></span>PRY<span class="x">Prysmian · l&iacute;der</span></span>
-          <span class="chip"><span class="t td"></span>NEX<span class="x">Nexans</span></span>
-          <span class="chip"><span class="t td"></span>NKT</span>
+        <div><div class="row-label">Sweet-spot mid-cap · upside real</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>NEX<span class="x">Nexans · ~€6B</span></span>
+          <span class="chip lead"><span class="t td"></span>NKT<span class="x">~€3-4B · dinamarquesa</span></span>
           <span class="chip"><span class="t td"></span>5802<span class="x">Sumitomo Elec.</span></span>
           <span class="chip"><span class="t td"></span>5801<span class="x">Furukawa</span></span>
+        </div></div>
+        <div><div class="row-label">Já grande — PRY explodiu</div><div class="chips">
+          <span class="chip priv">PRY<span class="x">Prysmian · ~$45B · descontado</span></span>
         </div></div>
         <div><div class="row-label">Privadas</div><div class="chips">
           <span class="chip priv">LS Cable &amp; System</span>
@@ -315,15 +337,17 @@
       <div class="nleft">
         <div class="nidx">CH.07 · STORAGE</div>
         <div class="nname">BESS Utility-Scale</div>
-        <div class="ntag">Baterias &agrave; escala de rede · microgrids p/ datacenter</div>
+        <div class="ntag">Baterias &agrave; escala de rede · microgrids p/ datacenter · FLNC ainda pré-lucro</div>
         <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
       </div>
       <div class="nright">
-        <div><div class="row-label">Cotadas</div><div class="chips">
-          <span class="chip lead"><span class="t ts"></span>FLNC<span class="x">Fluence · pure-play l&iacute;der</span></span>
-          <span class="chip"><span class="t tm"></span>TSLA<span class="x">Megapack</span></span>
-          <span class="chip"><span class="t td"></span>ENS<span class="x">EnerSys</span></span>
-          <span class="chip"><span class="t ts"></span>STEM</span>
+        <div><div class="row-label">Pure-play · nicho certo mas execu&ccedil;&atilde;o a validar</div><div class="chips">
+          <span class="chip lead"><span class="t ts"></span>FLNC<span class="x">Fluence · $3.2-3.6B rev 2026 · EBITDA ainda negativo</span></span>
+          <span class="chip"><span class="t td"></span>ENS<span class="x">EnerSys · lucrativo · mid-cap</span></span>
+        </div></div>
+        <div><div class="row-label">Mega — TSLA n&atilde;o &eacute; play puro; STEM descartado</div><div class="chips">
+          <span class="chip priv">TSLA<span class="x">Megapack · mega · quantum</span></span>
+          <span class="chip priv">STEM<span class="x">modelo sob press&atilde;o · evitar</span></span>
         </div></div>
         <div><div class="row-label">C&eacute;lulas (privado / estrangeiro)</div><div class="chips">
           <span class="chip priv">CATL</span><span class="chip priv">BYD</span><span class="chip priv">LG Energy Solution</span>
@@ -364,11 +388,13 @@
         <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--mega)"></span></div>
       </div>
       <div class="nright">
-        <div><div class="row-label">Cotadas</div><div class="chips">
-          <span class="chip lead"><span class="t tm"></span>VRT<span class="x">Vertiv · l&iacute;der</span></span>
-          <span class="chip"><span class="t td"></span>NVT<span class="x">nVent</span></span>
-          <span class="chip"><span class="t tm"></span>ETN<span class="x">Eaton</span></span>
-          <span class="chip"><span class="t tm"></span>2308<span class="x">Delta Electronics</span></span>
+        <div><div class="row-label">Sweet-spot · ainda com upside</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>NVT<span class="x">nVent · ~$10B · crescer a sombra do VRT</span></span>
+          <span class="chip"><span class="t td"></span>2308<span class="x">Delta Electronics · Taiwan</span></span>
+        </div></div>
+        <div><div class="row-label">Já grandes — descontadas</div><div class="chips">
+          <span class="chip priv">VRT<span class="x">Vertiv · $121B 🚨 explodiu</span></span>
+          <span class="chip priv">ETN<span class="x">Eaton · mega</span></span>
         </div></div>
       </div>
     </div>
@@ -379,15 +405,17 @@
       <div class="nleft">
         <div class="nidx">CH.10 · INTERFACE</div>
         <div class="nname">Inversores &amp; Power Electronics</div>
-        <div class="ntag">Convers&atilde;o AC/DC · semicondutores SiC / GaN</div>
+        <div class="ntag">Convers&atilde;o AC/DC · SiC / GaN · <b style="color:var(--rose)">n&atilde;o &eacute; gargalo real</b> — commodity</div>
         <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span><span class="d" style="background:var(--mega)"></span></div>
       </div>
       <div class="nright">
-        <div><div class="row-label">Cotadas</div><div class="chips">
-          <span class="chip"><span class="t td"></span>ENPH<span class="x">Enphase</span></span>
-          <span class="chip"><span class="t ts"></span>SEDG<span class="x">SolarEdge</span></span>
-          <span class="chip"><span class="t td"></span>POWI<span class="x">Power Integrations</span></span>
-          <span class="chip"><span class="t tm"></span>300274<span class="x">Sungrow</span></span>
+        <div><div class="row-label">Com tese · execu&ccedil;&atilde;o incerta</div><div class="chips">
+          <span class="chip"><span class="t td"></span>POWI<span class="x">Power Integrations · mid · lucrativo</span></span>
+          <span class="chip"><span class="t tm"></span>300274<span class="x">Sungrow · l&iacute;der chin&ecirc;s</span></span>
+        </div></div>
+        <div><div class="row-label">Problema estrutural — evitar como play de gargalo</div><div class="chips">
+          <span class="chip priv">ENPH<span class="x">residencial em queda · competição chinesa</span></span>
+          <span class="chip priv">SEDG<span class="x">cash burn · recuperação frágil</span></span>
         </div></div>
       </div>
     </div>
@@ -401,18 +429,20 @@
       <div class="nleft">
         <div class="nidx">CH.11 · UPSTREAM</div>
         <div class="nname">Ur&acirc;nio &amp; Enriquecimento</div>
-        <div class="ntag">Combust&iacute;vel do nuclear · HALEU para SMRs</div>
+        <div class="ntag">Combust&iacute;vel do nuclear · HALEU para SMRs · assimetria nos juniors</div>
         <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
       </div>
       <div class="nright">
-        <div><div class="row-label">Mineiras &amp; combust&iacute;vel</div><div class="chips">
-          <span class="chip lead"><span class="t tm"></span>CCJ<span class="x">Cameco · l&iacute;der</span></span>
-          <span class="chip"><span class="t td"></span>LEU<span class="x">Centrus · HALEU</span></span>
-          <span class="chip"><span class="t td"></span>UEC</span>
+        <div><div class="row-label">Juniors · sweet-spot small-mid</div><div class="chips">
+          <span class="chip lead"><span class="t td"></span>LEU<span class="x">Centrus · HALEU · monop&oacute;lio EUA</span></span>
+          <span class="chip lead"><span class="t td"></span>NXE<span class="x">NexGen · Arrow deposit · tier 1</span></span>
+          <span class="chip"><span class="t ts"></span>UEC<span class="x">US producer</span></span>
           <span class="chip"><span class="t ts"></span>UUUU<span class="x">Energy Fuels</span></span>
-          <span class="chip"><span class="t td"></span>NXE<span class="x">NexGen</span></span>
           <span class="chip"><span class="t ts"></span>DNN<span class="x">Denison</span></span>
           <span class="chip"><span class="t ts"></span>ASPI</span>
+        </div></div>
+        <div><div class="row-label">J&aacute; grande — CCJ $45B descontado</div><div class="chips">
+          <span class="chip priv">CCJ<span class="x">Cameco · $45B · qualidade mas upside limitado</span></span>
         </div></div>
         <div><div class="row-label">Privadas</div><div class="chips">
           <span class="chip priv">Urenco</span>
@@ -426,25 +456,29 @@
       <div class="nleft">
         <div class="nidx">CH.12 · UPSTREAM</div>
         <div class="nname">Cobre &amp; Materiais Cr&iacute;ticos</div>
-        <div class="ntag">"O metal da eletrifica&ccedil;&atilde;o" · oferta estruturalmente curta</div>
+        <div class="ntag">"O metal da eletrifica&ccedil;&atilde;o" · oferta estruturalmente curta · assimetria nos mid-small</div>
         <div class="caps"><span class="lbl">perfil</span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mega)"></span><span class="d" style="background:var(--mid)"></span><span class="d" style="background:var(--small)"></span></div>
       </div>
       <div class="nright">
-        <div><div class="row-label">Cotadas</div><div class="chips">
-          <span class="chip lead"><span class="t tm"></span>FCX<span class="x">Freeport · l&iacute;der</span></span>
-          <span class="chip"><span class="t tm"></span>SCCO<span class="x">Southern Copper</span></span>
-          <span class="chip"><span class="t td"></span>IVN<span class="x">Ivanhoe</span></span>
-          <span class="chip"><span class="t td"></span>TECK<span class="x">Teck</span></span>
+        <div><div class="row-label">Sweet-spot mid-small · maior upside</div><div class="chips">
+          <span class="chip lead"><span class="t ts"></span>ERO<span class="x">Ero Copper · ~$2-3B · crescimento org&acirc;nico</span></span>
+          <span class="chip"><span class="t td"></span>IVN<span class="x">Ivanhoe · Kamoa-Kakula tier 1</span></span>
           <span class="chip"><span class="t td"></span>ANTO<span class="x">Antofagasta</span></span>
-          <span class="chip"><span class="t ts"></span>ERO<span class="x">Ero Copper</span></span>
+        </div></div>
+        <div><div class="row-label">Mid-large · ainda v&aacute;lidas mas menos assimetria</div><div class="chips">
+          <span class="chip"><span class="t td"></span>TECK<span class="x">Teck · divers. cobre</span></span>
+        </div></div>
+        <div><div class="row-label">Megas — descontadas</div><div class="chips">
+          <span class="chip priv">FCX<span class="x">Freeport · $60B</span></span>
+          <span class="chip priv">SCCO<span class="x">Southern Copper · $80B</span></span>
         </div></div>
       </div>
     </div>
   </div>
 
   <footer>
-    <p><span class="warn">⚠ N&Atilde;O &Eacute; CONSELHO DE INVESTIMENTO.</span> &nbsp;Conte&uacute;do educativo. <b>Leitura por tier:</b> os gargalos dominados por <b style="color:var(--mega)">megas</b> (transformadores, cobre, power-train) s&atilde;o os mais defens&aacute;veis mas j&aacute; descontados — compras qualidade no choke. A assimetria vive nos gargalos onde o l&iacute;der ainda &eacute; <b style="color:var(--mid)">mid-cap</b> (cabos HVDC: Prysmian/Nexans) ou onde os pure-plays s&atilde;o <b style="color:var(--small)">small-caps</b> (SMRs OKLO/SMR/NNE, ur&acirc;nio j&uacute;nior, storage FLNC) — maior potencial, mas volatilidade extrema; sleeve especulativo dimensionado, n&atilde;o core. Caps s&atilde;o snapshot aproximado de Jun 2026 e mexem-se depressa neste setor.</p>
-    <p style="margin-top:10px;color:var(--txt-faint)">Carecao · Theme Baskets · Mapa de Nichos Energia · Tiers mega/mid/small · Jun 2026</p>
+    <p><span class="warn">⚠ N&Atilde;O &Eacute; CONSELHO DE INVESTIMENTO.</span> &nbsp;Conte&uacute;do educativo. <b>Leitura por tier (atualizada Jun 2026):</b> v&aacute;rias empresas que eram mid-caps <b>j&aacute; explodiram</b> — VRT ($121B), PRY (~$45B), CCJ ($45B), FCX ($60B), SCCO ($80B) est&atilde;o descontadas. O sweet-spot de x5-10x vive agora em: <b style="color:var(--mid)">cabos HVDC</b> (NEX ~€6B, NKT ~€4B), <b style="color:var(--mid)">ur&acirc;nio junior</b> (LEU monop&oacute;lio HALEU, NXE Arrow deposit, UEC/UUUU/DNN), <b style="color:var(--small)">cobre mid-small</b> (ERO ~$2-3B, IVN Kamoa-Kakula), <b style="color:var(--small)">BESS pure-play</b> (FLNC — nicho certo, ainda pré-lucro). ENPH/SEDG/STEM removidos da tese de gargalo — s&atilde;o plays tarifários/solares, n&atilde;o choke-points de infraestrutura. Caps s&atilde;o snapshot Jun 2026.</p>
+    <p style="margin-top:10px;color:var(--txt-faint)">Carecao · Theme Baskets · Mapa de Nichos Energia · Tiers mega/mid/small · atualizado Jun 2026</p>
   </footer>
 
 </div>

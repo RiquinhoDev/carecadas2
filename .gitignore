@@ -2,3 +2,8 @@
 carecadas2/
 .qodo/
 node_modules/
+.astro/
+dist/
+playwright-report/
+test-results/
+.lighthouseci/

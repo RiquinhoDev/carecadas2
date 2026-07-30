@@ -6,11 +6,12 @@
 
 **Architecture:** Astro 7 statically renders the public site from typed Content Collections. A narrow repository module isolates content queries, Astro components own presentation, React is installed for future interactive islands, and Cloudflare Pages serves the static artefact. Existing HTML studies remain unchanged in `public/estudos/` until each one passes a separate migration gate.
 
-**Tech Stack:** Astro 7.1+, TypeScript strict, React 19, MDX, Astro Content Layer, Zod through `astro/zod`, Vitest, Playwright Chromium, axe, ESLint, Prettier, Lighthouse CI, Cloudflare Pages.
+**Tech Stack:** Astro 7.1.6, TypeScript strict, React 19, MDX, Astro Content Layer, Zod through `astro/zod`, Vitest, Playwright Chromium, axe, ESLint, Prettier, Lighthouse CI, Cloudflare Pages.
 
 ## Global Constraints
 
 - Use Node `24` locally and in CI; declare `engines.node` as `>=22.12.0`.
+- Pin Astro to exact version `7.1.6`; never install compromised version `7.1.0` (GHSA-hpcx-pg6g-x697).
 - Use npm and commit the generated `package-lock.json`.
 - Keep the public application statically generated; do not add an SSR adapter, database, CMS, authentication, payment provider, or permanent Node server.
 - Keep `pt-PT` as the canonical locale without a URL prefix and reserve `/en/` for editor-published English content.
@@ -144,8 +145,9 @@ Run:
 
 ```powershell
 npm.cmd uninstall express
-npm.cmd install astro@^7.1.0 @astrojs/mdx @astrojs/react @astrojs/rss @astrojs/sitemap react react-dom
-npm.cmd install --save-dev @astrojs/check @axe-core/playwright @eslint/js @lhci/cli @playwright/test @types/node @types/react @types/react-dom eslint eslint-plugin-astro eslint-plugin-jsx-a11y prettier prettier-plugin-astro typescript typescript-eslint vitest
+npm.cmd install --save-exact astro@7.1.6
+npm.cmd install @astrojs/mdx @astrojs/react @astrojs/rss @astrojs/sitemap react react-dom
+npm.cmd install --save-dev @astrojs/check @axe-core/playwright @eslint/js@10.0.1 @playwright/test @types/node @types/react @types/react-dom eslint@10.8.0 prettier prettier-plugin-astro typescript@5.9.3 typescript-eslint vitest
 ```
 
 Edit `package.json` so its scripts and engine are exactly:
@@ -303,20 +305,13 @@ Create `eslint.config.js`:
 
 ```js
 import js from '@eslint/js';
-import eslintPluginAstro from 'eslint-plugin-astro';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   { ignores: ['.astro/**', 'dist/**', 'node_modules/**', 'playwright-report/**'] },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
-  ...eslintPluginAstro.configs['flat/recommended'],
-  {
-    files: ['**/*.{jsx,tsx}'],
-    plugins: { 'jsx-a11y': jsxA11y },
-    rules: jsxA11y.flatConfigs.recommended.rules,
-  },
+  tseslint.configs.recommended,
 );
 ```
 

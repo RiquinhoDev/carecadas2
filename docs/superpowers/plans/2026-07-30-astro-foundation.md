@@ -2134,7 +2134,7 @@ git commit -m "docs: add editorial runbooks"
 
 ---
 
-### Task 9: Final independent gate and branch publication
+### Task 9: Final independent gate and local handoff
 
 **Files:**
 
@@ -2144,8 +2144,8 @@ git commit -m "docs: add editorial runbooks"
 
 **Interfaces:**
 
-- Produces a remote `codex/astro-foundation` branch at the exact locally
-  verified commit.
+- Produces a clean local `codex/astro-foundation` branch at an exactly
+  identified, fully verified commit for the owner to push.
 - Does not merge, deploy, connect Cloudflare, or alter `main`.
 
 - [ ] **Step 1: Review scope and legacy preservation**
@@ -2201,18 +2201,19 @@ If any gate fails, record the exact command and output, fix only an in-scope
 defect through a new focused RED/GREEN commit, and rerun the entire Step 2.
 Do not weaken assertions, thresholds, or schemas to obtain green.
 
-- [ ] **Step 4: Push the verified branch**
+- [ ] **Step 4: Record the verified handoff**
 
 Run:
 
 ```powershell
-git push -u origin codex/astro-foundation
-git ls-remote --heads origin codex/astro-foundation
 git rev-parse HEAD
+git status -sb
+git log --oneline --decorate origin/main..HEAD
 ```
 
-Expected: the remote hash from `git ls-remote` exactly equals local `HEAD`.
-Do not merge or deploy from this step.
+Expected: Git prints the verified local hash, the worktree is clean, and the
+complete branch-only commit list is visible. The owner performs the push.
+Do not push, merge, or deploy from this step.
 
 ---
 
@@ -2228,6 +2229,6 @@ This plan is implemented only when all of the following are evidenced:
   crawler policy are covered by automated tests.
 - The complete local QA gate and CI definition are green.
 - The worktree is clean.
-- `codex/astro-foundation` exists remotely at the verified local commit.
+- `codex/astro-foundation` is clean locally at the reported verified commit.
 - No merge, Cloudflare account mutation, production deployment, CMS, database,
   authentication, or paid service has been performed.
